@@ -44,7 +44,22 @@ main{width:min(1120px,100%);margin:auto;padding:24px 16px 38px}
   <div class="setting-row"><label for="sound">المؤثرات الصوتية</label><input id="sound" class="toggle" type="checkbox" checked></div>
   <div class="setting-row"><label for="hints">إظهار الأوراق الممكنة</label><input id="hints" class="toggle" type="checkbox" checked></div>
  </div>
- <div id="online-settings" class="online-box hidden"><h3>🌐 غرفة اللعب</h3><div class="formrow"><button class="btn" onclick="createRoom()">إنشاء غرفة</button><input id="room-code" class="field" placeholder="رمز الغرفة" maxlength="30" style="flex:1"></div><div class="online-actions"><button class="btn secondary" onclick="joinRoom()">دخول الغرفة</button><button class="btn secondary" onclick="copyRoom()">نسخ الرمز</button></div><p class="hint" id="online-hint">الأونلاين يحتاج اتصال إنترنت. أنشئ غرفة وأرسل الرمز لصديقك. اللعب الشبكي هنا تجريبي عبر اتصال مباشر بين لاعبين، مع لاعبين كمبيوتر لإكمال الأربعة.</p></div>
+ 
+ <!-- تم إضافة زر بدء اللعبة هنا في وضع الأونلاين -->
+ <div id="online-settings" class="online-box hidden">
+    <h3>🌐 غرفة اللعب</h3>
+    <div class="formrow" id="online-inputs">
+        <button class="btn" onclick="createRoom()">إنشاء غرفة</button>
+        <input id="room-code" class="field" placeholder="رمز الغرفة" maxlength="30" style="flex:1">
+    </div>
+    <div class="online-actions" id="online-actions-btns">
+        <button class="btn secondary" onclick="joinRoom()">دخول الغرفة</button>
+        <button class="btn secondary" onclick="copyRoom()">نسخ الرمز</button>
+    </div>
+    <button class="btn hidden" id="start-online-btn" style="margin-top:10px; width:100%; background: var(--green); color: #000;" onclick="startOnlineMatch()">بدء اللعبة الآن</button>
+    <p class="hint" id="online-hint">الأونلاين يحتاج اتصال إنترنت. أنشئ غرفة وأرسل الرمز لصديقك. اللعب الشبكي هنا تجريبي عبر اتصال مباشر بين لاعبين، مع لاعبين كمبيوتر لإكمال الأربعة.</p>
+ </div>
+ 
  <button class="btn" id="start-btn" style="min-width:210px;margin-top:8px" onclick="startMatch()">ابدأ المباراة ←</button>
  <p class="hint">52 ورقة · 4 لاعبين · 13 ورقة لكل لاعب · فريقان</p>
 </section>
@@ -58,36 +73,242 @@ main{width:min(1120px,100%);margin:auto;padding:24px 16px 38px}
   <div class="center"><div class="played" id="slot-top"><div class="empty"></div></div><div class="played" id="slot-right"><div class="empty"></div></div><div class="played" id="slot-left"><div class="empty"></div></div><div class="played" id="slot-bottom"><div class="empty"></div></div></div>
  </div>
  <div class="hand-panel"><div class="hand-head"><h3>أوراقك</h3><span id="hand-count">13 ورقة</span></div><div class="hand" id="hand"></div><div class="message" id="message">اختر ورقة لبدء اللعب</div></div>
- <div class="game-actions"><button class="btn secondary small" onclick="dealNew()">صكة جديدة</button><button class="btn secondary small" onclick="showRules()">القوانين</button><button class="btn secondary small" onclick="backToMenu()">إنهاء والعودة</button></div>
+ <div class="game-actions"><button class="btn secondary small" id="deal-btn" onclick="dealNew()">صكة جديدة</button><button class="btn secondary small" onclick="showRules()">القوانين</button><button class="btn secondary small" onclick="backToMenu()">إنهاء والعودة</button></div>
 </section>
 </main>
 <div class="modal-bg" id="modal"><div class="modal"><h2 id="modal-title"></h2><p id="modal-text"></p><button class="btn" id="modal-ok" onclick="closeModal()">تمام</button></div></div>
 <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
 <script>
 const SEATS=['bottom','right','top','left'],SUITS=['♠','♣','♥','♦'],RANK={'2':2,'3':3,'4':4,'5':5,'6':6,'7':7,'8':8,'9':9,'10':10,'J':11,'Q':12,'K':13,'A':14},FACE={J:'🧑',Q:'👩',K:'🧓',A:'⚡'};
-let mode='bots',state=null,player='لاعب',timer=null,peer=null,conn=null,isHost=false,roomId='',difficulty='normal',localSeat='bottom';
+let mode='bots',state=null,player='لاعب',timer=null,peer=null,conn=null,isHost=false,roomId='',difficulty='normal';
+
+// المتغيرات الجديدة للأونلاين
+let localSeat='bottom';
+let onlineGuestName = '';
+let waitingForGuest = false;
+
 function el(id){return document.getElementById(id)}
-function selectMode(m){mode=m;el('mode-bots').classList.toggle('selected',m==='bots');el('mode-online').classList.toggle('selected',m==='online');el('bot-settings').classList.toggle('hidden',m!=='bots');el('online-settings').classList.toggle('hidden',m!=='online');el('start-btn').classList.toggle('hidden',m==='online');}
+function selectMode(m){
+    mode=m;
+    el('mode-bots').classList.toggle('selected',m==='bots');
+    el('mode-online').classList.toggle('selected',m==='online');
+    el('bot-settings').classList.toggle('hidden',m!=='bots');
+    el('online-settings').classList.toggle('hidden',m!=='online');
+    el('start-btn').classList.toggle('hidden',m==='online');
+}
 function deck(){let d=[];for(let s of SUITS)for(let v of Object.keys(RANK))d.push({s,v});for(let i=d.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[d[i],d[j]]=[d[j],d[i]]}return d}
 function fresh(){return {scores:[0,0],hands:{bottom:[],right:[],top:[],left:[]},played:{bottom:null,right:null,top:null,left:null},turn:'bottom',lead:null,winner:null,roundEnd:false,matchEnd:false,names:{bottom:player,right:'الكمبيوتر 1',top:'الشريك',left:'الكمبيوتر 2'}}}
-function startMatch(){localSeat='bottom';player=el('player-name').value.trim()||'لاعب';difficulty=el('difficulty').value;state=fresh();dealCards();el('menu').classList.add('hidden');el('game').style.display='block';el('connection-status').textContent='● وضع فردي';}
+function startMatch(){localSeat='bottom';player=el('player-name').value.trim()||'لاعب';difficulty=el('difficulty').value;state=fresh();dealCards();el('menu').classList.add('hidden');el('game').style.display='block';el('connection-status').textContent='● وضع فردي';el('deal-btn').classList.remove('hidden');}
 function dealCards(){clearTimeout(timer);let d=deck();state.hands={bottom:[],right:[],top:[],left:[]};state.played={bottom:null,right:null,top:null,left:null};for(let n=0;n<13;n++)for(let s of SEATS)state.hands[s].push(d.pop());state.turn=state.winner||'bottom';state.lead=null;state.roundEnd=false;state.matchEnd=false;render();botTurn()}
-function dealNew(){if(!state)return;if(state.matchEnd){state=fresh()}dealCards()}
+function dealNew(){if(!state)return;if(mode==='online'&&!isHost){alert('فقط المضيف يمكنه توزيع صكة جديدة');return;}if(state.matchEnd){state=fresh()}dealCards()}
 function canPlay(c,s){return !state.lead||!state.hands[s].some(x=>x.s===state.lead)||c.s===state.lead}
-function humanPlay(i){if(!state||state.turn!==localSeat||state.roundEnd||state.matchEnd)return;if(!isHost&&mode==='online'){if(conn&&conn.open)conn.send({type:'move',index:i});return}let c=state.hands[localSeat][i];if(!canPlay(c,localSeat)){say('لازم تلعب من نفس النوع '+state.lead);return}play(localSeat,i)}
+function humanPlay(i){
+    if(!state||state.turn!==localSeat||state.roundEnd||state.matchEnd)return;
+    if(!isHost&&mode==='online'){
+        if(conn&&conn.open)conn.send({type:'move',index:i});
+        return;
+    }
+    let c=state.hands[localSeat][i];
+    if(!canPlay(c,localSeat)){say('لازم تلعب من نفس النوع '+state.lead);return}
+    play(localSeat,i)
+}
 function play(s,i){let c=state.hands[s].splice(i,1)[0];if(!state.lead)state.lead=c.s;state.played[s]=c;state.turn=SEATS[(SEATS.indexOf(s)+1)%4];render();if(SEATS.every(x=>state.played[x])){scoreTrick();return}botTurn()}
 function botPick(s){let h=state.hands[s],valid=h.map((c,i)=>({c,i})).filter(x=>canPlay(x.c,s));let pool=valid.length?valid:h.map((c,i)=>({c,i}));let penalty=c=>c.s==='♥'?(c.v==='Q'?13:1):(c.s==='♦'&&c.v==='10'?10:0);if(difficulty==='easy')return pool[Math.floor(Math.random()*pool.length)].i;if(difficulty==='hard'){let winning=pool.filter(x=>x.c.s===state.lead&&RANK[x.c.v]>Math.max(-1,...SEATS.filter(z=>state.played[z]&&state.played[z].s===state.lead).map(z=>RANK[state.played[z].v])));return (winning.length?winning:pool).sort((a,b)=>penalty(a.c)-penalty(b.c))[0].i}return pool.sort((a,b)=>penalty(a.c)-penalty(b.c)||RANK[a.c.v]-RANK[b.c.v])[0].i}
-function botTurn(){clearTimeout(timer);if(!state||state.roundEnd||state.matchEnd||state.turn==='bottom')return;let delay=Number(el('delay')?.value||1600);timer=setTimeout(()=>{if(state&&state.turn!=='bottom'&&!state.roundEnd)play(state.turn,botPick(state.turn))},delay)}
+function botTurn(){
+    clearTimeout(timer);
+    if(!state||state.roundEnd||state.matchEnd||state.turn===localSeat)return;
+    // الكمبيوتر يلعب فقط عند المضيف (أو في وضع الفردي)
+    if(mode==='online'&&!isHost)return;
+
+    let isBot = state.names[state.turn].includes('كمبيوتر');
+    if(!isBot)return;
+
+    let delay=Number(el('delay')?.value||1600);
+    timer=setTimeout(()=>{
+        if(state&&state.turn!==localSeat&&!state.roundEnd){
+            play(state.turn,botPick(state.turn))
+        }
+    },delay)
+}
 function scoreTrick(){state.roundEnd=true;let win='bottom',high=-1,points=0;for(let s of SEATS){let c=state.played[s];if(c.s===state.lead&&RANK[c.v]>high){high=RANK[c.v];win=s}if(c.s==='♥')points++;if(c.s==='♥'&&c.v==='Q')points+=12;if(c.s==='♦'&&c.v==='10')points+=10}let team=['bottom','top'].includes(win)?0:1;state.scores[team]+=points;state.winner=win;state.turn=win;render();say(state.names[win]+' أخذ الجولة · '+points+' نقطة سلبية');setTimeout(()=>{if(state.scores.some(x=>x>=100)){state.matchEnd=true;render();popup('انتهت المباراة',state.scores[0]>=100?'فريقك وصل 100 نقطة وخسر!':'الخصم وصل 100 نقطة وخسر!');return}state.played={bottom:null,right:null,top:null,left:null};state.lead=null;state.roundEnd=false;if(SEATS.every(s=>state.hands[s].length===0)){render();popup('انتهت الصكة','انتهت الأوراق. ابدأ صكة جديدة مع بقاء النتيجة.');return}state.turn=win;render();botTurn()},1700)}
 function cardHTML(c){if(!c)return '<div class="empty"></div>';return `<div class="card ${c.s==='♥'||c.s==='♦'?'red':''}"><div class="corner">${FACE[c.v]||c.v}<br>${c.s}</div><div class="symbol">${c.s}</div></div>`}
-function render(){if(!state)return;for(let s of SEATS){el('name-'+s).textContent=state.names[s];el('slot-'+s).innerHTML=cardHTML(state.played[s]);el('seat-'+s).classList.toggle('active',state.turn===s&&!state.matchEnd);if(s!=='bottom')el('backs-'+s).innerHTML=Array.from({length:state.hands[s].length},()=>'<i class="back"></i>').join('')}el('score1').textContent=state.scores[0];el('score2').textContent=state.scores[1];el('turn-label').innerHTML='الدور: <strong>'+state.names[state.turn]+'</strong>';el('hand-count').textContent=state.hands[localSeat].length+' ورقة متبقية';let h=el('hand');h.innerHTML='';state.hands[localSeat].forEach((c,i)=>{let w=document.createElement('div');w.innerHTML=cardHTML(c);let a=w.firstElementChild;if(state.turn!==localSeat||state.roundEnd||state.matchEnd)a.classList.add('disabled');else if(el('hints')?.checked!==false&&canPlay(c,localSeat))a.classList.add('playable');a.onclick=()=>humanPlay(i);h.appendChild(a)});if(isHost&&conn&&conn.open)conn.send({type:'state',state})}
+
+// ------------------------------------------
+// إصلاح المشكلة الأولى: دوران الشاشة (اللاعب دائماً في الأسفل)
+// ------------------------------------------
+function getVisualSeat(actualSeat) {
+    if (localSeat === 'bottom') return actualSeat; // أنا في الأسفل، لا تدوير
+    // إذا كنت أنا في الأعلى (الضيف)، أعكس كل شيء
+    if (actualSeat === 'bottom') return 'top';
+    if (actualSeat === 'top') return 'bottom';
+    if (actualSeat === 'right') return 'left';
+    if (actualSeat === 'left') return 'right';
+    return actualSeat;
+}
+
+function render(){
+    if(!state)return;
+    
+    for(let actual of SEATS){
+        let visual = getVisualSeat(actual);
+        el('name-'+visual).textContent=state.names[actual];
+        el('slot-'+visual).innerHTML=cardHTML(state.played[actual]);
+        el('seat-'+visual).classList.toggle('active',state.turn===actual&&!state.matchEnd);
+        
+        if(visual!=='bottom'){
+            el('backs-'+visual).innerHTML=Array.from({length:state.hands[actual].length},()=>'<i class="back"></i>').join('');
+        }
+    }
+    
+    el('score1').textContent=state.scores[0];
+    el('score2').textContent=state.scores[1];
+    el('turn-label').innerHTML='الدور: <strong>'+state.names[state.turn]+'</strong>';
+    el('hand-count').textContent=state.hands[localSeat].length+' ورقة متبقية';
+    
+    let h=el('hand');
+    h.innerHTML='';
+    state.hands[localSeat].forEach((c,i)=>{
+        let w=document.createElement('div');
+        w.innerHTML=cardHTML(c);
+        let a=w.firstElementChild;
+        if(state.turn!==localSeat||state.roundEnd||state.matchEnd)a.classList.add('disabled');
+        else if(el('hints')?.checked!==false&&canPlay(c,localSeat))a.classList.add('playable');
+        a.onclick=()=>humanPlay(i);
+        h.appendChild(a);
+    });
+    
+    if(isHost&&conn&&conn.open){
+        conn.send({type:'state',state});
+    }
+}
 function say(t){el('message').textContent=t}
 function popup(t,m){el('modal-title').textContent=t;el('modal-text').textContent=m;el('modal').style.display='flex'}
 function closeModal(){el('modal').style.display='none'}
 function showRules(){popup('قوانين سَمْرَة','أربعة لاعبين بفريقين: أنت مع الشريك المقابل. لكل لاعب 13 ورقة. يجب اتباع النوع إذا كان معك. أعلى ورقة من النوع الذي بدأ به الدور تفوز بالجولة. كل قلب نقطة، بنت القلوب 13 نقطة إجمالاً، وعشرة الديناري 10 نقاط. أول فريق يصل إلى 100 نقطة يخسر.')}
-function backToMenu(){clearTimeout(timer);if(peer){peer.destroy();peer=null;conn=null}isHost=false;localSeat='bottom';el('game').style.display='none';el('menu').classList.remove('hidden');el('connection-status').textContent='● وضع فردي'}
-function createRoom(){if(typeof Peer==='undefined'){say('تعذر تحميل خدمة الاتصال. تأكد من الإنترنت.');return}if(peer)peer.destroy();isHost=true;roomId='sakka-'+Math.random().toString(36).slice(2,8);peer=new Peer(roomId);el('online-hint').textContent='جاري إنشاء الغرفة...';peer.on('open',id=>{roomId=id;el('room-code').value=id;el('online-hint').textContent='تم إنشاء الغرفة. أرسل الرمز لصديقك وانتظر دخوله.';});peer.on('connection',c=>{conn=c;wireOnline();});peer.on('error',e=>el('online-hint').textContent='تعذر إنشاء الغرفة: '+e.type)}
-function joinRoom(){if(typeof Peer==='undefined'){el('online-hint').textContent='تعذر تحميل خدمة الاتصال. تأكد من الإنترنت.';return}let id=el('room-code').value.trim();if(!id){el('online-hint').textContent='اكتب رمز الغرفة أولاً.';return}if(peer)peer.destroy();isHost=false;peer=new Peer();peer.on('open',()=>{conn=peer.connect(id);wireOnline();});peer.on('error',e=>el('online-hint').textContent='تعذر الاتصال: '+e.type)}
-function wireOnline(){conn.on('open',()=>{el('online-hint').textContent='تم الاتصال! المضيف يبدأ المباراة.';el('connection-status').textContent='● متصل';if(isHost){localSeat='bottom';player=el('player-name').value.trim()||'المضيف';state=fresh();state.names.bottom=player;state.names.top='الصديق';dealCards();conn.send({type:'state',state});el('menu').classList.add('hidden');el('game').style.display='block'}else{localSeat='top';conn.send({type:'hello',name:el('player-name').value.trim()||'الصديق'})} });conn.on('data',m=>{if(isHost){if(m.type==='hello'&&state){state.names.top=m.name||'الصديق';render()}if(m.type==='move'&&state&&state.turn==='top'&&Number.isInteger(m.index)){let c=state.hands.top[m.index];if(c&&canPlay(c,'top'))play('top',m.index)}}else if(m.type==='state'){state=m.state;player=state.names.top;localSeat='top';el('menu').classList.add('hidden');el('game').style.display='block';render();}});conn.on('close',()=>{el('connection-status').textContent='● انقطع الاتصال'})}
+function backToMenu(){
+    clearTimeout(timer);
+    if(peer){peer.destroy();peer=null;conn=null}
+    isHost=false;localSeat='bottom';
+    el('game').style.display='none';
+    el('menu').classList.remove('hidden');
+    el('connection-status').textContent='● وضع فردي';
+    // إعادة إعدادات الأونلاين للوضع الطبيعي
+    el('online-inputs').style.display='flex';
+    el('online-actions-btns').style.display='flex';
+    el('start-online-btn').classList.add('hidden');
+}
+
+// ------------------------------------------
+// إصلاح المشكلة الثانية والثالثة: غرفة الانتظار وبدء اللعب
+// ------------------------------------------
+function createRoom(){
+    if(typeof Peer==='undefined'){say('تعذر تحميل خدمة الاتصال. تأكد من الإنترنت.');return}
+    if(peer)peer.destroy();
+    isHost=true;
+    roomId='sakka-'+Math.random().toString(36).slice(2,8);
+    peer=new Peer(roomId);
+    
+    el('online-inputs').style.display='none';
+    el('online-actions-btns').style.display='none';
+    el('online-hint').textContent='جاري إنشاء الغرفة...';
+    
+    peer.on('open',id=>{
+        roomId=id;
+        el('room-code').value=id;
+        el('online-hint').innerHTML = 'الغرفة جاهزة. أرسل الكود لصديقك.<br><b style="color:var(--gold)">بانتظار انضمام اللاعب...</b>';
+        el('connection-status').textContent='● بانتظار لاعب';
+    });
+    
+    peer.on('connection',c=>{
+        conn=c;
+        wireOnline();
+    });
+    
+    peer.on('error',e=>el('online-hint').textContent='تعذر إنشاء الغرفة: '+e.type);
+}
+
+function joinRoom(){
+    if(typeof Peer==='undefined'){el('online-hint').textContent='تعذر تحميل خدمة الاتصال. تأكد من الإنترنت.';return}
+    let id=el('room-code').value.trim();
+    if(!id){el('online-hint').textContent='اكتب رمز الغرفة أولاً.';return}
+    if(peer)peer.destroy();
+    isHost=false;
+    localSeat='top'; // اللاعب الضيف سيكون في الأعلى (لكنه سيرى نفسه في الأسفل بفضل دوران الشاشة)
+    
+    peer=new Peer();
+    peer.on('open',()=>{
+        conn=peer.connect(id);
+        wireOnline();
+    });
+    peer.on('error',e=>el('online-hint').textContent='تعذر الاتصال: '+e.type);
+}
+
+function wireOnline(){
+    conn.on('open',()=>{
+        el('online-hint').textContent='تم الاتصال! بانتظار المضيف لبدء اللعبة...';
+        el('connection-status').textContent='● متصل';
+        el('online-inputs').style.display='none';
+        el('online-actions-btns').style.display='none';
+        
+        if(isHost){
+            player=el('player-name').value.trim()||'المضيف';
+            // لا نبدأ اللعبة، بل ننتظر انضمام الضيف
+        }else{
+            player=el('player-name').value.trim()||'الصديق';
+            conn.send({type:'hello',name:player});
+        }
+    });
+    
+    conn.on('data',m=>{
+        if(isHost){
+            if(m.type==='hello'){
+                onlineGuestName = m.name || 'الصديق';
+                el('online-hint').innerHTML = 'انضم <b style="color:var(--gold)">'+onlineGuestName+'</b> للغرفة.<br>يمكنك بدء اللعبة الآن.';
+                el('start-online-btn').classList.remove('hidden');
+            }
+            if(m.type==='move'&&state&&state.turn==='top'&&Number.isInteger(m.index)){
+                let c=state.hands.top[m.index];
+                if(c&&canPlay(c,'top'))play('top',m.index);
+            }
+        }else if(m.type==='start_game'){
+            state=m.state;
+            player=state.names[localSeat];
+            el('menu').classList.add('hidden');
+            el('game').style.display='block';
+            el('deal-btn').classList.add('hidden'); // الضيف لا يملك زر التوزيع
+            render();
+        }else if(m.type==='state'){
+            state=m.state;
+            render();
+        }
+    });
+    
+    conn.on('close',()=>{
+        el('connection-status').textContent='● انقطع الاتصال';
+        el('online-hint').textContent='انقطع الاتصال باللاعب.';
+    });
+}
+
+function startOnlineMatch(){
+    if(!isHost || !conn || !conn.open) return;
+    
+    // المضيف يبدأ اللعبة ويضع البوتات في الأماكن الناقصة
+    state=fresh();
+    state.names.bottom = player;
+    state.names.top = onlineGuestName;
+    state.names.right = 'الكمبيوتر 1';
+    state.names.left = 'الكمبيوتر 2';
+    
+    dealCards();
+    
+    // إرسال حالة اللعبة للضيف
+    conn.send({type:'start_game', state:state});
+    
+    el('menu').classList.add('hidden');
+    el('game').style.display='block';
+    el('deal-btn').classList.remove('hidden'); // المضيف فقط يملك زر التوزيع
+    render();
+}
+
 function copyRoom(){let v=el('room-code').value;if(!v)return; if(navigator.clipboard)navigator.clipboard.writeText(v).then(()=>el('online-hint').textContent='تم نسخ رمز الغرفة').catch(()=>{});else el('room-code').select()}
 </script></body></html>
