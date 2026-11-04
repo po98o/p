@@ -18,6 +18,17 @@ main{width:min(1120px,100%);margin:auto;padding:24px 16px 38px}
 .mode-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px;margin:22px 0}.mode{padding:20px 14px;text-align:right;border:1px solid #ffffff22;background:#ffffff08;border-radius:18px;color:var(--cream);min-height:118px}.mode:hover,.mode.selected{border-color:var(--gold);background:#e9bd6112}.mode .ico{font-size:28px}.mode b{display:block;font-size:17px}.mode small{color:var(--muted);font-size:11px}
 .formrow{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:14px 0}.field{background:#071a14;color:white;border:1px solid #ffffff28;border-radius:12px;padding:12px 14px;min-width:0;outline:none}.field:focus{border-color:var(--gold)}.field.name{width:min(330px,100%)}.settings{margin:20px auto 0;padding:16px;text-align:right;max-width:600px;background:#071a1455;border:1px solid #ffffff17;border-radius:16px}.settings h3{margin:0 0 12px;color:var(--gold)}.setting-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px solid #ffffff12;font-size:13px}.setting-row:last-child{border:0}.setting-row select{max-width:180px}.toggle{accent-color:#e9bd61;width:18px;height:18px}
 .online-box{padding:15px;margin:15px auto;max-width:600px;background:#071a1455;border:1px solid #ffffff17;border-radius:16px;text-align:right}.online-box h3{margin:0 0 10px;color:var(--gold)}.online-actions{display:flex;gap:8px;flex-wrap:wrap}.online-actions .field{flex:1;width:120px}.hint{font-size:11px;color:var(--muted);line-height:1.8;margin:9px 0 0}
+
+/* تصميم اللوبي */
+.lobby{max-width:600px;margin:28px auto;padding:clamp(20px,4vw,38px);text-align:center}
+.lobby-seats{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin:20px 0;}
+.lobby-seat{padding:15px;border-radius:16px;background:#071a14;border:2px solid #ffffff15;font-size:14px;display:flex;flex-direction:column;justify-content:center;align-items:center;min-height:80px}
+.lobby-seat.host{border-color:var(--gold)}
+.lobby-seat.guest{border-color:var(--green)}
+.lobby-seat.bot{opacity:0.6;border-style:dashed}
+.lobby-seat .role{font-size:11px;color:var(--muted);margin-bottom:5px}
+.lobby-seat .p-name{font-weight:800;font-size:16px;color:var(--cream)}
+
 .game{display:none}.toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:12px}.turn{padding:8px 14px;background:#ffffff0c;border:1px solid #ffffff20;border-radius:30px;font-size:13px}.turn strong{color:var(--gold)}.scores{display:flex;gap:8px}.score{min-width:105px;text-align:center;padding:7px 12px;border-radius:13px;background:#102b23;border:1px solid #ffffff1c}.score small{display:block;color:var(--muted);font-size:10px}.score b{color:var(--gold);font-size:20px}
 .table{height:min(55vh,500px);min-height:320px;position:relative;border-radius:180px;background:radial-gradient(ellipse at center,#2a8058 0,#176044 56%,#0d402f 100%);border:9px solid #62452b;box-shadow:inset 0 0 0 3px #c49a5b,inset 0 0 55px #00180e,0 16px 40px #0008;overflow:hidden}.table:after{content:"";position:absolute;inset:13px;border:1px solid #ffffff28;border-radius:180px;pointer-events:none}
 .seat{position:absolute;z-index:2;min-width:110px;max-width:155px;padding:7px 11px;border-radius:13px;background:#08271feF;border:1px solid #ffffff35;text-align:center;box-shadow:0 5px 15px #0005}.seat.active{border:2px solid var(--gold);box-shadow:0 0 20px #f5c65b66}.seat .name{font-size:13px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.seat small{font-size:10px;color:#c4d9cd}.seat-top{top:15px;left:50%;transform:translateX(-50%)}.seat-bottom{bottom:15px;left:50%;transform:translateX(-50%)}.seat-left{left:14px;top:50%;transform:translateY(-50%)}.seat-right{right:14px;top:50%;transform:translateY(-50%)}
@@ -26,7 +37,7 @@ main{width:min(1120px,100%);margin:auto;padding:24px 16px 38px}
 .card{width:62px;height:88px;border-radius:9px;background:linear-gradient(145deg,#fffefa,#e9e4d9);color:#18231f;border:1px solid #d5d0c4;box-shadow:0 5px 12px #00150e88;display:flex;flex-direction:column;justify-content:flex-start;align-items:flex-start;padding:5px;font-family:Arial,sans-serif;font-weight:800}.card.red{color:#d83e4b}.corner{font-size:13px;line-height:1.1}.symbol{font-size:23px;align-self:center;margin-top:10px}
 .hand-panel{margin-top:13px;padding:13px;border-radius:18px;background:linear-gradient(145deg,#102d26,#0a211c);border:1px solid #ffffff20}.hand-head{display:flex;justify-content:space-between;margin-bottom:9px}.hand-head h3{font-size:14px;margin:0}.hand-head span{font-size:11px;color:var(--muted)}.hand{display:flex;justify-content:center;align-items:end;gap:clamp(3px,1vw,9px);min-height:98px;flex-wrap:wrap}.hand .card{width:clamp(43px,7vw,66px);height:clamp(64px,10vw,92px);cursor:pointer;transition:.16s;margin-top:5px}.hand .card:hover{transform:translateY(-8px)}.hand .card.disabled{opacity:.48;cursor:not-allowed}.hand .card.playable{outline:2px solid var(--gold);outline-offset:2px}.message{min-height:24px;text-align:center;color:var(--gold);font-size:12px;margin-top:8px}.game-actions{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:12px}
 .modal-bg{position:fixed;inset:0;background:#000b;z-index:10;display:none;align-items:center;justify-content:center;padding:18px}.modal{width:min(430px,100%);padding:24px;border-radius:22px;background:#102d25;border:1px solid #ffffff30;text-align:center}.modal h2{color:var(--gold);margin:0 0 8px}.modal p{color:var(--muted);font-size:13px;line-height:1.8}.modal .btn{margin:5px}
-@media(max-width:600px){header{height:60px}.brand b{font-size:17px}.brand-icon{width:37px;height:37px}.status{display:none}main{padding:15px 8px 25px}.mode-grid{gap:8px}.mode{padding:13px;min-height:105px}.table{height:47vh;min-height:300px;border-width:7px;border-radius:130px}.seat{min-width:84px;padding:5px 7px}.seat .name{font-size:11px}.seat small{font-size:9px}.seat-top{top:12px}.seat-bottom{bottom:12px}.seat-left{left:6px}.seat-right{right:6px}.center{height:140px;width:47%}.played{width:53px;height:78px}.card{width:51px;height:73px}.card .symbol{font-size:20px;margin-top:8px}.score{min-width:78px;padding:5px 8px}.score b{font-size:17px}.toolbar{justify-content:center}.hand-panel{padding:9px 6px}.hand{gap:5px}}
+@media(max-width:600px){header{height:60px}.brand b{font-size:17px}.brand-icon{width:37px;height:37px}.status{display:none}main{padding:15px 8px 25px}.mode-grid{gap:8px}.mode{padding:13px;min-height:105px}.table{height:47vh;min-height:300px;border-width:7px;border-radius:130px}.seat{min-width:84px;padding:5px 7px}.seat .name{font-size:11px}.seat small{font-size:9px}.seat-top{top:12px}.seat-bottom{bottom:12px}.seat-left{left:6px}.seat-right{right:6px}.center{height:140px;width:47%}.played{width:53px;height:78px}.card{width:51px;height:73px}.card .symbol{font-size:20px;margin-top:8px}.score{min-width:78px;padding:5px 8px}.score b{font-size:17px}.toolbar{justify-content:center}.hand-panel{padding:9px 6px}.hand{gap:5px}.lobby-seats{grid-template-columns:1fr;}}
 </style></head>
 <body>
 <header><div class="brand"><div class="brand-icon">♠</div><div><b>سَمْرَة</b><small>تحدّاك تجمع أقل نقاط</small></div></div><div class="header-right"><span class="status" id="connection-status">● وضع فردي</span><button class="btn secondary small" onclick="backToMenu()">القائمة الرئيسية</button></div></header>
@@ -45,24 +56,57 @@ main{width:min(1120px,100%);margin:auto;padding:24px 16px 38px}
   <div class="setting-row"><label for="hints">إظهار الأوراق الممكنة</label><input id="hints" class="toggle" type="checkbox" checked></div>
  </div>
  
- <!-- تم إضافة زر بدء اللعبة هنا في وضع الأونلاين -->
  <div id="online-settings" class="online-box hidden">
-    <h3>🌐 غرفة اللعب</h3>
+    <h3>🌐 إعداد الغرفة</h3>
     <div class="formrow" id="online-inputs">
         <button class="btn" onclick="createRoom()">إنشاء غرفة</button>
-        <input id="room-code" class="field" placeholder="رمز الغرفة" maxlength="30" style="flex:1">
+        <input id="room-code" class="field" placeholder="رمز الغرفة (samra-xxxx)" maxlength="30" style="flex:1">
     </div>
     <div class="online-actions" id="online-actions-btns">
         <button class="btn secondary" onclick="joinRoom()">دخول الغرفة</button>
-        <button class="btn secondary" onclick="copyRoom()">نسخ الرمز</button>
     </div>
-    <button class="btn hidden" id="start-online-btn" style="margin-top:10px; width:100%; background: var(--green); color: #000;" onclick="startOnlineMatch()">بدء اللعبة الآن</button>
-    <p class="hint" id="online-hint">الأونلاين يحتاج اتصال إنترنت. أنشئ غرفة وأرسل الرمز لصديقك. اللعب الشبكي هنا تجريبي عبر اتصال مباشر بين لاعبين، مع لاعبين كمبيوتر لإكمال الأربعة.</p>
+    <p class="hint" id="online-hint">أنشئ غرفة، انسخ الكود، وأرسله لصديقك ليدخل معك.</p>
  </div>
  
  <button class="btn" id="start-btn" style="min-width:210px;margin-top:8px" onclick="startMatch()">ابدأ المباراة ←</button>
  <p class="hint">52 ورقة · 4 لاعبين · 13 ورقة لكل لاعب · فريقان</p>
 </section>
+
+<!-- شاشة غرفة الانتظار (اللوبي) -->
+<section id="lobby" class="panel lobby hidden">
+    <h2 style="color:var(--gold); margin-top:0;">غرفة الانتظار</h2>
+    <p class="sub" id="lobby-status">جاري الاتصال...</p>
+    
+    <!-- صندوق كود الغرفة مع زر النسخ -->
+    <div id="lobby-code-box" style="margin: 15px 0; padding: 12px; background: #071a14; border-radius: 12px; border: 1px solid #ffffff20; display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap;">
+        <span style="font-size: 14px; color: var(--muted);">كود الغرفة:</span>
+        <b id="l-room-code" style="color:var(--gold); font-size: 18px; letter-spacing: 1px;">-</b>
+        <button class="btn secondary small" id="copy-lobby-btn" onclick="copyRoom()">📋 نسخ الكود</button>
+    </div>
+
+    <div class="lobby-seats">
+        <div class="lobby-seat host">
+            <span class="role">المضيف (الأسفل)</span>
+            <span class="p-name" id="l-name-bottom">-</span>
+        </div>
+        <div class="lobby-seat guest" id="l-seat-top">
+            <span class="role">الصديق (الأعلى)</span>
+            <span class="p-name" id="l-name-top">بانتظار الانضمام...</span>
+        </div>
+        <div class="lobby-seat bot">
+            <span class="role">الخصم (اليمين)</span>
+            <span class="p-name">كمبيوتر 1</span>
+        </div>
+        <div class="lobby-seat bot">
+            <span class="role">الخصم (اليسار)</span>
+            <span class="p-name">كمبيوتر 2</span>
+        </div>
+    </div>
+
+    <button class="btn hidden" id="start-online-btn" style="background:var(--green); color:#000; width:100%; margin-top:10px;" onclick="startOnlineMatch()">بدء اللعبة الآن (مع تعويض الناقص بكمبيوتر)</button>
+    <button class="btn secondary" style="width:100%; margin-top:10px;" onclick="backToMenu()">إلغاء والعودة</button>
+</section>
+
 <section id="game" class="game">
  <div class="toolbar"><div class="turn" id="turn-label">الدور: —</div><div class="scores"><div class="score"><small>فريقك</small><b id="score1">0</b></div><div class="score"><small>الخصم</small><b id="score2">0</b></div></div></div>
  <div class="table">
@@ -81,11 +125,8 @@ main{width:min(1120px,100%);margin:auto;padding:24px 16px 38px}
 <script>
 const SEATS=['bottom','right','top','left'],SUITS=['♠','♣','♥','♦'],RANK={'2':2,'3':3,'4':4,'5':5,'6':6,'7':7,'8':8,'9':9,'10':10,'J':11,'Q':12,'K':13,'A':14},FACE={J:'🧑',Q:'👩',K:'🧓',A:'⚡'};
 let mode='bots',state=null,player='لاعب',timer=null,peer=null,conn=null,isHost=false,roomId='',difficulty='normal';
-
-// المتغيرات الجديدة للأونلاين
-let localSeat='bottom';
+let localSeat='bottom'; 
 let onlineGuestName = '';
-let waitingForGuest = false;
 
 function el(id){return document.getElementById(id)}
 function selectMode(m){
@@ -97,11 +138,55 @@ function selectMode(m){
     el('start-btn').classList.toggle('hidden',m==='online');
 }
 function deck(){let d=[];for(let s of SUITS)for(let v of Object.keys(RANK))d.push({s,v});for(let i=d.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[d[i],d[j]]=[d[j],d[i]]}return d}
-function fresh(){return {scores:[0,0],hands:{bottom:[],right:[],top:[],left:[]},played:{bottom:null,right:null,top:null,left:null},turn:'bottom',lead:null,winner:null,roundEnd:false,matchEnd:false,names:{bottom:player,right:'الكمبيوتر 1',top:'الشريك',left:'الكمبيوتر 2'}}}
-function startMatch(){localSeat='bottom';player=el('player-name').value.trim()||'لاعب';difficulty=el('difficulty').value;state=fresh();dealCards();el('menu').classList.add('hidden');el('game').style.display='block';el('connection-status').textContent='● وضع فردي';el('deal-btn').classList.remove('hidden');}
-function dealCards(){clearTimeout(timer);let d=deck();state.hands={bottom:[],right:[],top:[],left:[]};state.played={bottom:null,right:null,top:null,left:null};for(let n=0;n<13;n++)for(let s of SEATS)state.hands[s].push(d.pop());state.turn=state.winner||'bottom';state.lead=null;state.roundEnd=false;state.matchEnd=false;render();botTurn()}
-function dealNew(){if(!state)return;if(mode==='online'&&!isHost){alert('فقط المضيف يمكنه توزيع صكة جديدة');return;}if(state.matchEnd){state=fresh()}dealCards()}
+
+function fresh(){
+    return {
+        scores:[0,0], hands:{bottom:[],right:[],top:[],left:[]}, played:{bottom:null,right:null,top:null,left:null},
+        turn:'bottom', lead:null, winner:null, roundEnd:false, matchEnd:false,
+        names:{bottom:'أنت',right:'الكمبيوتر 1',top:'الشريك',left:'الكمبيوتر 2'},
+        isBot: {bottom: false, right: true, top: true, left: true}
+    }
+}
+
+function startMatch(){
+    localSeat='bottom';
+    player=el('player-name').value.trim()||'لاعب';
+    difficulty=el('difficulty').value;
+    state=fresh();
+    state.names.bottom = player;
+    state.names.top = 'الكمبيوتر 3'; 
+    state.names.right = 'الكمبيوتر 1';
+    state.names.left = 'الكمبيوتر 2';
+    dealCards();
+    el('menu').classList.add('hidden');
+    el('game').style.display='block';
+    el('connection-status').textContent='● وضع فردي';
+    el('deal-btn').classList.remove('hidden');
+}
+
+function dealCards(){
+    clearTimeout(timer);
+    let d=deck();
+    state.hands={bottom:[],right:[],top:[],left:[]};
+    state.played={bottom:null,right:null,top:null,left:null};
+    for(let n=0;n<13;n++)for(let s of SEATS)state.hands[s].push(d.pop());
+    state.turn=state.winner||'bottom';
+    state.lead=null;
+    state.roundEnd=false;
+    state.matchEnd=false;
+    render();
+    botTurn()
+}
+
+function dealNew(){
+    if(!state)return;
+    if(mode==='online'&&!isHost){alert('فقط المضيف يمكنه توزيع صكة جديدة');return;}
+    if(state.matchEnd){state=fresh()}
+    dealCards()
+}
+
 function canPlay(c,s){return !state.lead||!state.hands[s].some(x=>x.s===state.lead)||c.s===state.lead}
+
 function humanPlay(i){
     if(!state||state.turn!==localSeat||state.roundEnd||state.matchEnd)return;
     if(!isHost&&mode==='online'){
@@ -112,16 +197,34 @@ function humanPlay(i){
     if(!canPlay(c,localSeat)){say('لازم تلعب من نفس النوع '+state.lead);return}
     play(localSeat,i)
 }
-function play(s,i){let c=state.hands[s].splice(i,1)[0];if(!state.lead)state.lead=c.s;state.played[s]=c;state.turn=SEATS[(SEATS.indexOf(s)+1)%4];render();if(SEATS.every(x=>state.played[x])){scoreTrick();return}botTurn()}
-function botPick(s){let h=state.hands[s],valid=h.map((c,i)=>({c,i})).filter(x=>canPlay(x.c,s));let pool=valid.length?valid:h.map((c,i)=>({c,i}));let penalty=c=>c.s==='♥'?(c.v==='Q'?13:1):(c.s==='♦'&&c.v==='10'?10:0);if(difficulty==='easy')return pool[Math.floor(Math.random()*pool.length)].i;if(difficulty==='hard'){let winning=pool.filter(x=>x.c.s===state.lead&&RANK[x.c.v]>Math.max(-1,...SEATS.filter(z=>state.played[z]&&state.played[z].s===state.lead).map(z=>RANK[state.played[z].v])));return (winning.length?winning:pool).sort((a,b)=>penalty(a.c)-penalty(b.c))[0].i}return pool.sort((a,b)=>penalty(a.c)-penalty(b.c)||RANK[a.c.v]-RANK[b.c.v])[0].i}
+
+function play(s,i){
+    let c=state.hands[s].splice(i,1)[0];
+    if(!state.lead)state.lead=c.s;
+    state.played[s]=c;
+    state.turn=SEATS[(SEATS.indexOf(s)+1)%4];
+    render();
+    if(SEATS.every(x=>state.played[x])){scoreTrick();return}
+    botTurn()
+}
+
+function botPick(s){
+    let h=state.hands[s],valid=h.map((c,i)=>({c,i})).filter(x=>canPlay(x.c,s));
+    let pool=valid.length?valid:h.map((c,i)=>({c,i}));
+    let penalty=c=>c.s==='♥'?(c.v==='Q'?13:1):(c.s==='♦'&&c.v==='10'?10:0);
+    if(difficulty==='easy')return pool[Math.floor(Math.random()*pool.length)].i;
+    if(difficulty==='hard'){
+        let winning=pool.filter(x=>x.c.s===state.lead&&RANK[x.c.v]>Math.max(-1,...SEATS.filter(z=>state.played[z]&&state.played[z].s===state.lead).map(z=>RANK[state.played[z].v])));
+        return (winning.length?winning:pool).sort((a,b)=>penalty(a.c)-penalty(b.c))[0].i
+    }
+    return pool.sort((a,b)=>penalty(a.c)-penalty(b.c)||RANK[a.c.v]-RANK[b.c.v])[0].i
+}
+
 function botTurn(){
     clearTimeout(timer);
     if(!state||state.roundEnd||state.matchEnd||state.turn===localSeat)return;
-    // الكمبيوتر يلعب فقط عند المضيف (أو في وضع الفردي)
-    if(mode==='online'&&!isHost)return;
-
-    let isBot = state.names[state.turn].includes('كمبيوتر');
-    if(!isBot)return;
+    if(mode==='online'&&!isHost)return; 
+    if(!state.isBot[state.turn])return; 
 
     let delay=Number(el('delay')?.value||1600);
     timer=setTimeout(()=>{
@@ -130,15 +233,45 @@ function botTurn(){
         }
     },delay)
 }
-function scoreTrick(){state.roundEnd=true;let win='bottom',high=-1,points=0;for(let s of SEATS){let c=state.played[s];if(c.s===state.lead&&RANK[c.v]>high){high=RANK[c.v];win=s}if(c.s==='♥')points++;if(c.s==='♥'&&c.v==='Q')points+=12;if(c.s==='♦'&&c.v==='10')points+=10}let team=['bottom','top'].includes(win)?0:1;state.scores[team]+=points;state.winner=win;state.turn=win;render();say(state.names[win]+' أخذ الجولة · '+points+' نقطة سلبية');setTimeout(()=>{if(state.scores.some(x=>x>=100)){state.matchEnd=true;render();popup('انتهت المباراة',state.scores[0]>=100?'فريقك وصل 100 نقطة وخسر!':'الخصم وصل 100 نقطة وخسر!');return}state.played={bottom:null,right:null,top:null,left:null};state.lead=null;state.roundEnd=false;if(SEATS.every(s=>state.hands[s].length===0)){render();popup('انتهت الصكة','انتهت الأوراق. ابدأ صكة جديدة مع بقاء النتيجة.');return}state.turn=win;render();botTurn()},1700)}
-function cardHTML(c){if(!c)return '<div class="empty"></div>';return `<div class="card ${c.s==='♥'||c.s==='♦'?'red':''}"><div class="corner">${FACE[c.v]||c.v}<br>${c.s}</div><div class="symbol">${c.s}</div></div>`}
 
-// ------------------------------------------
-// إصلاح المشكلة الأولى: دوران الشاشة (اللاعب دائماً في الأسفل)
-// ------------------------------------------
+function scoreTrick(){
+    state.roundEnd=true;
+    let win='bottom',high=-1,points=0;
+    for(let s of SEATS){
+        let c=state.played[s];
+        if(c.s===state.lead&&RANK[c.v]>high){high=RANK[c.v];win=s}
+        if(c.s==='♥')points++;
+        if(c.s==='♥'&&c.v==='Q')points+=12;
+        if(c.s==='♦'&&c.v==='10')points+=10
+    }
+    let team=['bottom','top'].includes(win)?0:1;
+    state.scores[team]+=points;
+    state.winner=win;
+    state.turn=win;
+    render();
+    say(state.names[win]+' أخذ الجولة · '+points+' نقطة سلبية');
+    
+    setTimeout(()=>{
+        if(state.scores.some(x=>x>=100)){
+            state.matchEnd=true; render();
+            popup('انتهت المباراة',state.scores[0]>=100?'فريقك وصل 100 نقطة وخسر!':'الخصم وصل 100 نقطة وخسر!');
+            return
+        }
+        state.played={bottom:null,right:null,top:null,left:null}; state.lead=null; state.roundEnd=false;
+        if(SEATS.every(s=>state.hands[s].length===0)){
+            render(); popup('انتهت الصكة','انتهت الأوراق. ابدأ صكة جديدة مع بقاء النتيجة.'); return
+        }
+        state.turn=win; render(); botTurn()
+    },1700)
+}
+
+function cardHTML(c){
+    if(!c)return '<div class="empty"></div>';
+    return `<div class="card ${c.s==='♥'||c.s==='♦'?'red':''}"><div class="corner">${FACE[c.v]||c.v}<br>${c.s}</div><div class="symbol">${c.s}</div></div>`
+}
+
 function getVisualSeat(actualSeat) {
-    if (localSeat === 'bottom') return actualSeat; // أنا في الأسفل، لا تدوير
-    // إذا كنت أنا في الأعلى (الضيف)، أعكس كل شيء
+    if (localSeat === 'bottom') return actualSeat;
     if (actualSeat === 'bottom') return 'top';
     if (actualSeat === 'top') return 'bottom';
     if (actualSeat === 'right') return 'left';
@@ -148,25 +281,21 @@ function getVisualSeat(actualSeat) {
 
 function render(){
     if(!state)return;
-    
     for(let actual of SEATS){
         let visual = getVisualSeat(actual);
         el('name-'+visual).textContent=state.names[actual];
         el('slot-'+visual).innerHTML=cardHTML(state.played[actual]);
         el('seat-'+visual).classList.toggle('active',state.turn===actual&&!state.matchEnd);
-        
         if(visual!=='bottom'){
             el('backs-'+visual).innerHTML=Array.from({length:state.hands[actual].length},()=>'<i class="back"></i>').join('');
         }
     }
-    
     el('score1').textContent=state.scores[0];
     el('score2').textContent=state.scores[1];
     el('turn-label').innerHTML='الدور: <strong>'+state.names[state.turn]+'</strong>';
     el('hand-count').textContent=state.hands[localSeat].length+' ورقة متبقية';
     
-    let h=el('hand');
-    h.innerHTML='';
+    let h=el('hand'); h.innerHTML='';
     state.hands[localSeat].forEach((c,i)=>{
         let w=document.createElement('div');
         w.innerHTML=cardHTML(c);
@@ -177,35 +306,42 @@ function render(){
         h.appendChild(a);
     });
     
-    if(isHost&&conn&&conn.open){
-        conn.send({type:'state',state});
-    }
+    if(isHost&&conn&&conn.open) conn.send({type:'state',state});
 }
+
 function say(t){el('message').textContent=t}
 function popup(t,m){el('modal-title').textContent=t;el('modal-text').textContent=m;el('modal').style.display='flex'}
 function closeModal(){el('modal').style.display='none'}
 function showRules(){popup('قوانين سَمْرَة','أربعة لاعبين بفريقين: أنت مع الشريك المقابل. لكل لاعب 13 ورقة. يجب اتباع النوع إذا كان معك. أعلى ورقة من النوع الذي بدأ به الدور تفوز بالجولة. كل قلب نقطة، بنت القلوب 13 نقطة إجمالاً، وعشرة الديناري 10 نقاط. أول فريق يصل إلى 100 نقطة يخسر.')}
+
 function backToMenu(){
     clearTimeout(timer);
     if(peer){peer.destroy();peer=null;conn=null}
-    isHost=false;localSeat='bottom';
+    isHost=false; localSeat='bottom';
     el('game').style.display='none';
+    el('lobby').classList.add('hidden');
     el('menu').classList.remove('hidden');
     el('connection-status').textContent='● وضع فردي';
-    // إعادة إعدادات الأونلاين للوضع الطبيعي
     el('online-inputs').style.display='flex';
     el('online-actions-btns').style.display='flex';
     el('start-online-btn').classList.add('hidden');
+    el('online-hint').textContent='أنشئ غرفة، انسخ الكود، وأرسله لصديقك ليدخل معك.';
 }
 
-// ------------------------------------------
-// إصلاح المشكلة الثانية والثالثة: غرفة الانتظار وبدء اللعب
-// ------------------------------------------
+function updateLobbyUI() {
+    el('menu').classList.add('hidden');
+    el('lobby').classList.remove('hidden');
+    el('l-room-code').textContent = roomId;
+    el('l-name-bottom').textContent = isHost ? player : onlineGuestName || 'المضيف';
+    el('l-name-top').textContent = isHost ? (onlineGuestName || 'بانتظار الانضمام...') : player;
+}
+
 function createRoom(){
-    if(typeof Peer==='undefined'){say('تعذر تحميل خدمة الاتصال. تأكد من الإنترنت.');return}
+    if(typeof Peer==='undefined'){alert('تعذر تحميل خدمة الاتصال. تأكد من الإنترنت.');return}
     if(peer)peer.destroy();
     isHost=true;
-    roomId='sakka-'+Math.random().toString(36).slice(2,8);
+    // تم تغيير البادئة إلى samra
+    roomId='samra-'+Math.random().toString(36).slice(2,8);
     peer=new Peer(roomId);
     
     el('online-inputs').style.display='none';
@@ -214,9 +350,9 @@ function createRoom(){
     
     peer.on('open',id=>{
         roomId=id;
-        el('room-code').value=id;
-        el('online-hint').innerHTML = 'الغرفة جاهزة. أرسل الكود لصديقك.<br><b style="color:var(--gold)">بانتظار انضمام اللاعب...</b>';
-        el('connection-status').textContent='● بانتظار لاعب';
+        player=el('player-name').value.trim()||'المضيف';
+        updateLobbyUI();
+        el('lobby-status').textContent = 'أرسل الكود لصديقك وانتظر انضمامه...';
     });
     
     peer.on('connection',c=>{
@@ -228,33 +364,31 @@ function createRoom(){
 }
 
 function joinRoom(){
-    if(typeof Peer==='undefined'){el('online-hint').textContent='تعذر تحميل خدمة الاتصال. تأكد من الإنترنت.';return}
+    if(typeof Peer==='undefined'){alert('تعذر تحميل خدمة الاتصال. تأكد من الإنترنت.');return}
     let id=el('room-code').value.trim();
     if(!id){el('online-hint').textContent='اكتب رمز الغرفة أولاً.';return}
     if(peer)peer.destroy();
     isHost=false;
-    localSeat='top'; // اللاعب الضيف سيكون في الأعلى (لكنه سيرى نفسه في الأسفل بفضل دوران الشاشة)
+    localSeat='top'; 
+    player=el('player-name').value.trim()||'الصديق';
     
     peer=new Peer();
     peer.on('open',()=>{
         conn=peer.connect(id);
         wireOnline();
+        roomId=id;
+        onlineGuestName = 'المضيف';
+        updateLobbyUI();
+        el('lobby-status').textContent = 'بانتظار بدء اللعبة من المضيف...';
+        el('start-online-btn').classList.add('hidden');
     });
     peer.on('error',e=>el('online-hint').textContent='تعذر الاتصال: '+e.type);
 }
 
 function wireOnline(){
     conn.on('open',()=>{
-        el('online-hint').textContent='تم الاتصال! بانتظار المضيف لبدء اللعبة...';
         el('connection-status').textContent='● متصل';
-        el('online-inputs').style.display='none';
-        el('online-actions-btns').style.display='none';
-        
-        if(isHost){
-            player=el('player-name').value.trim()||'المضيف';
-            // لا نبدأ اللعبة، بل ننتظر انضمام الضيف
-        }else{
-            player=el('player-name').value.trim()||'الصديق';
+        if(!isHost){
             conn.send({type:'hello',name:player});
         }
     });
@@ -263,8 +397,10 @@ function wireOnline(){
         if(isHost){
             if(m.type==='hello'){
                 onlineGuestName = m.name || 'الصديق';
-                el('online-hint').innerHTML = 'انضم <b style="color:var(--gold)">'+onlineGuestName+'</b> للغرفة.<br>يمكنك بدء اللعبة الآن.';
+                updateLobbyUI();
+                el('lobby-status').textContent = 'انضم صديقك! يمكنك بدء اللعبة الآن.';
                 el('start-online-btn').classList.remove('hidden');
+                el('l-name-top').style.color = 'var(--green)';
             }
             if(m.type==='move'&&state&&state.turn==='top'&&Number.isInteger(m.index)){
                 let c=state.hands.top[m.index];
@@ -272,10 +408,10 @@ function wireOnline(){
             }
         }else if(m.type==='start_game'){
             state=m.state;
-            player=state.names[localSeat];
-            el('menu').classList.add('hidden');
+            player=state.names['top'];
+            el('lobby').classList.add('hidden');
             el('game').style.display='block';
-            el('deal-btn').classList.add('hidden'); // الضيف لا يملك زر التوزيع
+            el('deal-btn').classList.add('hidden');
             render();
         }else if(m.type==='state'){
             state=m.state;
@@ -285,30 +421,49 @@ function wireOnline(){
     
     conn.on('close',()=>{
         el('connection-status').textContent='● انقطع الاتصال';
-        el('online-hint').textContent='انقطع الاتصال باللاعب.';
+        el('lobby-status').textContent = 'انقطع الاتصال باللاعب.';
     });
 }
 
 function startOnlineMatch(){
     if(!isHost || !conn || !conn.open) return;
     
-    // المضيف يبدأ اللعبة ويضع البوتات في الأماكن الناقصة
     state=fresh();
     state.names.bottom = player;
     state.names.top = onlineGuestName;
     state.names.right = 'الكمبيوتر 1';
     state.names.left = 'الكمبيوتر 2';
+    state.isBot = {bottom: false, right: true, top: false, left: true};
     
     dealCards();
-    
-    // إرسال حالة اللعبة للضيف
     conn.send({type:'start_game', state:state});
     
-    el('menu').classList.add('hidden');
+    el('lobby').classList.add('hidden');
     el('game').style.display='block';
-    el('deal-btn').classList.remove('hidden'); // المضيف فقط يملك زر التوزيع
-    render();
+    el('deal-btn').classList.remove('hidden');
+    el('connection-status').textContent='● لعبة أونلاين';
 }
 
-function copyRoom(){let v=el('room-code').value;if(!v)return; if(navigator.clipboard)navigator.clipboard.writeText(v).then(()=>el('online-hint').textContent='تم نسخ رمز الغرفة').catch(()=>{});else el('room-code').select()}
+// زر نسخ الكود المحدث
+function copyRoom(){
+    let v = roomId || el('room-code').value;
+    if(!v) return; 
+    
+    if(navigator.clipboard){
+        navigator.clipboard.writeText(v).then(()=>{
+            let btn = el('copy-lobby-btn');
+            if(btn){
+                let old = btn.innerHTML;
+                btn.innerHTML = '✅ تم النسخ!';
+                setTimeout(() => btn.innerHTML = old, 2000);
+            }
+            el('lobby-status').textContent = 'تم نسخ الكود! أرسله لصديقك.';
+            el('online-hint').textContent = 'تم نسخ رمز الغرفة';
+        }).catch(()=>{
+            alert('تعذر النسخ التلقائي. الكود هو: ' + v);
+        });
+    } else {
+        alert('الكود هو: ' + v);
+    }
+}
 </script></body></html>
