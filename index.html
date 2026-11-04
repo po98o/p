@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#071b18">
+<title>صَكّة — لعبة الورق</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Changa:wght@400;500;600;700;800&display=swap');
+:root{--bg:#071b18;--panel:#102c26;--felt:#15583f;--felt2:#0d402f;--gold:#f5c65b;--cream:#fffaf0;--muted:#a9c4b8;--red:#d94b55;--green:#59d69a}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;color:var(--cream);font-family:Changa,Tahoma,sans-serif;background:radial-gradient(ellipse at 50% 0%,#173c32 0,#071b18 65%);overflow-x:hidden}
+button,input{font:inherit}button{cursor:pointer}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px clamp(12px,3vw,30px);border-bottom:1px solid #ffffff16;background:#061511a8;backdrop-filter:blur(12px)}
+.brand{display:flex;align-items:center;gap:10px}.brand-mark{width:42px;height:42px;border-radius:13px;display:grid;place-items:center;background:linear-gradient(145deg,#f8d77d,#bd842d);color:#15251d;font-size:24px;box-shadow:0 5px 18px #0005}.brand h1{font-size:20px;margin:0;line-height:1.1}.brand small{color:var(--muted);font-size:11px}
+.top-actions{display:flex;gap:8px;align-items:center}.pill{border:1px solid #ffffff22;background:#ffffff0b;color:var(--cream);padding:7px 12px;border-radius:99px;font-size:12px}
+.btn{border:0;border-radius:12px;padding:10px 17px;background:linear-gradient(135deg,#f6d77d,#d69b3d);color:#18241d;font-weight:800;box-shadow:0 5px 14px #0003;transition:.18s}.btn:hover{transform:translateY(-2px);filter:brightness(1.06)}.btn.secondary{background:#ffffff12;border:1px solid #ffffff25;color:var(--cream);box-shadow:none}.btn.danger{background:#8f3038;color:white}
+.screen{min-height:calc(100vh - 67px);display:flex;align-items:center;justify-content:center;padding:22px}
+.setup{width:min(460px,100%);padding:30px;border-radius:24px;background:linear-gradient(145deg,#153a30,#0d241f);border:1px solid #ffffff1a;box-shadow:0 24px 70px #0007;text-align:center}
+.logo-big{font-size:54px;margin-bottom:8px}.setup h2{font-size:28px;margin:0 0 4px}.setup p{color:var(--muted);margin:0 0 22px;font-size:14px}
+.setup input{width:100%;padding:13px 15px;border-radius:12px;border:1px solid #ffffff26;background:#071b18;color:white;text-align:center;outline:none;margin-bottom:12px}.setup input:focus{border-color:var(--gold)}
+.setup .btn{width:100%;padding:13px}.note{font-size:11px;color:#8fa99e;margin-top:15px}
+.game{width:min(1100px,100%);margin:0 auto;padding:14px 14px 22px;display:none}
+.info-row{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+.turn-chip{padding:8px 14px;border-radius:99px;background:#ffffff0c;border:1px solid #ffffff20;font-size:13px}.turn-chip strong{color:var(--gold)}
+.scoreboard{display:flex;gap:8px}.score{min-width:104px;padding:7px 12px;border-radius:13px;background:#102c26;border:1px solid #ffffff16;text-align:center}.score small{display:block;color:var(--muted);font-size:10px}.score b{font-size:20px;color:var(--gold);font-variant-numeric:tabular-nums}
+.table{height:min(57vh,510px);min-height:330px;position:relative;border-radius:190px;background:radial-gradient(ellipse at center,#287653 0,#15583f 58%,#0d402f 100%);border:10px solid #563a25;box-shadow:inset 0 0 0 3px #b28a50,inset 0 0 55px #001b12,0 16px 40px #0007;overflow:hidden}
+.table:before{content:"";position:absolute;inset:14px;border:1px solid #ffffff25;border-radius:180px;pointer-events:none}
+.seat{position:absolute;z-index:2;min-width:118px;max-width:155px;padding:7px 12px;border-radius:13px;background:#09271fe8;border:1px solid #ffffff2c;text-align:center;box-shadow:0 5px 14px #0004;transition:.2s}
+.seat.active{border-color:var(--gold);box-shadow:0 0 0 2px #f5c65b38,0 0 22px #f5c65b55}
+.seat.winner{background:#4a3c1b;border-color:var(--gold)}
+.seat .name{font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.seat small{font-size:10px;color:#c1d5cb}
+.seat-top{top:18px;left:50%;transform:translateX(-50%)}.seat-bottom{bottom:18px;left:50%;transform:translateX(-50%)}.seat-left{left:18px;top:50%;transform:translateY(-50%)}.seat-right{right:18px;top:50%;transform:translateY(-50%)}
+.back-row{display:flex;justify-content:center;margin-top:4px}.back{width:10px;height:15px;margin-inline:-2px;border-radius:3px;background:repeating-linear-gradient(45deg,#b84a4e,#b84a4e 3px,#7f2935 3px,#7f2935 6px);border:1px solid #f4d6b9}
+.center{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(48%,340px);height:170px;border-radius:20px;background:#06251d55;border:1px solid #ffffff20;display:grid;grid-template:1fr 1fr / 1fr 1fr;place-items:center}
+.played{width:68px;height:94px;display:grid;place-items:center}.empty{width:54px;height:76px;border:1px dashed #ffffff35;border-radius:9px}
+.card{position:relative;width:62px;height:88px;border-radius:9px;background:linear-gradient(145deg,#fffefa,#e8e4d8);color:#17231f;border:1px solid #d5d0c4;box-shadow:0 5px 12px #00150e88;display:flex;flex-direction:column;justify-content:space-between;padding:5px;font-family:Arial,sans-serif;font-weight:800;user-select:none}
+.card.red{color:#d83e4b}.card .corner{font-size:13px;line-height:1.05}.card .symbol{font-size:27px;align-self:center}.card .corner.bottom{transform:rotate(180deg);align-self:flex-end}
+.hand-panel{margin-top:13px;padding:13px 14px 15px;border-radius:18px;background:linear-gradient(145deg,#102d26,#0a211c);border:1px solid #ffffff19}
+.hand-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}.hand-head h3{margin:0;font-size:14px}.hand-head span{font-size:11px;color:var(--muted)}
+.hand{display:flex;justify-content:center;align-items:end;gap:clamp(3px,1vw,9px);min-height:102px;flex-wrap:wrap}
+.hand .card{width:clamp(42px,7.2vw,66px);height:clamp(62px,10.2vw,92px);cursor:pointer;transition:transform .16s,box-shadow .16s;margin-top:4px}
+.hand .card:hover:not(.disabled){transform:translateY(-9px);box-shadow:0 12px 20px #0008}
+.hand .card.disabled{opacity:.48;cursor:not-allowed}.hand .card.playable{outline:2px solid var(--gold);outline-offset:2px}
+.message{min-height:24px;text-align:center;color:var(--gold);font-size:12px;margin-top:8px}
+.bottom-actions{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:10px}
+.overlay{position:fixed;inset:0;background:#0009;display:none;align-items:center;justify-content:center;padding:18px;z-index:10}
+.modal{width:min(390px,100%);padding:25px;border-radius:22px;background:#102c26;border:1px solid #ffffff25;text-align:center;box-shadow:0 20px 70px #0009}.modal h2{margin:0 0 8px;color:var(--gold)}.modal p{color:var(--muted);font-size:13px}
+@media(max-width:600px){.topbar{padding:9px 12px}.brand h1{font-size:17px}.brand-mark{width:36px;height:36px}.pill{display:none}.game{padding:10px 8px}.table{height:48vh;min-height:300px;border-width:7px;border-radius:130px}.seat{min-width:88px;padding:5px 7px}.seat .name{font-size:11px}.seat small{font-size:9px}.seat-top{top:13px}.seat-bottom{bottom:13px}.seat-left{left:7px}.seat-right{right:7px}.center{width:48%;height:140px}.played{width:55px;height:78px}.card{width:52px;height:74px}.card .symbol{font-size:22px}.score{min-width:78px;padding:5px 8px}.score b{font-size:17px}.turn-chip{font-size:11px}.info-row{justify-content:center}.hand-panel{padding:10px 7px}.hand{gap:5px}}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="brand"><div class="brand-mark">♠</div><div><h1>صَكّة</h1><small>العبها بذكاء… واجمع أقل نقاط</small></div></div>
+  <div class="top-actions"><span class="pill">32 ورقة · 4 لاعبين · فريقان</span><button class="btn secondary" onclick="showRules()">طريقة اللعب</button></div>
+</header>
+
+<main class="screen" id="setup-screen">
+  <section class="setup">
+    <div class="logo-big">🂡</div><h2>جاهز للصكّة؟</h2><p>ادخل باسمك وواجه ثلاثة لاعبين من الكمبيوتر</p>
+    <input id="player-name" maxlength="18" placeholder="اكتب اسم اللاعب" autocomplete="off">
+    <button class="btn" onclick="startGame()">ابدأ اللعب <span>←</span></button>
+    <div class="note">لعبة فردية على هذا الجهاز — لا تحتاج إلى اتصال بالإنترنت</div>
+  </section>
+</main>
+
+<main class="game" id="game-screen">
+  <div class="info-row">
+    <div class="turn-chip" id="turn-indicator">الدور: —</div>
+    <div class="scoreboard">
+      <div class="score"><small>فريقك · أنت + الشريك</small><b id="score-team1">0</b></div>
+      <div class="score"><small>الخصم · الكمبيوتر</small><b id="score-team2">0</b></div>
+    </div>
+  </div>
+  <section class="table" aria-label="طاولة اللعب">
+    <div class="seat seat-top" id="seat-top"><div class="name" id="name-top">الكمبيوتر 2</div><small>فريقك</small><div class="back-row" id="backs-top"></div></div>
+    <div class="seat seat-right" id="seat-right"><div class="name" id="name-right">الكمبيوتر 1</div><small>الخصم</small><div class="back-row" id="backs-right"></div></div>
+    <div class="seat seat-left" id="seat-left"><div class="name" id="name-left">الكمبيوتر 3</div><small>الخصم</small><div class="back-row" id="backs-left"></div></div>
+    <div class="seat seat-bottom" id="seat-bottom"><div class="name" id="name-bottom">أنت</div><small>فريقك</small></div>
+    <div class="center">
+      <div class="played" id="slot-top"><div class="empty"></div></div>
+      <div class="played" id="slot-right"><div class="empty"></div></div>
+      <div class="played" id="slot-left"><div class="empty"></div></div>
+      <div class="played" id="slot-bottom"><div class="empty"></div></div>
+    </div>
+  </section>
+  <section class="hand-panel">
+    <div class="hand-head"><h3>أوراقك</h3><span id="hand-count">8 أوراق متبقية</span></div>
+    <div class="hand" id="my-cards-container"></div>
+    <div class="message" id="game-message">اختر ورقة لبدء اللعب</div>
+  </section>
+  <div class="bottom-actions">
+    <button class="btn secondary" onclick="newHand()">صكة جديدة</button>
+    <button class="btn secondary" onclick="newMatch()">بدء مباراة من الصفر</button>
+  </div>
+</main>
+
+<div class="overlay" id="modal">
+ <div class="modal"><h2 id="modal-title">انتهت المباراة</h2><p id="modal-text"></p><button class="btn" id="modal-action" onclick="closeModal()">متابعة</button></div>
+</div>
+
+<script>
+'use strict';
+const STORAGE_KEY='sakka_game_v2';
+const SEATS=['bottom','right','top','left'];
+const TEAM1=['bottom','top'];
+const RANK={'7':7,'8':8,'9':9,'10':10,'J':11,'Q':12,'K':13,'A':14};
+const SUITS=['♠','♣','♥','♦'];
+const LABELS={K:'🧓',Q:'👩',J:'🧑',A:'⚡'};
+let state=null, playerName='لاعب';
+let botTimer=null;
+
+function freshState(){
+ return {scores:{team1:0,team2:0},hands:{bottom:[],right:[],top:[],left:[]},
+ cards:{bottom:null,right:null,top:null,left:null},turn:'bottom',leadSuit:null,
+ trick:0,roundOver:false,matchOver:false,lastWinner:null,names:{bottom:playerName,right:'الكمبيوتر 1',top:'الكمبيوتر 2',left:'الكمبيوتر 3'}};
+}
+function shuffledDeck(){
+ const d=[]; for(const suit of SUITS) for(const val of ['7','8','9','10','J','Q','K','A']) d.push({suit,val});
+ for(let i=d.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[d[i],d[j]]=[d[j],d[i]];}
+ return d;
+}
+function save(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(state));}catch(e){}}
+function startGame(){
+ const name=document.getElementById('player-name').value.trim();
+ if(!name){document.getElementById('player-name').focus();return;}
+ playerName=name;state=freshState();dealCards();
+ document.getElementById('setup-screen').style.display='none';
+ document.getElementById('game-screen').style.display='block';
+ render();
+}
+function dealCards(){
+ clearTimeout(botTimer);
+ const deck=shuffledDeck();
+ state.hands={bottom:[],right:[],top:[],left:[]};
+ state.cards={bottom:null,right:null,top:null,left:null};
+ for(let n=0;n<8;n++) for(const seat of SEATS) state.hands[seat].push(deck.pop());
+ state.turn=state.lastWinner||'bottom';state.leadSuit=null;state.roundOver=false;state.lastWinner=null;state.trick=0;
+ save();render();runBotsIfNeeded();
+}
+function newHand(){
+ if(!state)return;
+ if(state.matchOver){newMatch();return;}
+ dealCards();
+}
+function newMatch(){
+ if(!state)return;
+ state=freshState();dealCards();
+}
+function cardName(c){return `${c.val}${c.suit}`;}
+function displayVal(v){return LABELS[v]||v;}
+function cardHTML(c,extra=''){
+ if(!c)return '<div class="empty"></div>';
+ const red=c.suit==='♥'||c.suit==='♦';
+ return `<div class="card ${red?'red':''} ${extra}"><div class="corner">${displayVal(c.val)}<br>${c.suit}</div><div class="symbol">${c.suit}</div><div class="corner bottom">${displayVal(c.val)}<br>${c.suit}</div></div>`;
+}
+function canPlay(card,seat){
+ const hand=state.hands[seat];
+ return !state.leadSuit||!hand.some(c=>c.suit===state.leadSuit)||card.suit===state.leadSuit;
+}
+function playHuman(index){
+ if(!state||state.matchOver||state.roundOver||state.turn!=='bottom')return;
+ const hand=state.hands.bottom,card=hand[index];
+ if(!card)return;
+ if(!canPlay(card,'bottom')){message(`لازم تلعب من نفس النوع ${state.leadSuit}`);return;}
+ playForSeat('bottom',index);
+}
+function playForSeat(seat,index){
+ const hand=state.hands[seat],card=hand.splice(index,1)[0];
+ if(!state.leadSuit)state.leadSuit=card.suit;
+ state.cards[seat]=card;
+ const next=SEATS[(SEATS.indexOf(seat)+1)%4];state.turn=next;
+ save();render();
+ if(SEATS.every(s=>state.cards[s])){finishTrick();return;}
+ runBotsIfNeeded();
+}
+function chooseBotCard(seat){
+ const hand=state.hands[seat],valid=hand.map((c,i)=>({c,i})).filter(x=>canPlay(x.c,seat));
+ const pool=valid.length?valid:hand.map((c,i)=>({c,i}));
+ // Bots try to avoid penalty cards; if following suit, prefer a low card.
+ pool.sort((a,b)=>{
+  const penalty=c=>c.suit==='♥'?1+(c.val==='Q'?13:0):c.val==='10'&&c.suit==='♦'?10:0;
+  return penalty(a.c)-penalty(b.c)||RANK[a.c.val]-RANK[b.c.val];
+ });
+ return pool[0].i;
+}
+function runBotsIfNeeded(){
+ clearTimeout(botTimer);
+ if(!state||state.matchOver||state.roundOver||state.turn==='bottom')return;
+ botTimer=setTimeout(()=>{
+  if(!state||state.matchOver||state.roundOver||state.turn==='bottom')return;
+  playForSeat(state.turn,chooseBotCard(state.turn));
+ },650);
+}
+function finishTrick(){
+ state.roundOver=true;
+ let winningSeat=state.turn,high=-1,penalty=0;
+ for(const seat of SEATS){
+  const c=state.cards[seat];
+  if(c.suit===state.leadSuit&&RANK[c.val]>high){high=RANK[c.val];winningSeat=seat;}
+  if(c.suit==='♥')penalty+=1;
+  if(c.suit==='♥'&&c.val==='Q')penalty+=12; // 13 total for queen of hearts
+  if(c.suit==='♦'&&c.val==='10')penalty+=10;
+ }
+ const team=TEAM1.includes(winningSeat)?'team1':'team2';
+ state.scores[team]+=penalty;state.lastWinner=winningSeat;state.turn=winningSeat;
+ if(state.scores.team1>=100||state.scores.team2>=100)state.matchOver=true;
+ save();render();
+ const winner=state.names[winningSeat];
+ message(`${winner} أخذ اللفة — ${penalty} نقطة سلبية`);
+ setTimeout(()=>{
+  if(!state)return;
+  if(state.matchOver){showEnd();return;}
+  state.cards={bottom:null,right:null,top:null,left:null};
+  state.leadSuit=null;state.roundOver=false;state.trick++;
+  // إذا انتهت الأوراق، تبدأ صكة جديدة مع بقاء النقاط.
+  if(SEATS.every(s=>state.hands[s].length===0)){save();render();showRoundEnd();return;}
+  state.turn=winningSeat;save();render();runBotsIfNeeded();
+ },1800);
+}
+function message(t){document.getElementById('game-message').textContent=t;}
+function render(){
+ if(!state)return;
+ for(const seat of SEATS){
+  document.getElementById('name-'+seat).textContent=state.names[seat];
+  document.getElementById('slot-'+seat).innerHTML=cardHTML(state.cards[seat]);
+  const el=document.getElementById('seat-'+seat);
+  el.classList.toggle('active',state.turn===seat&&!state.matchOver);
+  el.classList.toggle('winner',state.lastWinner===seat&&state.roundOver);
+  if(seat!=='bottom'){
+   document.getElementById('backs-'+seat).innerHTML=Array.from({length:state.hands[seat].length},()=>'<i class="back"></i>').join('');
+  }
+ }
+ document.getElementById('score-team1').textContent=state.scores.team1;
+ document.getElementById('score-team2').textContent=state.scores.team2;
+ const turn=state.names[state.turn]||'—';
+ document.getElementById('turn-indicator').innerHTML=`الدور الآن: <strong>${turn}</strong>${state.turn==='bottom'?' · دورك':''}`;
+ const hand=state.hands.bottom,container=document.getElementById('my-cards-container');
+ container.innerHTML='';
+ document.getElementById('hand-count').textContent=`${hand.length} أوراق متبقية`;
+ hand.forEach((c,i)=>{
+  const wrap=document.createElement('div');wrap.innerHTML=cardHTML(c);
+  const el=wrap.firstElementChild;
+  const valid=canPlay(c,'bottom');
+  if(state.turn!=='bottom'||state.roundOver||state.matchOver)el.classList.add('disabled');
+  else if(valid)el.classList.add('playable');
+  el.addEventListener('click',()=>playHuman(i));container.appendChild(el);
+ });
+ if(state.matchOver)message('انتهت المباراة');
+}
+function showModal(title,txt,actionText='حسنًا',action=closeModal){
+ document.getElementById('modal-title').textContent=title;
+ document.getElementById('modal-text').textContent=txt;
+ const b=document.getElementById('modal-action');b.textContent=actionText;b.onclick=action;
+ document.getElementById('modal').style.display='flex';
+}
+function closeModal(){document.getElementById('modal').style.display='none';}
+function showEnd(){
+ const loser=state.scores.team1>=100?'فريقك':'فريق الكمبيوتر';
+ const winner=loser==='فريقك'?'فريق الكمبيوتر':'فريقك';
+ showModal('انتهت المباراة',`${loser} وصل إلى 100 نقطة وخسر. الفائز: ${winner}.`, 'مباراة جديدة',()=>{closeModal();newMatch();});
+}
+function showRoundEnd(){
+ showModal('انتهت الصكة',`انتهت الأوراق. النتيجة الحالية: فريقك ${state.scores.team1} — الكمبيوتر ${state.scores.team2}.`, 'صكة جديدة',()=>{closeModal();newHand();});
+}
+function showRules(){
+ showModal('طريقة اللعب','أربعة لاعبين بفريقين: أنت مع اللاعب المقابل، والكمبيوتران الآخران فريق. العب من نفس النوع إذا كان معك. أعلى ورقة من النوع الذي بدأت به تأخذ اللفة. كل قلب = نقطة، بنت القلوب = 13 نقطة إجمالًا، وعشرة الديناري = 10 نقاط. الفريق الذي يصل إلى 100 نقطة يخسر.','فهمت');
+}
+window.addEventListener('load',()=>{
+ try{
+  const saved=JSON.parse(localStorage.getItem(STORAGE_KEY));
+  if(saved&&saved.hands&&saved.names){
+   playerName=saved.names.bottom||'لاعب';state=saved;
+   document.getElementById('setup-screen').style.display='none';
+   document.getElementById('game-screen').style.display='block';
+   render();runBotsIfNeeded();
+  }
+ }catch(e){localStorage.removeItem(STORAGE_KEY);}
+});
+</script>
+</body>
+</html>
