@@ -19,7 +19,6 @@ main{width:min(1120px,100%);margin:auto;padding:24px 16px 38px}
 .formrow{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:14px 0}.field{background:#071a14;color:white;border:1px solid #ffffff28;border-radius:12px;padding:12px 14px;min-width:0;outline:none}.field:focus{border-color:var(--gold)}.field.name{width:min(330px,100%)}.settings{margin:20px auto 0;padding:16px;text-align:right;max-width:600px;background:#071a1455;border:1px solid #ffffff17;border-radius:16px}.settings h3{margin:0 0 12px;color:var(--gold)}.setting-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px solid #ffffff12;font-size:13px}.setting-row:last-child{border:0}.setting-row select{max-width:180px}.toggle{accent-color:#e9bd61;width:18px;height:18px}
 .online-box{padding:15px;margin:15px auto;max-width:600px;background:#071a1455;border:1px solid #ffffff17;border-radius:16px;text-align:right}.online-box h3{margin:0 0 10px;color:var(--gold)}.online-actions{display:flex;gap:8px;flex-wrap:wrap}.online-actions .field{flex:1;width:120px}.hint{font-size:11px;color:var(--muted);line-height:1.8;margin:9px 0 0}
 
-/* تصميم اللوبي */
 .lobby{max-width:600px;margin:28px auto;padding:clamp(20px,4vw,38px);text-align:center}
 .lobby-seats{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin:20px 0;}
 .lobby-seat{padding:15px;border-radius:16px;background:#071a14;border:2px solid #ffffff15;font-size:14px;display:flex;flex-direction:column;justify-content:center;align-items:center;min-height:80px}
@@ -45,7 +44,7 @@ main{width:min(1120px,100%);margin:auto;padding:24px 16px 38px}
     <span class="status" id="user-status" style="color: var(--green); display: none;"></span>
     <span class="status" id="connection-status">● وضع فردي</span>
     <button class="btn secondary small" id="logout-btn" onclick="logout()" style="display: none; background: #963c45; border-color: #963c45;">خروج</button>
-    <button class="btn secondary small" onclick="backToMenu()">القائمة الرئيسية</button>
+    <button class="btn secondary small" id="settings-btn" onclick="openSettings()" style="display: none; font-size: 18px;">⚙️</button>
 </div>
 </header>
 <main>
@@ -56,7 +55,6 @@ main{width:min(1120px,100%);margin:auto;padding:24px 16px 38px}
     <h1>سَمْرَة</h1>
     <p class="sub" id="auth-title">سجل الدخول للمتابعة</p>
     
-    <!-- نموذج تسجيل الدخول -->
     <div id="login-step">
         <div class="formrow" style="flex-direction: column; gap: 10px; margin-bottom: 20px;">
             <input type="email" id="login-email" class="field name" placeholder="البريد الإلكتروني">
@@ -70,12 +68,14 @@ main{width:min(1120px,100%);margin:auto;padding:24px 16px 38px}
             <button class="btn" onclick="login()">تسجيل الدخول</button>
             <button class="btn secondary" onclick="showRegisterForm()">إنشاء حساب</button>
         </div>
+        <div style="margin-top: 15px;">
+            <a href="#" onclick="showResetForm()" style="color: var(--gold); font-size: 12px; text-decoration: none;">هل نسيت كلمة المرور؟</a>
+        </div>
     </div>
 
-    <!-- نموذج إنشاء الحساب -->
     <div id="register-step" class="hidden">
         <div class="formrow" style="flex-direction: column; gap: 10px; margin-bottom: 20px;">
-            <input type="text" id="reg-name" class="field name" placeholder="اسمك في اللعبة" maxlength="18">
+            <input type="text" id="reg-name" class="field name" placeholder="اسمك في اللعبة (يوزر فريد)" maxlength="18">
             <input type="email" id="reg-email" class="field name" placeholder="البريد الإلكتروني">
             <input type="password" id="reg-password" class="field name" placeholder="كلمة المرور">
         </div>
@@ -85,10 +85,24 @@ main{width:min(1120px,100%);margin:auto;padding:24px 16px 38px}
         </div>
     </div>
 
-    <!-- خطوة التحقق من الإيميل -->
+    <div id="reset-step" class="hidden">
+        <div class="formrow" style="flex-direction: column; gap: 10px; margin-bottom: 20px;">
+            <input type="email" id="reset-email" class="field name" placeholder="أدخل بريدك الإلكتروني المسجل">
+        </div>
+        <div style="display: flex; gap: 10px; justify-content: center;">
+            <button class="btn" onclick="startPasswordReset()">إرسال رمز التحقق</button>
+            <button class="btn secondary" onclick="showLoginForm()">رجوع</button>
+        </div>
+    </div>
+
     <div id="verify-step" class="hidden" style="margin-top: 15px; padding: 20px; border: 1px solid var(--gold); border-radius: 16px; background: #071a14;">
         <p style="color: var(--gold); font-size: 14px; margin-bottom: 15px;">📧 تم إرسال رمز التحقق إلى بريدك الإلكتروني</p>
         <input type="text" id="auth-code" class="field name" placeholder="أدخل رمز التحقق (6 أرقام)" maxlength="6" style="text-align: center; letter-spacing: 8px; font-size: 24px; font-weight: bold;">
+        
+        <div id="new-pass-container" class="hidden" style="margin-top: 15px;">
+            <input type="password" id="new-password" class="field name" placeholder="كلمة المرور الجديدة">
+        </div>
+
         <div style="display: flex; gap: 10px; justify-content: center; margin-top: 15px;">
             <button class="btn" onclick="verifyCode()">تأكيد</button>
             <button class="btn secondary" onclick="cancelVerify()">إلغاء</button>
@@ -102,12 +116,6 @@ main{width:min(1120px,100%);margin:auto;padding:24px 16px 38px}
 <section id="menu" class="panel menu hidden">
  <div class="hero-icon">🂡</div><h1>مرحباً بك في سَمْرَة</h1><p class="sub">اختر طريقة اللعب واضبط جلستك قبل بداية التحدي</p>
  
- <!-- تم إضافة زر حفظ الاسم بجانب حقل الاسم -->
- <div class="formrow" style="align-items: center;">
-    <input id="player-name" class="field name" maxlength="18" placeholder="اسم اللاعب" value="">
-    <button class="btn secondary" onclick="savePlayerName()" style="padding: 12px 14px;">حفظ الاسم</button>
- </div>
-
  <div class="mode-grid">
   <button class="mode selected" id="mode-bots" onclick="selectMode('bots')"><span class="ico">🤖</span><b>ضد الكمبيوتر</b><small>العب ضد 3 خصوم بذكاء قابل للتعديل</small></button>
   <button class="mode" id="mode-online" onclick="selectMode('online')"><span class="ico">🌐</span><b>لعب أونلاين</b><small>أنشئ غرفة أو ادخل مع صديق برمز</small></button>
@@ -135,7 +143,6 @@ main{width:min(1120px,100%);margin:auto;padding:24px 16px 38px}
  <p class="hint">52 ورقة · 4 لاعبين · 13 ورقة لكل لاعب · فريقان</p>
 </section>
 
-<!-- شاشة غرفة الانتظار (اللوبي) -->
 <section id="lobby" class="panel lobby hidden">
     <h2 style="color:var(--gold); margin-top:0;">غرفة الانتظار</h2>
     <p class="sub" id="lobby-status">جاري الاتصال...</p>
@@ -165,11 +172,10 @@ main{width:min(1120px,100%);margin:auto;padding:24px 16px 38px}
         </div>
     </div>
 
-    <button class="btn hidden" id="start-online-btn" style="background:var(--green); color:#000; width:100%; margin-top:10px;" onclick="startOnlineMatch()">بدء اللعبة الآن (مع تعويض الناقص بكمبيوتر)</button>
+    <button class="btn hidden" id="start-online-btn" style="background:var(--green); color:#000; width:100%; margin-top:10px;" onclick="startOnlineMatch()">بدء اللعبة الآن</button>
     <button class="btn secondary" style="width:100%; margin-top:10px;" onclick="backToMenu()">إلغاء والعودة</button>
 </section>
 
-<!-- شاشة اللعب -->
 <section id="game" class="game">
  <div class="toolbar"><div class="turn" id="turn-label">الدور: —</div><div class="scores"><div class="score"><small>فريقك</small><b id="score1">0</b></div><div class="score"><small>الخصم</small><b id="score2">0</b></div></div></div>
  <div class="table">
@@ -187,6 +193,32 @@ main{width:min(1120px,100%);margin:auto;padding:24px 16px 38px}
  </div>
 </section>
 </main>
+
+<!-- نافذة الإعدادات -->
+<div class="modal-bg" id="settings-modal">
+    <div class="modal">
+        <h2>⚙️ الإعدادات</h2>
+        <div style="text-align: right; margin-bottom: 15px; font-size: 14px;">
+            <p style="margin: 5px 0;"><strong>البريد الإلكتروني:</strong> <br><span id="settings-email" style="color: var(--gold);"></span></p>
+            <p style="margin: 10px 0 5px 0;"><strong>اسمك في اللعبة:</strong></p>
+            <input type="text" id="settings-name" class="field" style="width: 100%;">
+            <button class="btn small" onclick="saveSettingsName()" style="width: 100%; margin-top: 8px;">حفظ الاسم</button>
+        </div>
+        <button class="btn hidden" id="admin-btn" onclick="openAdminPanel()" style="width: 100%; margin-bottom: 10px; background: var(--red); border: 2px solid var(--gold); color: white;">👑 لوحة المالك (الأدمن)</button>
+        <button class="btn secondary" onclick="closeSettings()" style="width: 100%;">إغلاق</button>
+    </div>
+</div>
+
+<!-- نافذة لوحة المالك -->
+<div class="modal-bg" id="admin-modal">
+    <div class="modal" style="width: min(600px, 100%);">
+        <h2>👑 لوحة المالك</h2>
+        <input type="text" id="admin-search" class="field" placeholder="ابحث عن مستخدم بالاسم أو الإيميل..." oninput="renderAdminList()" style="width: 100%; margin-bottom: 15px;">
+        <div id="admin-user-list" style="max-height: 55vh; overflow-y: auto; text-align: right; font-size: 13px; background: #071a14; padding: 10px; border-radius: 10px; border: 1px solid #ffffff20;"></div>
+        <button class="btn secondary" onclick="closeAdminPanel()" style="width: 100%; margin-top: 15px;">إغلاق</button>
+    </div>
+</div>
+
 <div class="modal-bg" id="modal"><div class="modal"><h2 id="modal-title"></h2><p id="modal-text"></p><button class="btn" id="modal-ok" onclick="closeModal()">تمام</button></div></div>
 
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
@@ -198,6 +230,7 @@ main{width:min(1120px,100%);margin:auto;padding:24px 16px 38px}
 const EMAILJS_PUBLIC_KEY = 'tIzoTiqc-8ognGi4i';
 const EMAILJS_SERVICE_ID = 'service_e2bx8hb';
 const EMAILJS_TEMPLATE_ID = 'template_n0b8imp';
+const OWNER_EMAIL = 'tbhbt9180@gmail.com';
 // ==========================================
 
 const SEATS=['bottom','right','top','left'],SUITS=['♠','♣','♥','♦'],RANK={'2':2,'3':3,'4':4,'5':5,'6':6,'7':7,'8':8,'9':9,'10':10,'J':11,'Q':12,'K':13,'A':14},FACE={J:'🧑',Q:'👩',K:'🧓',A:'⚡'};
@@ -207,28 +240,99 @@ let onlineGuestName = '';
 
 let pendingUser = null;
 let generatedCode = null;
-let currentAuthAction = 'login'; // 'login' or 'register'
+let currentAuthAction = 'login';
 let currentUserEmail = null;
+let myIP = 'جاري التحديد...';
 
 function el(id){return document.getElementById(id)}
 
 // -----------------------------------------
-// نظام تسجيل الدخول (Auth)
+// نظام الحظر (IP & Account)
 // -----------------------------------------
 function getUsers() { return JSON.parse(localStorage.getItem('samra_users')) || {}; }
 function saveUsers(users) { localStorage.setItem('samra_users', JSON.stringify(users)); }
 
+function getBannedIPs() { return JSON.parse(localStorage.getItem('samra_banned_ips')) || {}; }
+function saveBannedIPs(ips) { localStorage.setItem('samra_banned_ips', JSON.stringify(ips)); }
+
+function isUserBanned(user) {
+    if(!user.banUntil) return false;
+    if(user.banUntil === 0) return true; // Permanent
+    if(user.banUntil > Date.now()) return true; // Still banned
+    return false; // Expired
+}
+
+function isIPBanned(ip) {
+    if(ip === 'unknown' || ip === 'جاري التحديد...') return false;
+    let banned = getBannedIPs();
+    if(banned[ip] !== undefined) {
+        if(banned[ip] === 0) return true;
+        if(banned[ip] > Date.now()) return true;
+        // Expired, clean up
+        delete banned[ip];
+        saveBannedIPs(banned);
+    }
+    return false;
+}
+
+function isNameTaken(name, currentEmail) {
+    const users = getUsers();
+    for(let email in users) {
+        if(email !== currentEmail && users[email].name === name) return true;
+    }
+    return false;
+}
+
+// -----------------------------------------
+// تهيئة اللعبة وجلب IP
+// -----------------------------------------
+async function initApp() {
+    try {
+        const res = await fetch('https://api.ipify.org?format=json');
+        const data = await res.json();
+        myIP = data.ip;
+    } catch(e) {
+        myIP = 'unknown';
+    }
+
+    if(isIPBanned(myIP)) {
+        document.body.innerHTML = `<div style="display:flex; height:100vh; align-items:center; justify-content:center; text-align:center; background:#081914; color:#fff; font-family:Tahoma; flex-direction:column; padding:20px;">
+            <h1 style="color:var(--red); font-size:24px;">🚫 تم حظر جهازك</h1>
+            <p style="color:var(--muted); font-size:14px; margin-top:10px;">لقد تم حظر الـ IP الخاص بك من قبل المالك لمخالفة القوانين.</p>
+        </div>`;
+        return;
+    }
+    
+    checkSession();
+}
+
+// -----------------------------------------
+// نظام تسجيل الدخول (Auth)
+// -----------------------------------------
 function showLoginForm() {
     el('register-step').classList.add('hidden');
+    el('reset-step').classList.add('hidden');
     el('login-step').classList.remove('hidden');
+    el('verify-step').classList.add('hidden');
     el('auth-title').textContent = 'سجل الدخول للمتابعة';
     el('auth-msg').textContent = '';
 }
 
 function showRegisterForm() {
     el('login-step').classList.add('hidden');
+    el('reset-step').classList.add('hidden');
     el('register-step').classList.remove('hidden');
+    el('verify-step').classList.add('hidden');
     el('auth-title').textContent = 'إنشاء حساب جديد';
+    el('auth-msg').textContent = '';
+}
+
+function showResetForm() {
+    el('login-step').classList.add('hidden');
+    el('register-step').classList.add('hidden');
+    el('reset-step').classList.remove('hidden');
+    el('verify-step').classList.add('hidden');
+    el('auth-title').textContent = 'استعادة كلمة المرور';
     el('auth-msg').textContent = '';
 }
 
@@ -243,6 +347,7 @@ function startRegister() {
     
     const users = getUsers();
     if(users[email]) { msg.textContent = 'هذا البريد مسجل بالفعل، سجل دخولك.'; return; }
+    if(isNameTaken(name, email)) { msg.textContent = 'هذا الاسم (اليوزر) مستخدم من قبل لاعب آخر، جرب اسماً غيره.'; return; }
     
     currentAuthAction = 'register';
     pendingUser = { email, pass, name };
@@ -259,10 +364,34 @@ function login() {
     
     const users = getUsers();
     if(!users[email]) { msg.textContent = 'البريد الإلكتروني غير مسجل'; return; }
+    
+    if(isUserBanned(users[email])) {
+        let timeLeft = users[email].banUntil === 0 ? 'دائم' : Math.ceil((users[email].banUntil - Date.now())/60000) + ' دقيقة';
+        msg.textContent = `🚫 حسابك محظور مؤقتاً. الوقت المتبقي: ${timeLeft}`;
+        return;
+    }
+    
     if(users[email].pass !== btoa(pass)) { msg.textContent = 'كلمة المرور خاطئة'; return; }
     
     currentAuthAction = 'login';
     pendingUser = { email, remember };
+    generatedCode = Math.floor(100000 + Math.random() * 900000).toString(); 
+    
+    sendVerificationCode(email);
+}
+
+function startPasswordReset() {
+    const email = el('reset-email').value.trim().toLowerCase();
+    const msg = el('auth-msg');
+    
+    if(!email) { msg.textContent = 'الرجاء إدخال بريدك الإلكتروني'; return; }
+    
+    const users = getUsers();
+    if(!users[email]) { msg.textContent = 'هذا البريد غير مسجل'; return; }
+    if(isUserBanned(users[email])) { msg.textContent = '🚫 حسابك محظور، لا يمكنك استعادة كلمة المرور.'; return; }
+    
+    currentAuthAction = 'reset';
+    pendingUser = { email };
     generatedCode = Math.floor(100000 + Math.random() * 900000).toString(); 
     
     sendVerificationCode(email);
@@ -283,8 +412,17 @@ function sendVerificationCode(email) {
         
         el('login-step').classList.add('hidden');
         el('register-step').classList.add('hidden');
+        el('reset-step').classList.add('hidden');
         el('verify-step').classList.remove('hidden');
-        el('auth-title').textContent = 'تأكيد الحساب';
+        
+        if(currentAuthAction === 'reset') {
+            el('new-pass-container').classList.remove('hidden');
+            el('auth-title').textContent = 'تعيين كلمة مرور جديدة';
+        } else {
+            el('new-pass-container').classList.add('hidden');
+            el('auth-title').textContent = 'تأكيد الحساب';
+        }
+        
         el('auth-code').value = '';
         el('auth-code').focus();
     }).catch((err) => {
@@ -306,11 +444,25 @@ function verifyCode() {
     if(currentAuthAction === 'register') {
         users[pendingUser.email] = {
             name: pendingUser.name,
-            pass: btoa(pendingUser.pass)
+            pass: btoa(pendingUser.pass),
+            isBanned: false,
+            lastIP: myIP
         };
         saveUsers(users);
         loginUser(pendingUser.email, false);
+    } else if(currentAuthAction === 'reset') {
+        const newPass = el('new-password').value;
+        if(!newPass || newPass.length < 4) {
+            el('auth-msg').textContent = 'كلمة المرور الجديدة قصيرة جداً (4 أحرف على الأقل)';
+            return;
+        }
+        users[pendingUser.email].pass = btoa(newPass);
+        saveUsers(users);
+        alert('تم تغيير كلمة المرور بنجاح! يمكنك تسجيل الدخول الآن.');
+        showLoginForm();
     } else {
+        users[pendingUser.email].lastIP = myIP; // تحديث الـ IP عند كل دخول
+        saveUsers(users);
         loginUser(pendingUser.email, pendingUser.remember);
     }
     
@@ -322,11 +474,9 @@ function verifyCode() {
 
 function cancelVerify() {
     el('verify-step').classList.add('hidden');
-    if(currentAuthAction === 'register') {
-        showRegisterForm();
-    } else {
-        showLoginForm();
-    }
+    if(currentAuthAction === 'register') showRegisterForm();
+    else if(currentAuthAction === 'reset') showResetForm();
+    else showLoginForm();
     el('auth-msg').textContent = '';
     pendingUser = null;
     generatedCode = null;
@@ -349,11 +499,13 @@ function logout() {
     el('reg-name').value = '';
     el('reg-email').value = '';
     el('reg-password').value = '';
+    el('reset-email').value = '';
     el('auth-msg').textContent = '';
     
     el('auth-screen').classList.remove('hidden');
     el('menu').classList.add('hidden');
     el('logout-btn').style.display = 'none';
+    el('settings-btn').style.display = 'none';
     el('user-status').style.display = 'none';
     showLoginForm();
 }
@@ -361,6 +513,12 @@ function logout() {
 function checkSession() {
     const session = localStorage.getItem('samra_session') || sessionStorage.getItem('samra_session');
     if(session) {
+        const users = getUsers();
+        if(users[session] && isUserBanned(users[session])) {
+            logout();
+            el('auth-msg').textContent = '🚫 حسابك محظور حالياً.';
+            return;
+        }
         currentUserEmail = session;
         showMainMenu(session);
     } else {
@@ -373,36 +531,153 @@ function checkSession() {
 function showMainMenu(email) {
     el('auth-screen').classList.add('hidden');
     el('menu').classList.remove('hidden');
-    el('user-status').textContent = '👤 ' + email.split('@')[0];
+    
+    let displayName = email.split('@')[0];
+    if(email === OWNER_EMAIL) displayName += ' 👑 (المالك)';
+    
+    el('user-status').innerHTML = `<span style="color: var(--gold);">👤 ${displayName}</span>`;
     el('user-status').style.display = 'inline-block';
     el('logout-btn').style.display = 'inline-block';
-    
-    // استرجاع اسم اللاعب من الحساب
-    const users = getUsers();
-    if(users[email] && users[email].name) {
-        el('player-name').value = users[email].name;
-    }
+    el('settings-btn').style.display = 'inline-block';
 }
 
-// حفظ الاسم المعدل في قاعدة البيانات
-function savePlayerName() {
+// -----------------------------------------
+// الإعدادات ولوحة المالك (Admin)
+// -----------------------------------------
+function openSettings() {
     if(!currentUserEmail) return;
-    const newName = el('player-name').value.trim();
+    el('settings-email').textContent = currentUserEmail;
+    
+    const users = getUsers();
+    el('settings-name').value = users[currentUserEmail].name || '';
+    
+    if(currentUserEmail === OWNER_EMAIL) {
+        el('admin-btn').classList.remove('hidden');
+    } else {
+        el('admin-btn').classList.add('hidden');
+    }
+    
+    el('settings-modal').style.display = 'flex';
+}
+
+function closeSettings() {
+    el('settings-modal').style.display = 'none';
+}
+
+function saveSettingsName() {
+    const newName = el('settings-name').value.trim();
     if(!newName) { alert('الاسم لا يمكن أن يكون فارغاً'); return; }
     
+    if(isNameTaken(newName, currentUserEmail)) {
+        alert('هذا الاسم مستخدم بالفعل من قبل لاعب آخر، يرجى اختيار اسم آخر.');
+        return;
+    }
+    
     const users = getUsers();
-    if(users[currentUserEmail]) {
-        users[currentUserEmail].name = newName;
+    users[currentUserEmail].name = newName;
+    saveUsers(users);
+    alert('تم حفظ الاسم بنجاح!');
+    showMainMenu(currentUserEmail);
+    closeSettings();
+}
+
+// --- لوحة المالك ---
+function openAdminPanel() {
+    closeSettings();
+    el('admin-modal').style.display = 'flex';
+    el('admin-search').value = '';
+    renderAdminList();
+}
+
+function closeAdminPanel() {
+    el('admin-modal').style.display = 'none';
+}
+
+function renderAdminList() {
+    const users = getUsers();
+    const search = el('admin-search').value.toLowerCase();
+    let html = '';
+    let count = 0;
+    
+    for(let email in users) {
+        let u = users[email];
+        let uName = u.name || 'بدون اسم';
+        
+        if(search && !email.includes(search) && !uName.toLowerCase().includes(search)) continue;
+        count++;
+        
+        let isBanned = isUserBanned(u);
+        let statusTxt = isBanned ? '<span style="color:var(--red)">محظور 🚫</span>' : '<span style="color:var(--green)">نشط ✅</span>';
+        let btnTxtAcc = isBanned ? 'فك الحظر' : 'حظر الحساب';
+        let btnColorAcc = isBanned ? 'background: var(--green); color: #000;' : 'background: var(--red); color: #fff;';
+        
+        let isIpBanned = isIPBanned(u.lastIP);
+        let btnTxtIp = isIpBanned ? 'فك حظر IP' : 'حظر IP';
+        let btnColorIp = isIpBanned ? 'background: var(--green); color: #000;' : 'background: #e67e22; color: #fff;';
+        
+        html += `<div style="border-bottom: 1px solid #ffffff20; padding: 10px 0;">
+            <div style="margin-bottom: 3px;"><b style="color:var(--gold); font-size:14px;">${uName}</b></div>
+            <div style="font-size: 11px; color:var(--muted);">📧 ${email}</div>
+            <div style="font-size: 11px; color:var(--muted);">🌐 IP: ${u.lastIP || 'غير متوفر'}</div>
+            <div style="font-size: 11px; margin: 5px 0;">الحالة: ${statusTxt}</div>
+            <div style="display: flex; gap: 5px; flex-wrap: wrap; margin-top: 8px;">
+                <button class="btn small" style="${btnColorAcc}" onclick="toggleBanAccount('${email}')">${btnTxtAcc}</button>
+                <button class="btn small" style="${btnColorIp}" onclick="toggleBanIP('${u.lastIP}')">${btnTxtIp}</button>
+            </div>
+        </div>`;
+    }
+    
+    el('admin-user-list').innerHTML = count > 0 ? html : 'لا يوجد مستخدمين يطابقون البحث.';
+}
+
+function toggleBanAccount(email) {
+    const users = getUsers();
+    const u = users[email];
+    if(!u) return;
+    
+    if(isUserBanned(u)) {
+        if(confirm('هل تريد إلغاء حظر هذا الحساب؟')) {
+            delete u.banUntil;
+            saveUsers(users);
+            renderAdminList();
+        }
+    } else {
+        let mins = prompt("أدخل مدة حظر الحساب بالدقائق (0 = حظر دائم):", "60");
+        if(mins === null) return;
+        mins = parseInt(mins);
+        if(isNaN(mins) || mins < 0) return alert("قيمة غير صحيحة");
+        u.banUntil = mins > 0 ? Date.now() + mins * 60000 : 0;
         saveUsers(users);
-        alert('تم حفظ الاسم بنجاح!');
+        renderAdminList();
     }
 }
 
-window.addEventListener('DOMContentLoaded', checkSession);
+function toggleBanIP(ip) {
+    if(!ip || ip === 'unknown' || ip === 'جاري التحديد...') return alert('لا يوجد IP صالح لحظره لهذا المستخدم');
+    
+    let banned = getBannedIPs();
+    if(isIPBanned(ip)) {
+        if(confirm('هل تريد إلغاء حظر هذا الـ IP؟')) {
+            delete banned[ip];
+            saveBannedIPs(banned);
+            renderAdminList();
+        }
+    } else {
+        let mins = prompt("أدخل مدة حظر الـ IP بالدقائق (0 = حظر دائم):", "60");
+        if(mins === null) return;
+        mins = parseInt(mins);
+        if(isNaN(mins) || mins < 0) return alert("قيمة غير صحيحة");
+        banned[ip] = mins > 0 ? Date.now() + mins * 60000 : 0;
+        saveBannedIPs(banned);
+        renderAdminList();
+    }
+}
 
 // -----------------------------------------
 // منطق اللعبة والاتصال
 // -----------------------------------------
+window.addEventListener('DOMContentLoaded', initApp);
+
 function selectMode(m){
     mode=m;
     el('mode-bots').classList.toggle('selected',m==='bots');
@@ -412,6 +687,15 @@ function selectMode(m){
     el('start-btn').classList.toggle('hidden',m==='online');
 }
 function deck(){let d=[];for(let s of SUITS)for(let v of Object.keys(RANK))d.push({s,v});for(let i=d.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[d[i],d[j]]=[d[j],d[i]]}return d}
+
+function getPlayerNameForGame() {
+    const users = getUsers();
+    let baseName = users[currentUserEmail]?.name || 'لاعب';
+    if(currentUserEmail === OWNER_EMAIL) {
+        return baseName + ' 👑 (المالك)';
+    }
+    return baseName;
+}
 
 function fresh(){
     return {
@@ -424,7 +708,7 @@ function fresh(){
 
 function startMatch(){
     localSeat='bottom';
-    player=el('player-name').value.trim()||'لاعب';
+    player = getPlayerNameForGame();
     difficulty=el('difficulty').value;
     state=fresh();
     state.names.bottom = player;
@@ -557,7 +841,12 @@ function render(){
     if(!state)return;
     for(let actual of SEATS){
         let visual = getVisualSeat(actual);
-        el('name-'+visual).textContent=state.names[actual];
+        let nameHTML = state.names[actual];
+        if(nameHTML.includes('👑')) {
+            el('name-'+visual).innerHTML = `<span style="color: var(--gold); font-weight: 800;">${nameHTML}</span>`;
+        } else {
+            el('name-'+visual).textContent = nameHTML;
+        }
         el('slot-'+visual).innerHTML=cardHTML(state.played[actual]);
         el('seat-'+visual).classList.toggle('active',state.turn===actual&&!state.matchEnd);
         if(visual!=='bottom'){
@@ -602,9 +891,6 @@ function backToMenu(){
     el('online-hint').textContent='أنشئ غرفة، انسخ الكود، وأرسله لصديقك ليدخل معك.';
 }
 
-// -----------------------------------------
-// زر الانسحاب ومعالجة الانقطاع
-// -----------------------------------------
 function leaveGame() {
     if(!confirm('هل أنت متأكد من الانسحاب؟ سيتم استبدالك بكمبيوتر لإكمال اللعبة.')) return;
     if(mode === 'online' && conn && conn.open) conn.send({ type: 'leave' });
@@ -632,9 +918,6 @@ function handleOpponentLeave() {
     el('connection-status').textContent = '● لعبة محلية (بعد الانسحاب)';
 }
 
-// -----------------------------------------
-// اللوبي والاتصال
-// -----------------------------------------
 function updateLobbyUI() {
     el('menu').classList.add('hidden');
     el('lobby').classList.remove('hidden');
@@ -656,7 +939,7 @@ function createRoom(){
     
     peer.on('open',id=>{
         roomId=id;
-        player=el('player-name').value.trim()||'المضيف';
+        player = getPlayerNameForGame();
         updateLobbyUI();
         el('lobby-status').textContent = 'أرسل الكود لصديقك وانتظر انضمامه...';
     });
@@ -676,7 +959,7 @@ function joinRoom(){
     if(peer)peer.destroy();
     isHost=false;
     localSeat='top'; 
-    player=el('player-name').value.trim()||'الصديق';
+    player = getPlayerNameForGame();
     
     peer=new Peer();
     peer.on('open',()=>{
