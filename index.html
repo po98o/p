@@ -2,6 +2,8 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://0.peerjs.com wss://0.peerjs.com; img-src 'self' data:; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="no-referrer">
 <meta name="theme-color" content="#081914"><title>سَمْرَة | لعبة الورق</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Changa:wght@400;500;600;700;800&display=swap');
@@ -10,7 +12,7 @@
 header{height:68px;padding:10px clamp(14px,4vw,44px);display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #ffffff18;background:#06140fbb;backdrop-filter:blur(14px);position:sticky;top:0;z-index:5}
 .brand{display:flex;align-items:center;gap:10px}.brand-icon{width:43px;height:43px;border-radius:14px;background:linear-gradient(145deg,#ffe29a,#b98231);display:grid;place-items:center;color:#15251c;font-size:25px;box-shadow:0 6px 20px #0005}.brand b{font-size:20px;display:block;line-height:1.1}.brand small{font-size:10px;color:var(--muted)}
 .header-right{display:flex;align-items:center;gap:8px}.status{font-size:11px;color:var(--muted);padding:7px 11px;border:1px solid #ffffff20;border-radius:30px}
-.btn{border:0;border-radius:12px;padding:11px 17px;background:linear-gradient(135deg,#f7d987,#d39b42);color:#18251d;font-weight:800;box-shadow:0 5px 16px #0003;transition:.18s}.btn:hover{transform:translateY(-2px);filter:brightness(1.06)}.btn.secondary{background:#ffffff0d;color:var(--cream);border:1px solid #ffffff24;box-shadow:none}.btn.red{background:#963c45;color:white}.btn.small{padding:7px 12px;font-size:12px}
+.btn{border:0;border-radius:12px;padding:11px 17px;background:linear-gradient(135deg,#f7d987,#d39b42);color:#18251d;font-weight:800;box-shadow:0 5px 16px #0003;transition:.18s}.btn:hover{transform:translateY(-2px);filter:brightness(1.06)}.btn.secondary{background:#ffffff0d;color:var(--cream);border:1px solid #ffffff24;box-shadow:none}.btn.small{padding:7px 12px;font-size:12px}
 main{width:min(1120px,100%);margin:auto;padding:24px 16px 38px}
 .panel{background:linear-gradient(145deg,#15372d,#0d241d);border:1px solid #ffffff1c;border-radius:24px;box-shadow:0 22px 60px #0005}
 .menu{max-width:850px;margin:28px auto;padding:clamp(20px,4vw,38px);text-align:center}
@@ -18,84 +20,81 @@ main{width:min(1120px,100%);margin:auto;padding:24px 16px 38px}
 .mode-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px;margin:22px 0}.mode{padding:20px 14px;text-align:right;border:1px solid #ffffff22;background:#ffffff08;border-radius:18px;color:var(--cream);min-height:118px}.mode:hover,.mode.selected{border-color:var(--gold);background:#e9bd6112}.mode .ico{font-size:28px}.mode b{display:block;font-size:17px}.mode small{color:var(--muted);font-size:11px}
 .formrow{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:14px 0}.field{background:#071a14;color:white;border:1px solid #ffffff28;border-radius:12px;padding:12px 14px;min-width:0;outline:none}.field:focus{border-color:var(--gold)}.field.name{width:min(330px,100%)}.settings{margin:20px auto 0;padding:16px;text-align:right;max-width:600px;background:#071a1455;border:1px solid #ffffff17;border-radius:16px}.settings h3{margin:0 0 12px;color:var(--gold)}.setting-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px solid #ffffff12;font-size:13px}.setting-row:last-child{border:0}.setting-row select{max-width:180px}.toggle{accent-color:#e9bd61;width:18px;height:18px}
 .online-box{padding:15px;margin:15px auto;max-width:600px;background:#071a1455;border:1px solid #ffffff17;border-radius:16px;text-align:right}.online-box h3{margin:0 0 10px;color:var(--gold)}.online-actions{display:flex;gap:8px;flex-wrap:wrap}.online-actions .field{flex:1;width:120px}.hint{font-size:11px;color:var(--muted);line-height:1.8;margin:9px 0 0}
-
 .lobby{max-width:600px;margin:28px auto;padding:clamp(20px,4vw,38px);text-align:center}
-.lobby-seats{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin:20px 0;}
+.lobby-seats{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin:20px 0}
 .lobby-seat{padding:15px;border-radius:16px;background:#071a14;border:2px solid #ffffff15;font-size:14px;display:flex;flex-direction:column;justify-content:center;align-items:center;min-height:80px}
-.lobby-seat.host{border-color:var(--gold)}
-.lobby-seat.guest{border-color:var(--green)}
-.lobby-seat.bot{opacity:0.6;border-style:dashed}
-.lobby-seat .role{font-size:11px;color:var(--muted);margin-bottom:5px}
-.lobby-seat .p-name{font-weight:800;font-size:16px;color:var(--cream)}
-
+.lobby-seat.host{border-color:var(--gold)}.lobby-seat.guest{border-color:var(--green)}.lobby-seat.bot{opacity:.6;border-style:dashed}
+.lobby-seat .role{font-size:11px;color:var(--muted);margin-bottom:5px}.lobby-seat .p-name{font-weight:800;font-size:16px;color:var(--cream)}
 .game{display:none}.toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:12px}.turn{padding:8px 14px;background:#ffffff0c;border:1px solid #ffffff20;border-radius:30px;font-size:13px}.turn strong{color:var(--gold)}.scores{display:flex;gap:8px}.score{min-width:105px;text-align:center;padding:7px 12px;border-radius:13px;background:#102b23;border:1px solid #ffffff1c}.score small{display:block;color:var(--muted);font-size:10px}.score b{color:var(--gold);font-size:20px}
 .table{height:min(55vh,500px);min-height:320px;position:relative;border-radius:180px;background:radial-gradient(ellipse at center,#2a8058 0,#176044 56%,#0d402f 100%);border:9px solid #62452b;box-shadow:inset 0 0 0 3px #c49a5b,inset 0 0 55px #00180e,0 16px 40px #0008;overflow:hidden}.table:after{content:"";position:absolute;inset:13px;border:1px solid #ffffff28;border-radius:180px;pointer-events:none}
-.seat{position:absolute;z-index:2;min-width:110px;max-width:155px;padding:7px 11px;border-radius:13px;background:#08271feF;border:1px solid #ffffff35;text-align:center;box-shadow:0 5px 15px #0005}.seat.active{border:2px solid var(--gold);box-shadow:0 0 20px #f5c65b66}.seat .name{font-size:13px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.seat small{font-size:10px;color:#c4d9cd}.seat-top{top:15px;left:50%;transform:translateX(-50%)}.seat-bottom{bottom:15px;left:50%;transform:translateX(-50%)}.seat-left{left:14px;top:50%;transform:translateY(-50%)}.seat-right{right:14px;top:50%;transform:translateY(-50%)}
+.seat{position:absolute;z-index:2;min-width:110px;max-width:155px;padding:7px 11px;border-radius:13px;background:#08271fef;border:1px solid #ffffff35;text-align:center;box-shadow:0 5px 15px #0005}.seat.active{border:2px solid var(--gold);box-shadow:0 0 20px #f5c65b66}.seat .name{font-size:13px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.seat small{font-size:10px;color:#c4d9cd}.seat-top{top:15px;left:50%;transform:translateX(-50%)}.seat-bottom{bottom:15px;left:50%;transform:translateX(-50%)}.seat-left{left:14px;top:50%;transform:translateY(-50%)}.seat-right{right:14px;top:50%;transform:translateY(-50%)}
 .backs{display:flex;justify-content:center;margin-top:4px}.back{width:9px;height:14px;margin-inline:-2px;border-radius:3px;background:repeating-linear-gradient(45deg,#bc5155,#bc5155 3px,#792b35 3px,#792b35 6px);border:1px solid #f6d6b7}
 .center{position:absolute;z-index:1;left:50%;top:50%;transform:translate(-50%,-50%);width:min(46%,340px);height:165px;border-radius:20px;background:#06251d66;border:1px solid #ffffff26;display:grid;grid-template:1fr 1fr/1fr 1fr;place-items:center}.played{width:66px;height:94px;display:grid;place-items:center}.empty{width:52px;height:75px;border:1px dashed #ffffff40;border-radius:9px}
 .card{width:62px;height:88px;border-radius:9px;background:linear-gradient(145deg,#fffefa,#e9e4d9);color:#18231f;border:1px solid #d5d0c4;box-shadow:0 5px 12px #00150e88;display:flex;flex-direction:column;justify-content:flex-start;align-items:flex-start;padding:5px;font-family:Arial,sans-serif;font-weight:800}.card.red{color:#d83e4b}.corner{font-size:13px;line-height:1.1}.symbol{font-size:23px;align-self:center;margin-top:10px}
 .hand-panel{margin-top:13px;padding:13px;border-radius:18px;background:linear-gradient(145deg,#102d26,#0a211c);border:1px solid #ffffff20}.hand-head{display:flex;justify-content:space-between;margin-bottom:9px}.hand-head h3{font-size:14px;margin:0}.hand-head span{font-size:11px;color:var(--muted)}.hand{display:flex;justify-content:center;align-items:end;gap:clamp(3px,1vw,9px);min-height:98px;flex-wrap:wrap}.hand .card{width:clamp(43px,7vw,66px);height:clamp(64px,10vw,92px);cursor:pointer;transition:.16s;margin-top:5px}.hand .card:hover{transform:translateY(-8px)}.hand .card.disabled{opacity:.48;cursor:not-allowed}.hand .card.playable{outline:2px solid var(--gold);outline-offset:2px}.message{min-height:24px;text-align:center;color:var(--gold);font-size:12px;margin-top:8px}.game-actions{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:12px}
 .modal-bg{position:fixed;inset:0;background:#000b;z-index:10;display:none;align-items:center;justify-content:center;padding:18px}.modal{width:min(430px,100%);padding:24px;border-radius:22px;background:#102d25;border:1px solid #ffffff30;text-align:center}.modal h2{color:var(--gold);margin:0 0 8px}.modal p{color:var(--muted);font-size:13px;line-height:1.8}.modal .btn{margin:5px}
-@media(max-width:600px){header{height:60px}.brand b{font-size:17px}.brand-icon{width:37px;height:37px}.status{display:none}main{padding:15px 8px 25px}.mode-grid{gap:8px}.mode{padding:13px;min-height:105px}.table{height:47vh;min-height:300px;border-width:7px;border-radius:130px}.seat{min-width:84px;padding:5px 7px}.seat .name{font-size:11px}.seat small{font-size:9px}.seat-top{top:12px}.seat-bottom{bottom:12px}.seat-left{left:6px}.seat-right{right:6px}.center{height:140px;width:47%}.played{width:53px;height:78px}.card{width:51px;height:73px}.card .symbol{font-size:20px;margin-top:8px}.score{min-width:78px;padding:5px 8px}.score b{font-size:17px}.toolbar{justify-content:center}.hand-panel{padding:9px 6px}.hand{gap:5px}.lobby-seats{grid-template-columns:1fr;}}
+@media(max-width:600px){header{height:60px}.brand b{font-size:17px}.brand-icon{width:37px;height:37px}.status{display:none}main{padding:15px 8px 25px}.mode-grid{gap:8px}.mode{padding:13px;min-height:105px}.table{height:47vh;min-height:300px;border-width:7px;border-radius:130px}.seat{min-width:84px;padding:5px 7px}.seat .name{font-size:11px}.seat small{font-size:9px}.seat-top{top:12px}.seat-bottom{bottom:12px}.seat-left{left:6px}.seat-right{right:6px}.center{height:140px;width:47%}.played{width:53px;height:78px}.card{width:51px;height:73px}.card .symbol{font-size:20px;margin-top:8px}.score{min-width:78px;padding:5px 8px}.score b{font-size:17px}.toolbar{justify-content:center}.hand-panel{padding:9px 6px}.hand{gap:5px}.lobby-seats{grid-template-columns:1fr}}
 </style></head>
 <body>
 <header><div class="brand"><div class="brand-icon">♠</div><div><b>سَمْرَة</b><small>تحدّاك تجمع أقل نقاط</small></div></div>
 <div class="header-right">
-    <span class="status" id="user-status" style="color: var(--green); display: none;"></span>
+    <span class="status" id="user-status" style="display:none"></span>
     <span class="status" id="connection-status">● وضع فردي</span>
-    <button class="btn secondary small" id="logout-btn" onclick="logout()" style="display: none; background: #963c45; border-color: #963c45;">خروج</button>
-    <button class="btn secondary small" id="settings-btn" onclick="openSettings()" style="display: none; font-size: 18px;">⚙️</button>
-</div>
-</header>
+    <button class="btn secondary small" id="logout-btn" onclick="logout()" style="display:none;background:#963c45;border-color:#963c45">خروج</button>
+    <button class="btn secondary small" id="settings-btn" onclick="openSettings()" style="display:none;font-size:18px">⚙️</button>
+</div></header>
 <main>
 
-<section id="auth-screen" class="panel menu hidden" style="max-width: 450px; margin-top: 50px;">
-    <div class="hero-icon">🂡</div>
-    <h1>سَمْرَة</h1>
+<section id="auth-screen" class="panel menu hidden" style="max-width:450px;margin-top:50px">
+    <div class="hero-icon">🂡</div><h1>سَمْرَة</h1>
     <p class="sub" id="auth-title">سجل الدخول للمتابعة</p>
-    
+
     <div id="login-step">
-        <div class="formrow" style="flex-direction: column; gap: 10px; margin-bottom: 20px;">
-            <input type="email" id="login-email" class="field name" placeholder="البريد الإلكتروني">
-            <input type="password" id="login-password" class="field name" placeholder="كلمة المرور">
+        <div class="formrow" style="flex-direction:column;gap:10px;margin-bottom:20px">
+            <input type="email" id="login-email" class="field name" placeholder="البريد الإلكتروني" autocomplete="email">
+            <input type="password" id="login-password" class="field name" placeholder="كلمة المرور" autocomplete="current-password">
         </div>
-        <div style="display: flex; gap: 10px; justify-content: center;">
+        <div style="display:flex;gap:10px;justify-content:center">
             <button class="btn" onclick="login()">تسجيل الدخول</button>
             <button class="btn secondary" onclick="showRegisterForm()">إنشاء حساب</button>
         </div>
-        <div style="margin-top: 15px;">
-            <a href="#" onclick="showResetForm()" style="color: var(--gold); font-size: 12px; text-decoration: none;">هل نسيت كلمة المرور؟</a>
-        </div>
+        <div style="margin-top:15px"><a href="#" onclick="showResetForm();return false" style="color:var(--gold);font-size:12px;text-decoration:none">هل نسيت كلمة المرور؟</a></div>
     </div>
 
     <div id="register-step" class="hidden">
-        <div class="formrow" style="flex-direction: column; gap: 10px; margin-bottom: 20px;">
-            <input type="text" id="reg-name" class="field name" placeholder="اسمك في اللعبة (يوزر فريد)" maxlength="18">
-            <input type="email" id="reg-email" class="field name" placeholder="البريد الإلكتروني">
-            <input type="password" id="reg-password" class="field name" placeholder="كلمة المرور">
+        <div class="formrow" style="flex-direction:column;gap:10px;margin-bottom:20px">
+            <input type="text" id="reg-name" class="field name" placeholder="اسمك في اللعبة (يوزر فريد)" maxlength="18" autocomplete="nickname">
+            <input type="email" id="reg-email" class="field name" placeholder="البريد الإلكتروني" autocomplete="email">
+            <input type="password" id="reg-password" class="field name" placeholder="كلمة المرور (8 أحرف على الأقل، حروف وأرقام)" autocomplete="new-password">
         </div>
-        <div style="display: flex; gap: 10px; justify-content: center;">
-            <button class="btn btn-green" onclick="startRegister()">إنشاء الحساب</button>
+        <div style="display:flex;gap:10px;justify-content:center">
+            <button class="btn" onclick="startRegister()">إنشاء الحساب</button>
             <button class="btn secondary" onclick="showLoginForm()">لديك حساب؟ سجل دخول</button>
         </div>
     </div>
 
     <div id="reset-step" class="hidden">
-        <div class="formrow" style="flex-direction: column; gap: 10px; margin-bottom: 20px;">
-            <input type="email" id="reset-email" class="field name" placeholder="أدخل بريدك الإلكتروني المسجل">
+        <div class="formrow" style="flex-direction:column;gap:10px;margin-bottom:20px">
+            <input type="email" id="reset-email" class="field name" placeholder="أدخل بريدك الإلكتروني المسجل" autocomplete="email">
         </div>
-        <div style="display: flex; gap: 10px; justify-content: center;">
+        <div style="display:flex;gap:10px;justify-content:center">
             <button class="btn" onclick="startPasswordReset()">إرسال رابط الاستعادة</button>
             <button class="btn secondary" onclick="showLoginForm()">رجوع</button>
         </div>
     </div>
 
-    <p id="auth-msg" style="color: var(--red); font-size: 13px; min-height: 20px; margin-top: 10px;"></p>
+    <div id="newpass-step" class="hidden">
+        <div class="formrow" style="flex-direction:column;gap:10px;margin-bottom:20px">
+            <input type="password" id="new-password" class="field name" placeholder="كلمة المرور الجديدة" autocomplete="new-password">
+        </div>
+        <button class="btn" onclick="saveNewPassword()">حفظ كلمة المرور</button>
+    </div>
+
+    <p id="auth-msg" style="color:var(--red);font-size:13px;min-height:20px;margin-top:10px"></p>
 </section>
 
 <section id="menu" class="panel menu hidden">
  <div class="hero-icon">🂡</div><h1>مرحباً بك في سَمْرَة</h1><p class="sub">اختر طريقة اللعب واضبط جلستك قبل بداية التحدي</p>
- 
  <div class="mode-grid">
   <button class="mode selected" id="mode-bots" onclick="selectMode('bots')"><span class="ico">🤖</span><b>ضد الكمبيوتر</b><small>العب ضد 3 خصوم بذكاء قابل للتعديل</small></button>
   <button class="mode" id="mode-online" onclick="selectMode('online')"><span class="ico">🌐</span><b>لعب أونلاين</b><small>أنشئ غرفة أو ادخل مع صديق برمز</small></button>
@@ -106,54 +105,36 @@ main{width:min(1120px,100%);margin:auto;padding:24px 16px 38px}
   <div class="setting-row"><label for="sound">المؤثرات الصوتية</label><input id="sound" class="toggle" type="checkbox" checked></div>
   <div class="setting-row"><label for="hints">إظهار الأوراق الممكنة</label><input id="hints" class="toggle" type="checkbox" checked></div>
  </div>
- 
  <div id="online-settings" class="online-box hidden">
     <h3>🌐 إعداد الغرفة</h3>
     <div class="formrow" id="online-inputs">
         <button class="btn" onclick="createRoom()">إنشاء غرفة</button>
-        <input id="room-code" class="field" placeholder="رمز الغرفة (samra-xxxx)" maxlength="30" style="flex:1">
+        <input id="room-code" class="field" placeholder="رمز الغرفة (samra-xxxxxxxxxx)" maxlength="30" style="flex:1" autocomplete="off">
     </div>
-    <div class="online-actions" id="online-actions-btns">
-        <button class="btn secondary" onclick="joinRoom()">دخول الغرفة</button>
-    </div>
-    <p class="hint" id="online-hint">أنشئ غرفة، انسخ الكود، وأرسله لصديقك ليدخل معك.</p>
+    <div class="online-actions" id="online-actions-btns"><button class="btn secondary" onclick="joinRoom()">دخول الغرفة</button></div>
+    <p class="hint" id="online-hint">أنشئ غرفة وأرسل الكود لأصدقائك (حتى 3). الأماكن الفارغة يملؤها الكمبيوتر.</p>
  </div>
- 
  <button class="btn" id="start-btn" style="min-width:210px;margin-top:8px" onclick="startMatch()">ابدأ المباراة ←</button>
  <p class="hint">52 ورقة · 4 لاعبين · 13 ورقة لكل لاعب · فريقان</p>
 </section>
 
 <section id="lobby" class="panel lobby hidden">
-    <h2 style="color:var(--gold); margin-top:0;">غرفة الانتظار</h2>
+    <h2 style="color:var(--gold);margin-top:0">غرفة الانتظار</h2>
     <p class="sub" id="lobby-status">جاري الاتصال...</p>
-    
-    <div id="lobby-code-box" style="margin: 15px 0; padding: 12px; background: #071a14; border-radius: 12px; border: 1px solid #ffffff20; display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap;">
-        <span style="font-size: 14px; color: var(--muted);">كود الغرفة:</span>
-        <b id="l-room-code" style="color:var(--gold); font-size: 18px; letter-spacing: 1px;">-</b>
+    <div style="margin:15px 0;padding:12px;background:#071a14;border-radius:12px;border:1px solid #ffffff20;display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap">
+        <span style="font-size:14px;color:var(--muted)">كود الغرفة:</span>
+        <b id="l-room-code" style="color:var(--gold);font-size:18px;letter-spacing:1px">-</b>
         <button class="btn secondary small" id="copy-lobby-btn" onclick="copyRoom()">📋 نسخ الكود</button>
     </div>
-
     <div class="lobby-seats">
-        <div class="lobby-seat host">
-            <span class="role">المضيف (الأسفل)</span>
-            <span class="p-name" id="l-name-bottom">-</span>
-        </div>
-        <div class="lobby-seat guest" id="l-seat-top">
-            <span class="role">الصديق (الأعلى)</span>
-            <span class="p-name" id="l-name-top">بانتظار الانضمام...</span>
-        </div>
-        <div class="lobby-seat bot">
-            <span class="role">الخصم (اليمين)</span>
-            <span class="p-name">كمبيوتر 1</span>
-        </div>
-        <div class="lobby-seat bot">
-            <span class="role">الخصم (اليسار)</span>
-            <span class="p-name">كمبيوتر 2</span>
-        </div>
+        <div class="lobby-seat host" id="l-seat-bottom"><span class="role">المضيف (الفريق الأول)</span><span class="p-name" id="l-name-bottom">-</span></div>
+        <div class="lobby-seat bot" id="l-seat-top"><span class="role">اللاعب 2 (شريك المضيف)</span><span class="p-name" id="l-name-top"></span></div>
+        <div class="lobby-seat bot" id="l-seat-right"><span class="role">اللاعب 3 (الفريق الخصم)</span><span class="p-name" id="l-name-right"></span></div>
+        <div class="lobby-seat bot" id="l-seat-left"><span class="role">اللاعب 4 (الفريق الخصم)</span><span class="p-name" id="l-name-left"></span></div>
     </div>
-
-    <button class="btn hidden" id="start-online-btn" style="background:var(--green); color:#000; width:100%; margin-top:10px;" onclick="startOnlineMatch()">بدء اللعبة الآن</button>
-    <button class="btn secondary" style="width:100%; margin-top:10px;" onclick="backToMenu()">إلغاء والعودة</button>
+    <p class="hint">يدخل حتى 3 لاعبين، وأي مكان فارغ عند بدء اللعبة يلعب فيه الكمبيوتر.</p>
+    <button class="btn hidden" id="start-online-btn" style="background:var(--green);color:#000;width:100%;margin-top:10px" onclick="startOnlineMatch()">بدء اللعبة الآن</button>
+    <button class="btn secondary" style="width:100%;margin-top:10px" onclick="backToMenu()">إلغاء والعودة</button>
 </section>
 
 <section id="game" class="game">
@@ -169,488 +150,281 @@ main{width:min(1120px,100%);margin:auto;padding:24px 16px 38px}
  <div class="game-actions">
      <button class="btn secondary small" id="deal-btn" onclick="dealNew()">صكة جديدة</button>
      <button class="btn secondary small" onclick="showRules()">القوانين</button>
-     <button class="btn secondary small" onclick="leaveGame()" style="color: var(--red); border-color: var(--red);">انسحاب 🚪</button>
+     <button class="btn secondary small" onclick="leaveGame()" style="color:var(--red);border-color:var(--red)">انسحاب 🚪</button>
  </div>
 </section>
 </main>
 
-<div class="modal-bg" id="settings-modal">
-    <div class="modal">
-        <h2>⚙️ الإعدادات</h2>
-        <div style="text-align: right; margin-bottom: 15px; font-size: 14px;">
-            <p style="margin: 5px 0;"><strong>البريد الإلكتروني:</strong> <br><span id="settings-email" style="color: var(--gold);"></span></p>
-            <p style="margin: 10px 0 5px 0;"><strong>اسمك في اللعبة:</strong></p>
-            <input type="text" id="settings-name" class="field" style="width: 100%;">
-            <button class="btn small" onclick="saveSettingsName()" style="width: 100%; margin-top: 8px;">حفظ الاسم</button>
-        </div>
-        <button class="btn hidden" id="admin-btn" onclick="openAdminPanel()" style="width: 100%; margin-bottom: 10px; background: var(--red); border: 2px solid var(--gold); color: white;">👑 لوحة المالك (الأدمن)</button>
-        <button class="btn secondary" onclick="closeSettings()" style="width: 100%;">إغلاق</button>
+<div class="modal-bg" id="settings-modal"><div class="modal">
+    <h2>⚙️ الإعدادات</h2>
+    <div style="text-align:right;margin-bottom:15px;font-size:14px">
+        <p style="margin:5px 0"><strong>البريد الإلكتروني:</strong><br><span id="settings-email" style="color:var(--gold)"></span></p>
+        <p style="margin:10px 0 5px"><strong>اسمك في اللعبة:</strong></p>
+        <input type="text" id="settings-name" class="field" style="width:100%" maxlength="18">
+        <button class="btn small" onclick="saveSettingsName()" style="width:100%;margin-top:8px">حفظ الاسم</button>
     </div>
-</div>
+    <button class="btn hidden" id="admin-btn" onclick="openAdminPanel()" style="width:100%;margin-bottom:10px;background:var(--red);border:2px solid var(--gold);color:#fff">👑 لوحة المالك (الأدمن)</button>
+    <button class="btn secondary" onclick="closeSettings()" style="width:100%">إغلاق</button>
+</div></div>
 
-<div class="modal-bg" id="admin-modal">
-    <div class="modal" style="width: min(600px, 100%);">
-        <h2>👑 لوحة المالك</h2>
-        <input type="text" id="admin-search" class="field" placeholder="ابحث عن مستخدم بالاسم أو الإيميل..." oninput="renderAdminList()" style="width: 100%; margin-bottom: 15px;">
-        <div id="admin-user-list" style="max-height: 55vh; overflow-y: auto; text-align: right; font-size: 13px; background: #071a14; padding: 10px; border-radius: 10px; border: 1px solid #ffffff20;"></div>
-        <button class="btn secondary" onclick="closeAdminPanel()" style="width: 100%; margin-top: 15px;">إغلاق</button>
-    </div>
-</div>
+<div class="modal-bg" id="admin-modal"><div class="modal" style="width:min(600px,100%)">
+    <h2>👑 لوحة المالك</h2>
+    <input type="text" id="admin-search" class="field" placeholder="ابحث عن مستخدم بالاسم أو الإيميل..." oninput="renderAdminList()" style="width:100%;margin-bottom:15px">
+    <div id="admin-user-list" style="max-height:55vh;overflow-y:auto;text-align:right;font-size:13px;background:#071a14;padding:10px;border-radius:10px;border:1px solid #ffffff20"></div>
+    <button class="btn secondary" onclick="closeAdminPanel()" style="width:100%;margin-top:15px">إغلاق</button>
+</div></div>
 
-<div class="modal-bg" id="modal"><div class="modal"><h2 id="modal-title"></h2><p id="modal-text"></p><button class="btn" id="modal-ok" onclick="closeModal()">تمام</button></div></div>
+<div class="modal-bg" id="modal"><div class="modal"><h2 id="modal-title"></h2><p id="modal-text"></p><button class="btn" onclick="closeModal()">تمام</button></div></div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
 <script>
-// ==========================================
-// بيانات مشروعك في Supabase
-// ==========================================
-const SUPABASE_URL = 'https://ecraurncstbgeowhtmvi.supabase.co';
-const SUPABASE_ANON_KEY = 'sb_publishable_2Y9a1dlSHU1nszWMVD7RWg_fYsFNGAo';
-// ==========================================
-
-const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+// المفتاح العام (publishable) آمن للنشر؛ الحماية الحقيقية في سياسات RLS داخل Supabase
+const SUPABASE_URL='https://ecraurncstbgeowhtmvi.supabase.co';
+const SUPABASE_ANON_KEY='sb_publishable_2Y9a1dlSHU1nszWMVD7RWg_fYsFNGAo';
+const supabaseClient=supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
 
 const SEATS=['bottom','right','top','left'],SUITS=['♠','♣','♥','♦'],RANK={'2':2,'3':3,'4':4,'5':5,'6':6,'7':7,'8':8,'9':9,'10':10,'J':11,'Q':12,'K':13,'A':14},FACE={J:'🧑',Q:'👩',K:'🧓',A:'⚡'};
-let mode='bots',state=null,player='لاعب',timer=null,peer=null,conn=null,isHost=false,roomId='',difficulty='normal';
-let localSeat='bottom'; 
-let onlineGuestName = '';
-let currentUser = null;
-let currentUserRole = 'player';
-let myIP = 'جاري التحديد...';
+let mode='bots',state=null,player='لاعب',timer=null,tTimer=null,peer=null,conn=null,isHost=false,roomId='',difficulty='normal';
+let localSeat='bottom',onlineGuestName='',currentUser=null,currentUserRole='player',myName='',recovery=/type=recovery/.test(location.hash),leftHandled=false;
 
-function el(id){return document.getElementById(id)}
+let conns={},started=false,lobbyNames={bottom:'',top:'',right:'',left:''};
+const HINT='أنشئ غرفة وأرسل الكود لأصدقائك (حتى 3). الأماكن الفارغة يملؤها الكمبيوتر.';
+const el=id=>document.getElementById(id);
+const has=(o,k)=>Object.prototype.hasOwnProperty.call(o,k);
+const esc=s=>String(s??'').replace(/[&<>"'`]/g,c=>'&#'+c.charCodeAt(0)+';');
+const BAD=/[<>&"'`\\\u{1F451}\u0000-\u001f\u200E\u200F\u202A-\u202E\u2066-\u2069]/gu;
+const cleanName=s=>Array.from(String(s??'').replace(BAD,'').replace(/\s+/g,' ').trim()).slice(0,18).join('');
+const isBanned=p=>!!p.is_banned&&(!p.ban_until||new Date(p.ban_until)>new Date());
 
-// -----------------------------------------
-// تهيئة اللعبة وجلب IP
-// -----------------------------------------
-async function initApp() {
-    try {
-        const res = await fetch('https://api.ipify.org?format=json');
-        const data = await res.json();
-        myIP = data.ip;
-    } catch(e) {
-        myIP = 'unknown';
-    }
-    
-    supabaseClient.auth.onAuthStateChange((event, session) => {
-        if (event === 'SIGNED_IN' && session) {
-            currentUser = session.user;
-            checkUserStatus(currentUser);
-        } else if (event === 'SIGNED_OUT') {
-            currentUser = null;
-            currentUserRole = 'player';
-            showAuthScreen();
-        }
-    });
-
-    const { data: { session } } = await supabaseClient.auth.getSession();
-    if(session) {
-        currentUser = session.user;
-        checkUserStatus(currentUser);
-    } else {
-        showAuthScreen();
-    }
-}
-
-async function checkUserStatus(user) {
-    const { data: profile, error } = await supabaseClient
-        .from('profiles')
-        .select('*')
-        .eq('id', user.id)
-        .single();
-
-    if (error || !profile) {
-        console.error("Error fetching profile:", error);
-        el('auth-msg').textContent = 'حدث خطأ في جلب بيانات حسابك.';
-        return;
-    }
-
-    let isBanned = profile.is_banned;
-    if (profile.ban_until) {
-        if (profile.ban_until === 'permanent') {
-            isBanned = true;
-        } else if (new Date(profile.ban_until) > new Date()) {
-            isBanned = true;
-        } else {
-            await supabaseClient.from('profiles').update({ is_banned: false, ban_until: null }).eq('id', user.id);
-            isBanned = false;
-        }
-    }
-
-    if (isBanned) {
-        let msg = '🚫 حسابك محظور من قبل المالك.';
-        if(profile.ban_until && profile.ban_until !== 'permanent') {
-            msg += ` ينتهي الحظر في: ${new Date(profile.ban_until).toLocaleString('ar-SA')}`;
-        }
-        await supabaseClient.auth.signOut();
-        el('auth-msg').textContent = msg;
-        return;
-    }
-
-    await supabaseClient.from('profiles').update({ ip_address: myIP }).eq('id', user.id);
-    currentUserRole = profile.role || 'player';
-    showMainMenu(user.email, profile.name);
-}
-
-// -----------------------------------------
-// نظام تسجيل الدخول (Auth)
-// -----------------------------------------
-function showAuthScreen() {
+// ---------- المصادقة ----------
+function authMsg(t,type){const m=el('auth-msg');m.style.color=type==='ok'?'var(--green)':type==='info'?'var(--gold)':'var(--red)';m.textContent=t||''}
+function showStep(x,title){['login','register','reset','newpass'].forEach(s=>el(s+'-step').classList.toggle('hidden',s!==x));el('auth-title').textContent=title;authMsg('')}
+function showLoginForm(){showStep('login','سجل الدخول للمتابعة')}
+function showRegisterForm(){showStep('register','إنشاء حساب جديد')}
+function showResetForm(){showStep('reset','استعادة كلمة المرور')}
+function showNewPasswordForm(){showAuthScreen();showStep('newpass','تعيين كلمة مرور جديدة')}
+function showAuthScreen(){
+    ['menu','lobby'].forEach(i=>el(i).classList.add('hidden'));el('game').style.display='none';
     el('auth-screen').classList.remove('hidden');
-    el('menu').classList.add('hidden');
-    el('logout-btn').style.display = 'none';
-    el('settings-btn').style.display = 'none';
-    el('user-status').style.display = 'none';
+    ['logout-btn','settings-btn','user-status'].forEach(i=>el(i).style.display='none');
     showLoginForm();
 }
-
-function showLoginForm() {
-    el('register-step').classList.add('hidden');
-    el('reset-step').classList.add('hidden');
-    el('login-step').classList.remove('hidden');
-    el('auth-title').textContent = 'سجل الدخول للمتابعة';
-    el('auth-msg').textContent = '';
+function cleanup(){
+    clearTimeout(timer);clearTimeout(tTimer);
+    if(peer){try{peer.destroy()}catch(e){}peer=null;conn=null}
+    state=null;isHost=false;started=false;conns={};localSeat='bottom';leftHandled=false;
+    ['settings-modal','admin-modal','modal'].forEach(i=>el(i).style.display='none');
 }
+const goodPass=p=>p.length>=8&&p.length<=72&&/\d/.test(p)&&/\D/.test(p);
+const goodMail=e=>/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)&&e.length<=254;
+let fails=0,lockUntil=0;
+function locked(){const r=Math.ceil((lockUntil-Date.now())/1000);if(r>0){authMsg('محاولات كثيرة. انتظر '+r+' ثانية');return true}return false}
+function fail(){if(++fails>=5){lockUntil=Date.now()+30000;fails=0}}
 
-function showRegisterForm() {
-    el('login-step').classList.add('hidden');
-    el('reset-step').classList.add('hidden');
-    el('register-step').classList.remove('hidden');
-    el('auth-title').textContent = 'إنشاء حساب جديد';
-    el('auth-msg').textContent = '';
-}
-
-function showResetForm() {
-    el('login-step').classList.add('hidden');
-    el('register-step').classList.add('hidden');
-    el('reset-step').classList.remove('hidden');
-    el('auth-title').textContent = 'استعادة كلمة المرور';
-    el('auth-msg').textContent = '';
-}
-
-async function startRegister() {
-    const name = el('reg-name').value.trim();
-    const email = el('reg-email').value.trim().toLowerCase();
-    const pass = el('reg-password').value;
-    const msg = el('auth-msg');
-    
-    if(!name || !email || !pass) { msg.textContent = 'الرجاء تعبئة جميع الحقول'; return; }
-    if(pass.length < 6) { msg.textContent = 'كلمة المرور قصيرة جداً (6 أحرف على الأقل)'; return; }
-    
-    msg.style.color = 'var(--gold)';
-    msg.textContent = 'جاري إنشاء الحساب...';
-    
-    const { data, error } = await supabaseClient.auth.signUp({
-        email: email,
-        password: pass,
-        options: { data: { name: name } }
+async function initApp(){
+    supabaseClient.auth.onAuthStateChange((ev,session)=>{
+        if(ev==='PASSWORD_RECOVERY'){recovery=true;showNewPasswordForm();return}
+        if(ev==='SIGNED_IN'&&session){
+            if(recovery)return;
+            if(currentUser&&currentUser.id===session.user.id)return; // يمنع ظهور القائمة عند العودة للتبويب
+            currentUser=session.user;
+            setTimeout(()=>checkUserStatus(session.user),0);
+        }else if(ev==='SIGNED_OUT'){currentUser=null;currentUserRole='player';myName='';cleanup();showAuthScreen()}
     });
+    const {data:{session}}=await supabaseClient.auth.getSession();
+    if(recovery&&session){showNewPasswordForm()}
+    else if(session&&!currentUser){currentUser=session.user;checkUserStatus(currentUser)}
+    else if(!session)showAuthScreen();
+    setInterval(recheckBan,120000);
+}
 
-    if (error) {
-        msg.style.color = 'var(--red)';
-        msg.textContent = 'خطأ: ' + error.message;
-    } else {
-        msg.style.color = 'var(--green)';
-        msg.textContent = 'تم إنشاء الحساب! يرجى التحقق من بريدك الإلكتروني لتأكيد الحساب، ثم قم بتسجيل الدخول.';
-        showLoginForm();
+async function kickBanned(p){
+    let msg='🚫 حسابك محظور.';
+    if(p.ban_until)msg+=' ينتهي الحظر في: '+new Date(p.ban_until).toLocaleString('ar-SA');
+    await supabaseClient.auth.signOut();showAuthScreen();authMsg(msg);
+}
+async function recheckBan(){
+    if(!currentUser)return;
+    const {data:p}=await supabaseClient.from('profiles').select('is_banned,ban_until').eq('id',currentUser.id).single();
+    if(p&&isBanned(p))kickBanned(p);
+}
+async function checkUserStatus(user){
+    const {data:p,error}=await supabaseClient.from('profiles').select('name,role,is_banned,ban_until').eq('id',user.id).single();
+    if(error||!p){await supabaseClient.auth.signOut();showAuthScreen();authMsg('تعذر جلب بيانات حسابك. حاول لاحقاً.');return}
+    if(isBanned(p)){await kickBanned(p);return}
+    currentUserRole=p.role==='admin'?'admin':'player';
+    myName=cleanName(p.name)||'لاعب';
+    showMainMenu(myName);
+}
+
+async function startRegister(){
+    const name=cleanName(el('reg-name').value),email=el('reg-email').value.trim().toLowerCase(),pass=el('reg-password').value;
+    if(locked())return;
+    if(name.length<2){authMsg('الاسم حرفان على الأقل ولا يحتوي رموزاً خاصة (< > & " \' `)');return}
+    if(!goodMail(email)){authMsg('البريد الإلكتروني غير صالح');return}
+    if(!goodPass(pass)){authMsg('كلمة المرور: 8 أحرف على الأقل وتحتوي حروفاً وأرقاماً');return}
+    authMsg('جاري إنشاء الحساب...','info');
+    const {error}=await supabaseClient.auth.signUp({email,password:pass,options:{data:{name},emailRedirectTo:location.origin+location.pathname}});
+    el('reg-password').value='';
+    if(error){fail();authMsg('تعذر إنشاء الحساب. تحقق من البيانات وحاول مرة أخرى.');return}
+    showLoginForm();authMsg('تم! افحص بريدك لتأكيد الحساب ثم سجل الدخول.','ok');
+}
+async function login(){
+    const email=el('login-email').value.trim().toLowerCase(),pass=el('login-password').value;
+    if(locked())return;
+    if(!email||!pass){authMsg('الرجاء إدخال البريد وكلمة المرور');return}
+    authMsg('جاري تسجيل الدخول...','info');
+    const {error}=await supabaseClient.auth.signInWithPassword({email,password:pass});
+    el('login-password').value='';
+    if(error){fail();authMsg('البريد أو كلمة المرور غير صحيحة، أو لم يتم تأكيد البريد بعد.')}
+}
+async function startPasswordReset(){
+    const email=el('reset-email').value.trim().toLowerCase();
+    if(locked())return;
+    if(!goodMail(email)){authMsg('الرجاء إدخال بريد صالح');return}
+    await supabaseClient.auth.resetPasswordForEmail(email,{redirectTo:location.origin+location.pathname});
+    fail();authMsg('إذا كان البريد مسجلاً لدينا فسيصلك رابط الاستعادة.','ok');
+}
+async function saveNewPassword(){
+    const p=el('new-password').value;
+    if(!goodPass(p)){authMsg('كلمة المرور: 8 أحرف على الأقل وتحتوي حروفاً وأرقاماً');return}
+    const {error}=await supabaseClient.auth.updateUser({password:p});
+    el('new-password').value='';
+    if(error){authMsg('تعذر تغيير كلمة المرور. اطلب رابطاً جديداً.');return}
+    recovery=false;history.replaceState(null,'',location.pathname);
+    const {data:{session}}=await supabaseClient.auth.getSession();
+    if(session){currentUser=session.user;checkUserStatus(currentUser)}else showAuthScreen();
+}
+async function logout(){await supabaseClient.auth.signOut()}
+
+function showMainMenu(name){
+    el('auth-screen').classList.add('hidden');el('menu').classList.remove('hidden');
+    const s=el('user-status');s.textContent='👤 '+name+(currentUserRole==='admin'?' 👑 (المالك)':'');s.style.color='var(--gold)';s.style.display='inline-block';
+    el('logout-btn').style.display='inline-block';el('settings-btn').style.display='inline-block';
+}
+
+// ---------- الإعدادات ولوحة المالك (الصلاحيات تُفرض من السيرفر عبر RLS/RPC) ----------
+function openSettings(){
+    if(!currentUser)return;
+    el('settings-email').textContent=currentUser.email;el('settings-name').value=myName;
+    el('admin-btn').classList.toggle('hidden',currentUserRole!=='admin');
+    el('settings-modal').style.display='flex';
+}
+function closeSettings(){el('settings-modal').style.display='none'}
+async function saveSettingsName(){
+    const n=cleanName(el('settings-name').value);
+    if(n.length<2){alert('الاسم حرفان على الأقل ولا يحتوي رموزاً خاصة');return}
+    const {error}=await supabaseClient.from('profiles').update({name:n}).eq('id',currentUser.id);
+    if(error){alert(error.code==='23505'?'هذا الاسم مستخدم بالفعل!':'تعذر حفظ الاسم');return}
+    myName=n;showMainMenu(n);closeSettings();
+}
+async function openAdminPanel(){
+    if(currentUserRole!=='admin')return;
+    closeSettings();el('admin-modal').style.display='flex';el('admin-search').value='';await renderAdminList();
+}
+function closeAdminPanel(){el('admin-modal').style.display='none'}
+async function renderAdminList(){
+    if(currentUserRole!=='admin')return;
+    const q=el('admin-search').value.toLowerCase().trim(),box=el('admin-user-list');
+    const {data:users,error}=await supabaseClient.rpc('admin_list_users');
+    if(error||!users){box.textContent='تعذر جلب البيانات.';return}
+    const rows=users.filter(u=>!q||String(u.name||'').toLowerCase().includes(q)||String(u.email||'').toLowerCase().includes(q));
+    box.innerHTML=rows.length?rows.map(u=>{
+        const b=isBanned(u),self=u.id===currentUser.id;
+        const st=b?`<span style="color:var(--red)">محظور 🚫<br><span style="font-size:10px;color:var(--muted)">${u.ban_until?'ينتهي: '+esc(new Date(u.ban_until).toLocaleString('ar-SA')):'حظر دائم'}</span></span>`:'<span style="color:var(--green)">نشط ✅</span>';
+        return `<div style="border-bottom:1px solid #ffffff20;padding:10px 0"><div><b style="color:var(--gold);font-size:14px">${esc(u.name)}</b></div><div style="font-size:11px;color:var(--muted)">📧 ${esc(u.email)}</div><div style="font-size:11px;margin:5px 0">الحالة: ${st}</div>${self?'':`<button class="btn small" style="${b?'background:var(--green);color:#000':'background:#963c45;color:#fff'}" data-id="${esc(u.id)}" data-b="${b?1:0}">${b?'فك الحظر':'حظر الحساب'}</button>`}</div>`;
+    }).join(''):'لا يوجد مستخدمون يطابقون البحث.';
+}
+el('admin-user-list').addEventListener('click',e=>{const b=e.target.closest('button[data-id]');if(b)toggleBan(b.dataset.id,b.dataset.b==='1')});
+async function toggleBan(id,banned){
+    if(currentUserRole!=='admin'||id===currentUser.id)return;
+    let mins=-1;
+    if(banned){if(!confirm('هل تريد إلغاء حظر هذا الحساب؟'))return}
+    else{
+        const v=prompt('مدة الحظر بالدقائق (0 = دائم):','60');if(v===null)return;
+        mins=parseInt(v,10);if(!Number.isInteger(mins)||mins<0||mins>525600){alert('قيمة غير صحيحة');return}
     }
+    const {error}=await supabaseClient.rpc('admin_set_ban',{target:id,minutes:mins});
+    if(error)alert('تعذر تنفيذ العملية');
+    renderAdminList();
 }
 
-async function login() {
-    const email = el('login-email').value.trim().toLowerCase();
-    const pass = el('login-password').value;
-    const msg = el('auth-msg');
-    
-    if(!email || !pass) { msg.textContent = 'الرجاء إدخال البريد وكلمة المرور'; return; }
-    
-    msg.style.color = 'var(--gold)';
-    msg.textContent = 'جاري تسجيل الدخول...';
-    
-    const { data, error } = await supabaseClient.auth.signInWithPassword({
-        email: email,
-        password: pass
-    });
-
-    if (error) {
-        msg.style.color = 'var(--red)';
-        msg.textContent = 'خطأ: ' + error.message;
-    }
-}
-
-async function startPasswordReset() {
-    const email = el('reset-email').value.trim().toLowerCase();
-    const msg = el('auth-msg');
-    
-    if(!email) { msg.textContent = 'الرجاء إدخال بريدك الإلكتروني'; return; }
-    
-    msg.style.color = 'var(--gold)';
-    msg.textContent = 'جاري إرسال رابط الاستعادة...';
-    
-    const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
-        redirectTo: window.location.origin 
-    });
-
-    if (error) {
-        msg.style.color = 'var(--red)';
-        msg.textContent = 'خطأ: ' + error.message;
-    } else {
-        msg.style.color = 'var(--green)';
-        msg.textContent = 'تم إرسال رابط استعادة كلمة المرور إلى بريدك.';
-    }
-}
-
-async function logout() {
-    await supabaseClient.auth.signOut();
-    showAuthScreen();
-}
-
-function showMainMenu(email, name) {
-    el('auth-screen').classList.add('hidden');
-    el('menu').classList.remove('hidden');
-    
-    let displayName = name || email.split('@')[0];
-    if(currentUserRole === 'admin') displayName += ' 👑 (المالك)';
-    
-    el('user-status').innerHTML = `<span style="color: var(--gold);">👤 ${displayName}</span>`;
-    el('user-status').style.display = 'inline-block';
-    el('logout-btn').style.display = 'inline-block';
-    el('settings-btn').style.display = 'inline-block';
-}
-
-// -----------------------------------------
-// الإعدادات ولوحة المالك (Admin)
-// -----------------------------------------
-let currentProfileData = null;
-
-async function openSettings() {
-    if(!currentUser) return;
-    
-    const { data: profile } = await supabaseClient.from('profiles').select('*').eq('id', currentUser.id).single();
-    currentProfileData = profile;
-
-    el('settings-email').textContent = currentUser.email;
-    el('settings-name').value = profile.name || '';
-    
-    if(currentUserRole === 'admin') {
-        el('admin-btn').classList.remove('hidden');
-    } else {
-        el('admin-btn').classList.add('hidden');
-    }
-    
-    el('settings-modal').style.display = 'flex';
-}
-
-function closeSettings() { el('settings-modal').style.display = 'none'; }
-
-async function saveSettingsName() {
-    const newName = el('settings-name').value.trim();
-    if(!newName) { alert('الاسم لا يمكن أن يكون فارغاً'); return; }
-    
-    const { error } = await supabaseClient.from('profiles').update({ name: newName }).eq('id', currentUser.id);
-    
-    if (error) {
-        if(error.code === '23505') alert('هذا الاسم مستخدم بالفعل من قبل لاعب آخر!');
-        else alert('حدث خطأ: ' + error.message);
-    } else {
-        alert('تم حفظ الاسم بنجاح!');
-        showMainMenu(currentUser.email, newName);
-        closeSettings();
-    }
-}
-
-// --- لوحة المالك ---
-async function openAdminPanel() {
-    closeSettings();
-    el('admin-modal').style.display = 'flex';
-    el('admin-search').value = '';
-    await renderAdminList();
-}
-
-function closeAdminPanel() { el('admin-modal').style.display = 'none'; }
-
-async function renderAdminList() {
-    const search = el('admin-search').value.toLowerCase();
-    const { data: users, error } = await supabaseClient.from('profiles').select('*');
-    
-    if (error) {
-        el('admin-user-list').innerHTML = 'حدث خطأ في جلب البيانات. تأكد من صلاحياتك.';
-        return;
-    }
-
-    let html = '';
-    let count = 0;
-    
-    users.forEach(u => {
-        let uName = u.name || 'بدون اسم';
-        let uEmail = u.email || '';
-        
-        if(search && !uEmail.includes(search) && !uName.toLowerCase().includes(search)) return;
-        count++;
-        
-        let isBanned = u.is_banned;
-        let banTimeTxt = '';
-        if(isBanned && u.ban_until && u.ban_until !== 'permanent') {
-            banTimeTxt = `<br><span style="font-size:10px; color:var(--muted);">ينتهي: ${new Date(u.ban_until).toLocaleString('ar-SA')}</span>`;
-        } else if(isBanned) {
-            banTimeTxt = `<br><span style="font-size:10px; color:var(--red);">حظر دائم</span>`;
-        }
-
-        let statusTxt = isBanned ? `<span style="color:var(--red)">محظور 🚫${banTimeTxt}</span>` : '<span style="color:var(--green)">نشط ✅</span>';
-        let btnTxtAcc = isBanned ? 'فك الحظر' : 'حظر الحساب';
-        let btnColorAcc = isBanned ? 'background: var(--green); color: #000;' : 'background: var(--red); color: #fff;';
-        
-        html += `<div style="border-bottom: 1px solid #ffffff20; padding: 10px 0;">
-            <div style="margin-bottom: 3px;"><b style="color:var(--gold); font-size:14px;">${uName}</b></div>
-            <div style="font-size: 11px; color:var(--muted);">📧 ${uEmail}</div>
-            <div style="font-size: 11px; color:var(--muted);">🌐 IP: ${u.ip_address || 'غير متوفر'}</div>
-            <div style="font-size: 11px; margin: 5px 0;">الحالة: ${statusTxt}</div>
-            <div style="display: flex; gap: 5px; flex-wrap: wrap; margin-top: 8px;">
-                <button class="btn small" style="${btnColorAcc}" onclick="toggleBan('${u.id}', ${isBanned})">${btnTxtAcc}</button>
-            </div>
-        </div>`;
-    });
-    
-    el('admin-user-list').innerHTML = count > 0 ? html : 'لا يوجد مستخدمين يطابقون البحث.';
-}
-
-async function toggleBan(userId, currentlyBanned) {
-    if(currentlyBanned) {
-        if(confirm('هل تريد إلغاء حظر هذا الحساب؟')) {
-            await supabaseClient.from('profiles').update({ is_banned: false, ban_until: null }).eq('id', userId);
-            renderAdminList();
-        }
-    } else {
-        let mins = prompt("أدخل مدة حظر الحساب بالدقائق (0 = حظر دائم):", "60");
-        if(mins === null) return;
-        mins = parseInt(mins);
-        if(isNaN(mins) || mins < 0) return alert("قيمة غير صحيحة");
-        
-        let banUntil = mins === 0 ? 'permanent' : new Date(Date.now() + mins * 60000).toISOString();
-        
-        await supabaseClient.from('profiles').update({ is_banned: true, ban_until: banUntil }).eq('id', userId);
-        renderAdminList();
-    }
-}
-
-// -----------------------------------------
-// منطق اللعبة والاتصال
-// -----------------------------------------
-window.addEventListener('DOMContentLoaded', initApp);
-
+// ---------- منطق اللعبة ----------
+window.addEventListener('DOMContentLoaded',initApp);
 function selectMode(m){
     mode=m;
-    el('mode-bots').classList.toggle('selected',m==='bots');
-    el('mode-online').classList.toggle('selected',m==='online');
-    el('bot-settings').classList.toggle('hidden',m!=='bots');
-    el('online-settings').classList.toggle('hidden',m!=='online');
+    el('mode-bots').classList.toggle('selected',m==='bots');el('mode-online').classList.toggle('selected',m==='online');
+    el('bot-settings').classList.toggle('hidden',m!=='bots');el('online-settings').classList.toggle('hidden',m!=='online');
     el('start-btn').classList.toggle('hidden',m==='online');
 }
-function deck(){let d=[];for(let s of SUITS)for(let v of Object.keys(RANK))d.push({s,v});for(let i=d.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[d[i],d[j]]=[d[j],d[i]]}return d}
-
-function getPlayerNameForGame() {
-    let baseName = el('settings-name').value || 'لاعب';
-    if(currentUserRole === 'admin') {
-        return baseName + ' 👑 (المالك)';
-    }
-    return baseName;
+function deck(){
+    let d=[];for(let s of SUITS)for(let v of Object.keys(RANK))d.push({s,v});
+    const r=new Uint32Array(d.length);crypto.getRandomValues(r);
+    for(let i=d.length-1;i>0;i--){let j=r[i]%(i+1);[d[i],d[j]]=[d[j],d[i]]}
+    return d;
 }
-
 function fresh(){
-    return {
-        scores:[0,0], hands:{bottom:[],right:[],top:[],left:[]}, played:{bottom:null,right:null,top:null,left:null},
-        turn:'bottom', lead:null, winner:null, roundEnd:false, matchEnd:false,
-        names:{bottom:'أنت',right:'الكمبيوتر 1',top:'الشريك',left:'الكمبيوتر 2'},
-        isBot: {bottom: false, right: true, top: true, left: true}
-    }
+    return{scores:[0,0],hands:{bottom:[],right:[],top:[],left:[]},played:{bottom:null,right:null,top:null,left:null},turn:'bottom',lead:null,winner:null,roundEnd:false,matchEnd:false,
+    names:{bottom:'أنت',right:'الكمبيوتر 1',top:'الشريك',left:'الكمبيوتر 2'},isBot:{bottom:false,right:true,top:true,left:true}}
 }
-
 function startMatch(){
-    localSeat='bottom';
-    player = getPlayerNameForGame();
-    difficulty=el('difficulty').value;
-    state=fresh();
-    state.names.bottom = player;
-    state.names.top = 'الكمبيوتر 3'; 
-    state.names.right = 'الكمبيوتر 1';
-    state.names.left = 'الكمبيوتر 2';
+    mode='bots';localSeat='bottom';player=myName||'لاعب';difficulty=el('difficulty').value;
+    state=fresh();state.names={bottom:player,right:'الكمبيوتر 1',top:'الكمبيوتر 3',left:'الكمبيوتر 2'};
     dealCards();
-    el('menu').classList.add('hidden');
-    el('game').style.display='block';
-    el('connection-status').textContent='● وضع فردي';
-    el('deal-btn').classList.remove('hidden');
+    el('menu').classList.add('hidden');el('game').style.display='block';
+    el('connection-status').textContent='● وضع فردي';el('deal-btn').classList.remove('hidden');
 }
-
 function dealCards(){
-    clearTimeout(timer);
+    clearTimeout(timer);clearTimeout(tTimer);
     let d=deck();
-    state.hands={bottom:[],right:[],top:[],left:[]};
-    state.played={bottom:null,right:null,top:null,left:null};
+    state.hands={bottom:[],right:[],top:[],left:[]};state.played={bottom:null,right:null,top:null,left:null};
     for(let n=0;n<13;n++)for(let s of SEATS)state.hands[s].push(d.pop());
-    state.turn=state.winner||'bottom';
-    state.lead=null;
-    state.roundEnd=false;
-    state.matchEnd=false;
-    render();
-    botTurn()
+    state.turn=state.winner||'bottom';state.lead=null;state.roundEnd=false;state.matchEnd=false;
+    render();botTurn();
 }
-
 function dealNew(){
     if(!state)return;
-    if(mode==='online'&&!isHost){alert('فقط المضيف يمكنه توزيع صكة جديدة');return;}
-    if(state.matchEnd){state=fresh()}
-    dealCards()
+    if(mode==='online'&&!isHost){alert('فقط المضيف يمكنه توزيع صكة جديدة');return}
+    if(state.matchEnd){const n=state.names,b=state.isBot;state=fresh();state.names=n;state.isBot=b}
+    dealCards();
 }
-
-function canPlay(c,s){return !state.lead||!state.hands[s].some(x=>x.s===state.lead)||c.s===state.lead}
-
+function canPlay(c,s){return !state.lead||!state.hands[s].some(x=>x&&x.s===state.lead)||c.s===state.lead}
 function humanPlay(i){
     if(!state||state.turn!==localSeat||state.roundEnd||state.matchEnd)return;
-    if(!isHost&&mode==='online'){
-        if(conn&&conn.open)conn.send({type:'move',index:i});
-        return;
-    }
-    let c=state.hands[localSeat][i];
+    let c=state.hands[localSeat][i];if(!c)return;
     if(!canPlay(c,localSeat)){say('لازم تلعب من نفس النوع '+state.lead);return}
-    play(localSeat,i)
+    if(mode==='online'&&!isHost){if(conn&&conn.open)conn.send({type:'move',index:i});return}
+    play(localSeat,i);
 }
-
 function play(s,i){
     let c=state.hands[s].splice(i,1)[0];
     if(!state.lead)state.lead=c.s;
-    state.played[s]=c;
-    state.turn=SEATS[(SEATS.indexOf(s)+1)%4];
+    state.played[s]=c;state.turn=SEATS[(SEATS.indexOf(s)+1)%4];
     render();
     if(SEATS.every(x=>state.played[x])){scoreTrick();return}
-    botTurn()
+    botTurn();
 }
-
 function botPick(s){
     let h=state.hands[s],valid=h.map((c,i)=>({c,i})).filter(x=>canPlay(x.c,s));
     let pool=valid.length?valid:h.map((c,i)=>({c,i}));
     let penalty=c=>c.s==='♥'?(c.v==='Q'?13:1):(c.s==='♦'&&c.v==='10'?10:0);
     if(difficulty==='easy')return pool[Math.floor(Math.random()*pool.length)].i;
     if(difficulty==='hard'){
-        let winning=pool.filter(x=>x.c.s===state.lead&&RANK[x.c.v]>Math.max(-1,...SEATS.filter(z=>state.played[z]&&state.played[z].s===state.lead).map(z=>RANK[state.played[z].v])));
-        return (winning.length?winning:pool).sort((a,b)=>penalty(a.c)-penalty(b.c))[0].i
+        let top=Math.max(-1,...SEATS.filter(z=>state.played[z]&&state.played[z].s===state.lead).map(z=>RANK[state.played[z].v]));
+        let winning=pool.filter(x=>x.c.s===state.lead&&RANK[x.c.v]>top);
+        return(winning.length?winning:pool).sort((a,b)=>penalty(a.c)-penalty(b.c))[0].i;
     }
-    return pool.sort((a,b)=>penalty(a.c)-penalty(b.c)||RANK[a.c.v]-RANK[b.c.v])[0].i
+    return pool.sort((a,b)=>penalty(a.c)-penalty(b.c)||RANK[a.c.v]-RANK[b.c.v])[0].i;
 }
-
 function botTurn(){
     clearTimeout(timer);
     if(!state||state.roundEnd||state.matchEnd||state.turn===localSeat)return;
-    if(mode==='online'&&!isHost)return; 
-    if(!state.isBot[state.turn])return; 
-
+    if(mode==='online'&&!isHost)return;
+    if(!state.isBot[state.turn])return;
     let delay=Number(el('delay')?.value||1600);
-    timer=setTimeout(()=>{
-        if(state&&state.turn!==localSeat&&!state.roundEnd){
-            play(state.turn,botPick(state.turn))
-        }
-    },delay)
+    timer=setTimeout(()=>{if(state&&state.turn!==localSeat&&!state.roundEnd&&state.isBot[state.turn])play(state.turn,botPick(state.turn))},delay);
 }
-
 function scoreTrick(){
     state.roundEnd=true;
     let win='bottom',high=-1,points=0;
@@ -659,246 +433,241 @@ function scoreTrick(){
         if(c.s===state.lead&&RANK[c.v]>high){high=RANK[c.v];win=s}
         if(c.s==='♥')points++;
         if(c.s==='♥'&&c.v==='Q')points+=12;
-        if(c.s==='♦'&&c.v==='10')points+=10
+        if(c.s==='♦'&&c.v==='10')points+=10;
     }
     let team=['bottom','top'].includes(win)?0:1;
-    state.scores[team]+=points;
-    state.winner=win;
-    state.turn=win;
-    render();
-    say(state.names[win]+' أخذ الجولة · '+points+' نقطة سلبية');
-    
-    setTimeout(()=>{
+    state.scores[team]+=points;state.winner=win;state.turn=win;
+    render();say(state.names[win]+' أخذ الجولة · '+points+' نقطة سلبية');
+    tTimer=setTimeout(()=>{
+        if(!state)return;
         if(state.scores.some(x=>x>=100)){
-            state.matchEnd=true; render();
-            popup('انتهت المباراة',state.scores[0]>=100?'فريقك وصل 100 نقطة وخسر!':'الخصم وصل 100 نقطة وخسر!');
-            return
+            state.matchEnd=true;render();
+            matchEndPopup();return;
         }
-        state.played={bottom:null,right:null,top:null,left:null}; state.lead=null; state.roundEnd=false;
-        if(SEATS.every(s=>state.hands[s].length===0)){
-            render(); popup('انتهت الصكة','انتهت الأوراق. ابدأ صكة جديدة مع بقاء النتيجة.'); return
-        }
-        state.turn=win; render(); botTurn()
-    },1700)
+        state.played={bottom:null,right:null,top:null,left:null};state.lead=null;state.roundEnd=false;
+        if(SEATS.every(s=>state.hands[s].length===0)){render();popup('انتهت الصكة','انتهت الأوراق. ابدأ صكة جديدة مع بقاء النتيجة.');return}
+        state.turn=win;render();botTurn();
+    },1700);
 }
-
 function cardHTML(c){
-    if(!c)return '<div class="empty"></div>';
-    return `<div class="card ${c.s==='♥'||c.s==='♦'?'red':''}"><div class="corner">${FACE[c.v]||c.v}<br>${c.s}</div><div class="symbol">${c.s}</div></div>`
+    if(!c||!SUITS.includes(c.s)||!has(RANK,c.v))return '<div class="empty"></div>';
+    return `<div class="card ${c.s==='♥'||c.s==='♦'?'red':''}"><div class="corner">${has(FACE,c.v)?FACE[c.v]:c.v}<br>${c.s}</div><div class="symbol">${c.s}</div></div>`;
 }
-
-function getVisualSeat(actualSeat) {
-    if (localSeat === 'bottom') return actualSeat;
-    if (actualSeat === 'bottom') return 'top';
-    if (actualSeat === 'top') return 'bottom';
-    if (actualSeat === 'right') return 'left';
-    if (actualSeat === 'left') return 'right';
-    return actualSeat;
+function getVisualSeat(a){return['bottom','right','top','left'][(SEATS.indexOf(a)-SEATS.indexOf(localSeat)+4)%4]}
+function matchEndPopup(){const t=['bottom','top'].includes(localSeat)?0:1;popup('انتهت المباراة',state.scores[t]>=100?'فريقك وصل 100 نقطة وخسر!':'الخصم وصل 100 نقطة وخسر!')}
+// نسخة من الحالة لكل ضيف: أوراقه فقط، وبقية الأيدي أعداد فارغة (يمنع الغش)
+function stateFor(seat){
+    const c=JSON.parse(JSON.stringify(state));
+    for(const k of SEATS)if(k!==seat)c.hands[k]=c.hands[k].map(()=>null);
+    delete c.isBot;return c;
 }
-
+// تحقق وتنظيف أي حالة قادمة من الشبكة
+function cleanState(s){
+    if(!s||typeof s!=='object')return null;
+    const okC=c=>c===null||(c&&typeof c==='object'&&SUITS.includes(c.s)&&has(RANK,c.v));
+    if(!Array.isArray(s.scores)||s.scores.length!==2||!s.scores.every(Number.isFinite))return null;
+    const hands={},played={},names={};
+    for(const k of SEATS){
+        const h=s.hands&&s.hands[k];if(!Array.isArray(h)||h.length>13||!h.every(okC))return null;
+        hands[k]=h.map(c=>c?{s:c.s,v:c.v}:null);
+        const p=(s.played&&s.played[k])||null;if(!okC(p))return null;
+        played[k]=p?{s:p.s,v:p.v}:null;
+        names[k]=cleanName(s.names&&s.names[k])||'لاعب';
+    }
+    if(!SEATS.includes(s.turn))return null;
+    if(!(s.lead===null||SUITS.includes(s.lead)))return null;
+    return{scores:[s.scores[0],s.scores[1]],hands,played,turn:s.turn,lead:s.lead,winner:SEATS.includes(s.winner)?s.winner:null,roundEnd:!!s.roundEnd,matchEnd:!!s.matchEnd,names,isBot:{bottom:false,right:true,top:false,left:true}};
+}
 function render(){
     if(!state)return;
+    const mineTop=['bottom','top'].includes(localSeat),myTeam=mineTop?0:1;
     for(let actual of SEATS){
-        let visual = getVisualSeat(actual);
-        let nameHTML = state.names[actual];
-        if(nameHTML.includes('👑')) {
-            el('name-'+visual).innerHTML = `<span style="color: var(--gold); font-weight: 800;">${nameHTML}</span>`;
-        } else {
-            el('name-'+visual).textContent = nameHTML;
-        }
-        el('slot-'+visual).innerHTML=cardHTML(state.played[actual]);
-        el('seat-'+visual).classList.toggle('active',state.turn===actual&&!state.matchEnd);
-        if(visual!=='bottom'){
-            el('backs-'+visual).innerHTML=Array.from({length:state.hands[actual].length},()=>'<i class="back"></i>').join('');
-        }
+        let v=getVisualSeat(actual),n=state.names[actual],own=actual===localSeat&&currentUserRole==='admin';
+        el('name-'+v).textContent=n+(own?' 👑':'');
+        el('name-'+v).style.color=own?'var(--gold)':'';
+        const sm=document.querySelector('#seat-'+v+' small');
+        if(sm)sm.textContent=actual===localSeat?'أنت':(['bottom','top'].includes(actual)===mineTop?'فريقك':'الخصم');
+        el('slot-'+v).innerHTML=cardHTML(state.played[actual]);
+        el('seat-'+v).classList.toggle('active',state.turn===actual&&!state.matchEnd);
+        if(v!=='bottom')el('backs-'+v).innerHTML=Array.from({length:state.hands[actual].length},()=>'<i class="back"></i>').join('');
     }
-    el('score1').textContent=state.scores[0];
-    el('score2').textContent=state.scores[1];
-    el('turn-label').innerHTML='الدور: <strong>'+state.names[state.turn]+'</strong>';
+    el('score1').textContent=state.scores[myTeam];el('score2').textContent=state.scores[1-myTeam];
+    el('turn-label').innerHTML='الدور: <strong>'+esc(state.names[state.turn])+'</strong>';
     el('hand-count').textContent=state.hands[localSeat].length+' ورقة متبقية';
-    
-    let h=el('hand'); h.innerHTML='';
+    let h=el('hand');h.innerHTML='';
     state.hands[localSeat].forEach((c,i)=>{
-        let w=document.createElement('div');
-        w.innerHTML=cardHTML(c);
+        if(!c)return;
+        let w=document.createElement('div');w.innerHTML=cardHTML(c);
         let a=w.firstElementChild;
         if(state.turn!==localSeat||state.roundEnd||state.matchEnd)a.classList.add('disabled');
         else if(el('hints')?.checked!==false&&canPlay(c,localSeat))a.classList.add('playable');
-        a.onclick=()=>humanPlay(i);
-        h.appendChild(a);
+        a.onclick=()=>humanPlay(i);h.appendChild(a);
     });
-    
-    if(isHost&&conn&&conn.open) conn.send({type:'state',state});
+    if(mode==='online'&&isHost&&started)for(const k in conns){const c=conns[k];if(c&&c.open)c.send({type:'state',state:stateFor(k)})}
 }
-
 function say(t){el('message').textContent=t}
 function popup(t,m){el('modal-title').textContent=t;el('modal-text').textContent=m;el('modal').style.display='flex'}
 function closeModal(){el('modal').style.display='none'}
 function showRules(){popup('قوانين سَمْرَة','أربعة لاعبين بفريقين: أنت مع الشريك المقابل. لكل لاعب 13 ورقة. يجب اتباع النوع إذا كان معك. أعلى ورقة من النوع الذي بدأ به الدور تفوز بالجولة. كل قلب نقطة، بنت القلوب 13 نقطة إجمالاً، وعشرة الديناري 10 نقاط. أول فريق يصل إلى 100 نقطة يخسر.')}
 
 function backToMenu(){
-    clearTimeout(timer);
-    if(peer){peer.destroy();peer=null;conn=null}
-    isHost=false; localSeat='bottom';
-    el('game').style.display='none';
-    el('lobby').classList.add('hidden');
-    el('menu').classList.remove('hidden');
+    clearTimeout(timer);clearTimeout(tTimer);
+    const old=peer;conns={};conn=null;peer=null;
+    if(old){try{old.destroy()}catch(e){}}
+    state=null;isHost=false;started=false;localSeat='bottom';leftHandled=false;
+    lobbyNames={bottom:'',top:'',right:'',left:''};
+    el('game').style.display='none';el('lobby').classList.add('hidden');el('menu').classList.remove('hidden');
     el('connection-status').textContent='● وضع فردي';
-    el('online-inputs').style.display='flex';
-    el('online-actions-btns').style.display='flex';
-    el('start-online-btn').classList.add('hidden');
-    el('online-hint').textContent='أنشئ غرفة، انسخ الكود، وأرسله لصديقك ليدخل معك.';
+    el('online-inputs').style.display='flex';el('online-actions-btns').style.display='flex';
+    el('start-online-btn').classList.add('hidden');el('online-hint').textContent=HINT;
 }
-
-function leaveGame() {
-    if(!confirm('هل أنت متأكد من الانسحاب؟ سيتم استبدالك بكمبيوتر لإكمال اللعبة.')) return;
-    if(mode === 'online' && conn && conn.open) conn.send({ type: 'leave' });
-    backToMenu();
+function leaveGame(){
+    if(!confirm('هل أنت متأكد من الانسحاب؟'))return;
+    if(mode==='online'){
+        if(isHost){for(const k in conns){try{conns[k].open&&conns[k].send({type:'leave'})}catch(e){}}}
+        else if(conn&&conn.open){try{conn.send({type:'leave'})}catch(e){}}
+        setTimeout(backToMenu,250);
+    }else backToMenu();
 }
-
-function handleOpponentLeave() {
-    if(isHost) {
-        alert('صديقك انسحب من اللعبة! سيتم استبداله بكمبيوتر.');
-        state.isBot['top'] = true;
-        state.names['top'] = 'كمبيوتر (منسحب)';
-        conn = null;
-        render();
-        botTurn();
-    } else {
-        alert('المضيف انسحب من اللعبة! ستحل مكانه وتكمل اللعب ضد الكمبيوتر.');
-        state.isBot['bottom'] = true;
-        state.names['bottom'] = 'كمبيوتر (منسحب)';
-        isHost = true;
-        conn = null;
-        el('deal-btn').classList.remove('hidden');
-        render();
-        botTurn();
+function handleHostLeft(){
+    if(leftHandled)return;leftHandled=true;
+    alert('المضيف أنهى اللعبة أو انقطع اتصاله.');backToMenu();
+}
+function updateLobbyUI(){
+    el('menu').classList.add('hidden');el('lobby').classList.remove('hidden');
+    el('l-room-code').textContent=roomId;
+    for(const k of SEATS){
+        const n=lobbyNames[k];
+        el('l-name-'+k).textContent=n||(k==='bottom'?'-':'🤖 كمبيوتر (مكان فارغ)');
+        el('l-seat-'+k).className='lobby-seat '+(k==='bottom'?'host':n?'guest':'bot');
     }
-    el('connection-status').textContent = '● لعبة محلية (بعد الانسحاب)';
 }
-
-function updateLobbyUI() {
-    el('menu').classList.add('hidden');
-    el('lobby').classList.remove('hidden');
-    el('l-room-code').textContent = roomId;
-    el('l-name-bottom').textContent = isHost ? player : onlineGuestName || 'المضيف';
-    el('l-name-top').textContent = isHost ? (onlineGuestName || 'بانتظار الانضمام...') : player;
+function broadcastLobby(){for(const k in conns){const c=conns[k];if(c&&c.open)c.send({type:'lobby',names:lobbyNames})}}
+function uniqueName(b){let n=b,i=2;while(Object.values(lobbyNames).includes(n))n=b+' '+i++;return n}
+function newRoomId(){
+    const a=new Uint8Array(10);crypto.getRandomValues(a);
+    return 'samra-'+Array.from(a,b=>(b%36).toString(36)).join('');
 }
-
 function createRoom(){
     if(typeof Peer==='undefined'){alert('تعذر تحميل خدمة الاتصال. تأكد من الإنترنت.');return}
     if(peer)peer.destroy();
-    isHost=true;
-    roomId='samra-'+Math.random().toString(36).slice(2,8);
+    isHost=true;mode='online';localSeat='bottom';started=false;conns={};conn=null;
+    lobbyNames={bottom:'',top:'',right:'',left:''};roomId=newRoomId();
     peer=new Peer(roomId);
-    
-    el('online-inputs').style.display='none';
-    el('online-actions-btns').style.display='none';
+    el('online-inputs').style.display='none';el('online-actions-btns').style.display='none';
     el('online-hint').textContent='جاري إنشاء الغرفة...';
-    
     peer.on('open',id=>{
-        roomId=id;
-        player = getPlayerNameForGame();
-        updateLobbyUI();
-        el('lobby-status').textContent = 'أرسل الكود لصديقك وانتظر انضمامه...';
+        roomId=id;player=myName||'لاعب';lobbyNames.bottom=player;updateLobbyUI();
+        el('lobby-status').textContent='أرسل الكود لأصدقائك (حتى 3). يمكنك البدء في أي وقت.';
+        el('start-online-btn').classList.remove('hidden');
     });
-    
     peer.on('connection',c=>{
-        conn=c;
-        wireOnline();
+        const seat=started?null:['top','right','left'].find(x=>!conns[x]);
+        if(!seat){c.on('open',()=>{c.send({type:'reject'});setTimeout(()=>c.close(),300)});return}
+        conns[seat]=c;wireHost(c,seat);
     });
-    
-    peer.on('error',e=>el('online-hint').textContent='تعذر إنشاء الغرفة: '+e.type);
-}
-
-function joinRoom(){
-    if(typeof Peer==='undefined'){alert('تعذر تحميل خدمة الاتصال. تأكد من الإنترنت.');return}
-    let id=el('room-code').value.trim();
-    if(!id){el('online-hint').textContent='اكتب رمز الغرفة أولاً.';return}
-    if(peer)peer.destroy();
-    isHost=false;
-    localSeat='top'; 
-    player = getPlayerNameForGame();
-    
-    peer=new Peer();
-    peer.on('open',()=>{
-        conn=peer.connect(id);
-        wireOnline();
-        roomId=id;
-        onlineGuestName = 'المضيف';
-        updateLobbyUI();
-        el('lobby-status').textContent = 'بانتظار بدء اللعبة من المضيف...';
-        el('start-online-btn').classList.add('hidden');
+    peer.on('error',e=>{
+        if(started){say('خطأ في الاتصال: '+e.type);return}
+        backToMenu();el('online-hint').textContent='تعذر إنشاء الغرفة: '+e.type;
     });
-    peer.on('error',e=>el('online-hint').textContent='تعذر الاتصال: '+e.type);
 }
-
-function wireOnline(){
-    conn.on('open',()=>{
+function wireHost(c,seat){
+    c.on('open',()=>{
+        if(conns[seat]!==c)return;
         el('connection-status').textContent='● متصل';
-        if(!isHost) conn.send({type:'hello',name:player});
+        lobbyNames[seat]=uniqueName('لاعب '+(SEATS.indexOf(seat)+1));
+        c.send({type:'seat',seat});broadcastLobby();updateLobbyUI();
     });
-    
-    conn.on('data',m=>{
-        if(m.type === 'leave') { handleOpponentLeave(); return; }
-
-        if(isHost){
-            if(m.type==='hello'){
-                onlineGuestName = m.name || 'الصديق';
-                updateLobbyUI();
-                el('lobby-status').textContent = 'انضم صديقك! يمكنك بدء اللعبة الآن.';
-                el('start-online-btn').classList.remove('hidden');
-                el('l-name-top').style.color = 'var(--green)';
-            }
-            if(m.type==='move'&&state&&state.turn==='top'&&Number.isInteger(m.index)){
-                let c=state.hands.top[m.index];
-                if(c&&canPlay(c,'top'))play('top',m.index);
-            }
-        }else if(m.type==='start_game'){
-            state=m.state;
-            player=state.names['top'];
-            el('lobby').classList.add('hidden');
-            el('game').style.display='block';
-            el('deal-btn').classList.add('hidden');
-            render();
-        }else if(m.type==='state'){
-            state=m.state;
-            render();
+    c.on('data',m=>{
+        if(conns[seat]!==c||!m||typeof m!=='object')return;
+        if(m.type==='leave'){seatLeft(seat);return}
+        if(m.type==='hello'&&!started){
+            lobbyNames[seat]='';lobbyNames[seat]=uniqueName(cleanName(m.name)||'لاعب');
+            broadcastLobby();updateLobbyUI();
+        }else if(m.type==='move'&&state&&started&&state.turn===seat&&!state.isBot[seat]&&!state.roundEnd&&!state.matchEnd&&Number.isInteger(m.index)){
+            const card=state.hands[seat][m.index];
+            if(card&&canPlay(card,seat))play(seat,m.index);
         }
     });
-    
-    conn.on('close',()=>{
+    c.on('close',()=>{if(conns[seat]===c)seatLeft(seat)});
+}
+function seatLeft(seat){
+    const c=conns[seat];delete conns[seat];try{c&&c.close()}catch(e){}
+    if(!started){lobbyNames[seat]='';broadcastLobby();updateLobbyUI();return}
+    if(!state)return;
+    state.isBot[seat]=true;state.names[seat]='كمبيوتر (منسحب)';
+    say('انسحب لاعب وحلّ مكانه الكمبيوتر');render();botTurn();
+}
+function joinRoom(){
+    if(typeof Peer==='undefined'){alert('تعذر تحميل خدمة الاتصال. تأكد من الإنترنت.');return}
+    let id=el('room-code').value.trim().toLowerCase();
+    if(!/^samra-[a-z0-9]{10}$/.test(id)){el('online-hint').textContent='رمز الغرفة غير صحيح.';return}
+    if(peer)peer.destroy();
+    isHost=false;mode='online';localSeat='top';started=false;player=myName||'لاعب';
+    lobbyNames={bottom:'المضيف',top:'',right:'',left:''};
+    peer=new Peer();
+    peer.on('open',()=>{
+        conn=peer.connect(id,{reliable:true});wireGuest();
+        roomId=id;updateLobbyUI();
+        el('lobby-status').textContent='بانتظار بدء اللعبة من المضيف...';
+        el('start-online-btn').classList.add('hidden');
+    });
+    peer.on('error',e=>{backToMenu();el('online-hint').textContent='تعذر الاتصال: '+e.type});
+}
+function wireGuest(){
+    const me=conn;leftHandled=false;
+    me.on('open',()=>{el('connection-status').textContent='● متصل';me.send({type:'hello',name:player})});
+    me.on('data',m=>{
+        if(me!==conn||!m||typeof m!=='object')return;
+        if(m.type==='leave'){handleHostLeft();return}
+        if(m.type==='reject'){alert('الغرفة ممتلئة أو أن اللعبة بدأت بالفعل.');backToMenu();return}
+        if(m.type==='seat'){if(SEATS.includes(m.seat)&&m.seat!=='bottom')localSeat=m.seat;return}
+        if(m.type==='lobby'&&m.names&&typeof m.names==='object'){
+            for(const k of SEATS)lobbyNames[k]=cleanName(m.names[k]);
+            if(!el('lobby').classList.contains('hidden'))updateLobbyUI();
+            return;
+        }
+        if(m.type==='state'||m.type==='start_game'){
+            const s=cleanState(m.state);if(!s)return;
+            const was=state&&state.matchEnd;state=s;player=s.names[localSeat];
+            if(el('game').style.display!=='block'){
+                el('lobby').classList.add('hidden');el('game').style.display='block';
+                el('deal-btn').classList.add('hidden');el('connection-status').textContent='● لعبة أونلاين';
+            }
+            render();
+            if(s.matchEnd&&!was)matchEndPopup();
+        }
+    });
+    me.on('close',()=>{
+        if(me!==conn)return;
         el('connection-status').textContent='● انقطع الاتصال';
-        el('lobby-status').textContent = 'انقطع الاتصال باللاعب.';
-        if (el('game').style.display === 'block' && state) handleOpponentLeave();
+        if(el('game').style.display==='block'&&state)handleHostLeft();
+        else el('lobby-status').textContent='انقطع الاتصال بالمضيف.';
     });
 }
-
 function startOnlineMatch(){
-    if(!isHost || !conn || !conn.open) return;
+    if(!isHost||started||!peer)return;
+    difficulty=el('difficulty').value;
     state=fresh();
-    state.names.bottom = player;
-    state.names.top = onlineGuestName;
-    state.names.right = 'الكمبيوتر 1';
-    state.names.left = 'الكمبيوتر 2';
-    state.isBot = {bottom: false, right: true, top: false, left: true};
+    const def={top:'الكمبيوتر 3',right:'الكمبيوتر 1',left:'الكمبيوتر 2'};
+    state.names.bottom=player;state.isBot={bottom:false,top:true,right:true,left:true};
+    for(const k of ['top','right','left']){
+        const c=conns[k],h=!!(c&&c.open);
+        if(c&&!h)delete conns[k];
+        state.names[k]=h?(lobbyNames[k]||'لاعب'):def[k];state.isBot[k]=!h;
+    }
+    started=true;
+    el('lobby').classList.add('hidden');el('game').style.display='block';
+    el('deal-btn').classList.remove('hidden');el('connection-status').textContent='● لعبة أونلاين';
     dealCards();
-    conn.send({type:'start_game', state:state});
-    el('lobby').classList.add('hidden');
-    el('game').style.display='block';
-    el('deal-btn').classList.remove('hidden');
-    el('connection-status').textContent='● لعبة أونلاين';
 }
-
 function copyRoom(){
-    let v = roomId || el('room-code').value;
-    if(!v) return; 
+    let v=roomId;if(!v)return;
     if(navigator.clipboard){
         navigator.clipboard.writeText(v).then(()=>{
-            let btn = el('copy-lobby-btn');
-            if(btn){ let old = btn.innerHTML; btn.innerHTML = '✅ تم النسخ!'; setTimeout(() => btn.innerHTML = old, 2000); }
-            el('lobby-status').textContent = 'تم نسخ الكود! أرسله لصديقك.';
-        }).catch(()=>{ alert('تعذر النسخ التلقائي. الكود هو: ' + v); });
-    } else { alert('الكود هو: ' + v); }
+            let b=el('copy-lobby-btn'),old=b.textContent;b.textContent='✅ تم النسخ!';setTimeout(()=>b.textContent=old,2000);
+            el('lobby-status').textContent='تم نسخ الكود! أرسله لأصدقائك.';
+        }).catch(()=>alert('الكود هو: '+v));
+    }else alert('الكود هو: '+v);
 }
 </script></body></html>
