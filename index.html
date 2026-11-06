@@ -2,8 +2,11 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://0.peerjs.com wss://0.peerjs.com; img-src 'self' data:; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src 'self' https://0.peerjs.com wss://0.peerjs.com; img-src 'self' data:; media-src 'self' blob: mediastream:; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="no-referrer">
+<meta name="description" content="سَمْرَة - لعبة ورق جماعية أونلاين مع الأصدقاء ومحادثة صوتية">
+<meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23e9bd61'/%3E%3Ctext x='32' y='47' font-size='40' text-anchor='middle'%3E%E2%99%A0%3C/text%3E%3C/svg%3E">
 <meta name="theme-color" content="#081914"><title>سَمْرَة | لعبة الورق</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Changa:wght@400;500;600;700;800&display=swap');
@@ -34,67 +37,32 @@ main{width:min(1120px,100%);margin:auto;padding:24px 16px 38px}
 .hand-panel{margin-top:13px;padding:13px;border-radius:18px;background:linear-gradient(145deg,#102d26,#0a211c);border:1px solid #ffffff20}.hand-head{display:flex;justify-content:space-between;margin-bottom:9px}.hand-head h3{font-size:14px;margin:0}.hand-head span{font-size:11px;color:var(--muted)}.hand{display:flex;justify-content:center;align-items:end;gap:clamp(3px,1vw,9px);min-height:98px;flex-wrap:wrap}.hand .card{width:clamp(43px,7vw,66px);height:clamp(64px,10vw,92px);cursor:pointer;transition:.16s;margin-top:5px}.hand .card:hover{transform:translateY(-8px)}.hand .card.disabled{opacity:.48;cursor:not-allowed}.hand .card.playable{outline:2px solid var(--gold);outline-offset:2px}.message{min-height:24px;text-align:center;color:var(--gold);font-size:12px;margin-top:8px}.game-actions{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:12px}
 .modal-bg{position:fixed;inset:0;background:#000b;z-index:10;display:none;align-items:center;justify-content:center;padding:18px}.modal{width:min(430px,100%);padding:24px;border-radius:22px;background:#102d25;border:1px solid #ffffff30;text-align:center}.modal h2{color:var(--gold);margin:0 0 8px}.modal p{color:var(--muted);font-size:13px;line-height:1.8}.modal .btn{margin:5px}
 @media(max-width:600px){header{height:60px}.brand b{font-size:17px}.brand-icon{width:37px;height:37px}.status{display:none}main{padding:15px 8px 25px}.mode-grid{gap:8px}.mode{padding:13px;min-height:105px}.table{height:47vh;min-height:300px;border-width:7px;border-radius:130px}.seat{min-width:84px;padding:5px 7px}.seat .name{font-size:11px}.seat small{font-size:9px}.seat-top{top:12px}.seat-bottom{bottom:12px}.seat-left{left:6px}.seat-right{right:6px}.center{height:140px;width:47%}.played{width:53px;height:78px}.card{width:51px;height:73px}.card .symbol{font-size:20px;margin-top:8px}.score{min-width:78px;padding:5px 8px}.score b{font-size:17px}.toolbar{justify-content:center}.hand-panel{padding:9px 6px}.hand{gap:5px}.lobby-seats{grid-template-columns:1fr}}
+.toast{position:fixed;top:74px;left:50%;transform:translateX(-50%);background:#08271f;border:1px solid var(--gold);color:var(--cream);padding:10px 16px;border-radius:14px;z-index:30;font-size:13px;display:none;max-width:92%;text-align:center;box-shadow:0 8px 24px #0008}
+.dbl{display:none;margin-top:4px;font-size:11px;font-weight:800;color:#fff;background:#b3303a;border-radius:8px;padding:2px 8px}.dbl.on{display:inline-block}
+h1{background:linear-gradient(90deg,#f7d987,#e9bd61,#fff3c4,#e9bd61);background-size:200% auto;-webkit-background-clip:text;background-clip:text;color:transparent;animation:shine 6s linear infinite}
+@keyframes shine{to{background-position:200% center}}
+@keyframes dealIn{from{opacity:0;transform:translateY(28px) scale(.85)}to{opacity:1;transform:none}}
+@keyframes dropIn{from{opacity:0;transform:translateY(-22px) scale(1.15)}to{opacity:1;transform:none}}
+@keyframes pulse{0%,100%{box-shadow:0 0 12px #f5c65b44}50%{box-shadow:0 0 26px #f5c65bbb}}
+.hand.deal .card{animation:dealIn .35s both;animation-delay:calc(var(--i,0)*30ms)}
+.played .card.new{animation:dropIn .22s both}.played .card.win{outline:3px solid var(--gold);box-shadow:0 0 26px #f5c65bcc}
+.seat.active{animation:pulse 1.6s infinite}
+.hand-panel.my-turn{border-color:var(--gold);box-shadow:0 0 30px #e9bd6138}
+.table{background-image:repeating-linear-gradient(45deg,#ffffff05 0 2px,transparent 2px 6px),radial-gradient(ellipse at center,#2a8058 0,#176044 56%,#0d402f 100%)}
+.card:focus-visible{outline:3px solid #fff}.btn:disabled{opacity:.5;cursor:not-allowed}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+.card{position:relative}.card .symbol{position:absolute;left:50%;top:52%;transform:translate(-50%,-50%);margin:0!important;line-height:1;align-self:auto}
+.center{direction:ltr}#slot-top{grid-area:1/1}#slot-right{grid-area:1/2}#slot-left{grid-area:2/1}#slot-bottom{grid-area:2/2}
 </style></head>
 <body>
 <header><div class="brand"><div class="brand-icon">♠</div><div><b>سَمْرَة</b><small>تحدّاك تجمع أقل نقاط</small></div></div>
-<div class="header-right">
-    <span class="status" id="user-status" style="display:none"></span>
-    <span class="status" id="connection-status">● وضع فردي</span>
-    <button class="btn secondary small" id="logout-btn" onclick="logout()" style="display:none;background:#963c45;border-color:#963c45">خروج</button>
-    <button class="btn secondary small" id="settings-btn" onclick="openSettings()" style="display:none;font-size:18px">⚙️</button>
-</div></header>
+<div class="header-right"><span class="status" id="connection-status">● وضع فردي</span></div></header>
 <main>
 
-<section id="auth-screen" class="panel menu hidden" style="max-width:450px;margin-top:50px">
-    <div class="hero-icon">🂡</div><h1>سَمْرَة</h1>
-    <p class="sub" id="auth-title">سجل الدخول للمتابعة</p>
-
-    <div id="login-step">
-        <div class="formrow" style="flex-direction:column;gap:10px;margin-bottom:20px">
-            <input type="email" id="login-email" class="field name" placeholder="البريد الإلكتروني" autocomplete="email">
-            <input type="password" id="login-password" class="field name" placeholder="كلمة المرور" autocomplete="current-password">
-        </div>
-        <div style="display:flex;gap:10px;justify-content:center">
-            <button class="btn" onclick="login()">تسجيل الدخول</button>
-            <button class="btn secondary" onclick="showRegisterForm()">إنشاء حساب</button>
-        </div>
-        <div style="margin-top:15px"><a href="#" onclick="showResetForm();return false" style="color:var(--gold);font-size:12px;text-decoration:none">هل نسيت كلمة المرور؟</a></div>
-    </div>
-
-    <div id="register-step" class="hidden">
-        <div class="formrow" style="flex-direction:column;gap:10px;margin-bottom:20px">
-            <input type="text" id="reg-name" class="field name" placeholder="اسمك في اللعبة (يوزر فريد)" maxlength="18" autocomplete="nickname">
-            <input type="email" id="reg-email" class="field name" placeholder="البريد الإلكتروني" autocomplete="email">
-            <input type="password" id="reg-password" class="field name" placeholder="كلمة المرور (8 أحرف على الأقل، حروف وأرقام)" autocomplete="new-password">
-        </div>
-        <div style="display:flex;gap:10px;justify-content:center">
-            <button class="btn" onclick="startRegister()">إنشاء الحساب</button>
-            <button class="btn secondary" onclick="showLoginForm()">لديك حساب؟ سجل دخول</button>
-        </div>
-    </div>
-
-    <div id="reset-step" class="hidden">
-        <div class="formrow" style="flex-direction:column;gap:10px;margin-bottom:20px">
-            <input type="email" id="reset-email" class="field name" placeholder="أدخل بريدك الإلكتروني المسجل" autocomplete="email">
-        </div>
-        <div style="display:flex;gap:10px;justify-content:center">
-            <button class="btn" onclick="startPasswordReset()">إرسال رابط الاستعادة</button>
-            <button class="btn secondary" onclick="showLoginForm()">رجوع</button>
-        </div>
-    </div>
-
-    <div id="newpass-step" class="hidden">
-        <div class="formrow" style="flex-direction:column;gap:10px;margin-bottom:20px">
-            <input type="password" id="new-password" class="field name" placeholder="كلمة المرور الجديدة" autocomplete="new-password">
-        </div>
-        <button class="btn" onclick="saveNewPassword()">حفظ كلمة المرور</button>
-    </div>
-
-    <p id="auth-msg" style="color:var(--red);font-size:13px;min-height:20px;margin-top:10px"></p>
-</section>
-
-<section id="menu" class="panel menu hidden">
- <div class="hero-icon">🂡</div><h1>مرحباً بك في سَمْرَة</h1><p class="sub">اختر طريقة اللعب واضبط جلستك قبل بداية التحدي</p>
+<section id="menu" class="panel menu">
+ <div class="hero-icon">🂡</div><h1>مرحباً بك في سَمْرَة</h1><p class="sub">اكتب اسمك واختر طريقة اللعب</p>
+ <div class="formrow"><input id="player-name" class="field name" placeholder="اسمك في اللعبة" maxlength="18" autocomplete="nickname"></div>
+ <p class="hint" id="stats"></p>
  <div class="mode-grid">
   <button class="mode selected" id="mode-bots" onclick="selectMode('bots')"><span class="ico">🤖</span><b>ضد الكمبيوتر</b><small>العب ضد 3 خصوم بذكاء قابل للتعديل</small></button>
   <button class="mode" id="mode-online" onclick="selectMode('online')"><span class="ico">🌐</span><b>لعب أونلاين</b><small>أنشئ غرفة أو ادخل مع صديق برمز</small></button>
@@ -134,60 +102,42 @@ main{width:min(1120px,100%);margin:auto;padding:24px 16px 38px}
     </div>
     <p class="hint">يدخل حتى 3 لاعبين، وأي مكان فارغ عند بدء اللعبة يلعب فيه الكمبيوتر.</p>
     <button class="btn hidden" id="start-online-btn" style="background:var(--green);color:#000;width:100%;margin-top:10px" onclick="startOnlineMatch()">بدء اللعبة الآن</button>
+    <button class="btn secondary mic-btn hidden" style="width:100%;margin-top:10px" onclick="toggleMic()">🎤 تشغيل المايك</button>
     <button class="btn secondary" style="width:100%;margin-top:10px" onclick="backToMenu()">إلغاء والعودة</button>
 </section>
 
 <section id="game" class="game">
  <div class="toolbar"><div class="turn" id="turn-label">الدور: —</div><div class="scores"><div class="score"><small>فريقك</small><b id="score1">0</b></div><div class="score"><small>الخصم</small><b id="score2">0</b></div></div></div>
  <div class="table">
-  <div class="seat seat-top" id="seat-top"><div class="name" id="name-top">الشريك</div><small>فريقك</small><div class="backs" id="backs-top"></div></div>
-  <div class="seat seat-right" id="seat-right"><div class="name" id="name-right">الخصم 1</div><small>الخصم</small><div class="backs" id="backs-right"></div></div>
-  <div class="seat seat-left" id="seat-left"><div class="name" id="name-left">الخصم 2</div><small>الخصم</small><div class="backs" id="backs-left"></div></div>
-  <div class="seat seat-bottom" id="seat-bottom"><div class="name" id="name-bottom">أنت</div><small>فريقك</small></div>
+  <div class="seat seat-top" id="seat-top"><div class="name" id="name-top">الشريك</div><small>فريقك</small><div class="dbl" id="dbl-top"></div><div class="backs" id="backs-top"></div></div>
+  <div class="seat seat-right" id="seat-right"><div class="name" id="name-right">الخصم 1</div><small>الخصم</small><div class="dbl" id="dbl-right"></div><div class="backs" id="backs-right"></div></div>
+  <div class="seat seat-left" id="seat-left"><div class="name" id="name-left">الخصم 2</div><small>الخصم</small><div class="dbl" id="dbl-left"></div><div class="backs" id="backs-left"></div></div>
+  <div class="seat seat-bottom" id="seat-bottom"><div class="name" id="name-bottom">أنت</div><small>فريقك</small><div class="dbl" id="dbl-bottom"></div></div>
   <div class="center"><div class="played" id="slot-top"><div class="empty"></div></div><div class="played" id="slot-right"><div class="empty"></div></div><div class="played" id="slot-left"><div class="empty"></div></div><div class="played" id="slot-bottom"><div class="empty"></div></div></div>
  </div>
  <div class="hand-panel"><div class="hand-head"><h3>أوراقك</h3><span id="hand-count">13 ورقة</span></div><div class="hand" id="hand"></div><div class="message" id="message">اختر ورقة لبدء اللعب</div></div>
  <div class="game-actions">
      <button class="btn secondary small" id="deal-btn" onclick="dealNew()">صكة جديدة</button>
+     <button class="btn small hidden" id="dbl-btn" onclick="humanDouble()" style="background:#b3303a;color:#fff">🔟♦ دبل ×2 (10♦ + A♦)</button>
      <button class="btn secondary small" onclick="showRules()">القوانين</button>
+     <button class="btn secondary small mic-btn hidden" onclick="toggleMic()">🎤 تشغيل المايك</button>
      <button class="btn secondary small" onclick="leaveGame()" style="color:var(--red);border-color:var(--red)">انسحاب 🚪</button>
  </div>
 </section>
 </main>
 
-<div class="modal-bg" id="settings-modal"><div class="modal">
-    <h2>⚙️ الإعدادات</h2>
-    <div style="text-align:right;margin-bottom:15px;font-size:14px">
-        <p style="margin:5px 0"><strong>البريد الإلكتروني:</strong><br><span id="settings-email" style="color:var(--gold)"></span></p>
-        <p style="margin:10px 0 5px"><strong>اسمك في اللعبة:</strong></p>
-        <input type="text" id="settings-name" class="field" style="width:100%" maxlength="18">
-        <button class="btn small" onclick="saveSettingsName()" style="width:100%;margin-top:8px">حفظ الاسم</button>
-    </div>
-    <button class="btn hidden" id="admin-btn" onclick="openAdminPanel()" style="width:100%;margin-bottom:10px;background:var(--red);border:2px solid var(--gold);color:#fff">👑 لوحة المالك (الأدمن)</button>
-    <button class="btn secondary" onclick="closeSettings()" style="width:100%">إغلاق</button>
-</div></div>
-
-<div class="modal-bg" id="admin-modal"><div class="modal" style="width:min(600px,100%)">
-    <h2>👑 لوحة المالك</h2>
-    <input type="text" id="admin-search" class="field" placeholder="ابحث عن مستخدم بالاسم أو الإيميل..." oninput="renderAdminList()" style="width:100%;margin-bottom:15px">
-    <div id="admin-user-list" style="max-height:55vh;overflow-y:auto;text-align:right;font-size:13px;background:#071a14;padding:10px;border-radius:10px;border:1px solid #ffffff20"></div>
-    <button class="btn secondary" onclick="closeAdminPanel()" style="width:100%;margin-top:15px">إغلاق</button>
-</div></div>
-
+<div class="toast" id="toast"></div>
 <div class="modal-bg" id="modal"><div class="modal"><h2 id="modal-title"></h2><p id="modal-text"></p><button class="btn" onclick="closeModal()">تمام</button></div></div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
 <script>
-// المفتاح العام (publishable) آمن للنشر؛ الحماية الحقيقية في سياسات RLS داخل Supabase
-const SUPABASE_URL='https://ecraurncstbgeowhtmvi.supabase.co';
-const SUPABASE_ANON_KEY='sb_publishable_2Y9a1dlSHU1nszWMVD7RWg_fYsFNGAo';
-const supabaseClient=supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
-
 const SEATS=['bottom','right','top','left'],SUITS=['♠','♣','♥','♦'],RANK={'2':2,'3':3,'4':4,'5':5,'6':6,'7':7,'8':8,'9':9,'10':10,'J':11,'Q':12,'K':13,'A':14},FACE={J:'🧑',Q:'👩',K:'🧓',A:'⚡'};
 let mode='bots',state=null,player='لاعب',timer=null,tTimer=null,peer=null,conn=null,isHost=false,roomId='',difficulty='normal';
 let localSeat='bottom',onlineGuestName='',currentUser=null,currentUserRole='player',myName='',recovery=/type=recovery/.test(location.hash),leftHandled=false;
 
+let pendingEmail='',cd=0,cdT=null;
+let prevSlot={},prevPlayed=0,prevRound=false,prevDbl=null,wasMine=false,prevLen=0,awake=false,wl=null,AC=null;
+let hostSeat='bottom',succSeat=null,succ=null,backup=null,migrating=false,rejoined=false,expected=new Set(),migTimer=null,pendingHostNotice=null,peerIds={},localStream=null,micOn=false,calls={},audios={},toastT=null;
 let conns={},started=false,lobbyNames={bottom:'',top:'',right:'',left:''};
 const HINT='أنشئ غرفة وأرسل الكود لأصدقائك (حتى 3). الأماكن الفارغة يملؤها الكمبيوتر.';
 const el=id=>document.getElementById(id);
@@ -197,159 +147,16 @@ const BAD=/[<>&"'`\\\u{1F451}\u0000-\u001f\u200E\u200F\u202A-\u202E\u2066-\u2069
 const cleanName=s=>Array.from(String(s??'').replace(BAD,'').replace(/\s+/g,' ').trim()).slice(0,18).join('');
 const isBanned=p=>!!p.is_banned&&(!p.ban_until||new Date(p.ban_until)>new Date());
 
-// ---------- المصادقة ----------
-function authMsg(t,type){const m=el('auth-msg');m.style.color=type==='ok'?'var(--green)':type==='info'?'var(--gold)':'var(--red)';m.textContent=t||''}
-function showStep(x,title){['login','register','reset','newpass'].forEach(s=>el(s+'-step').classList.toggle('hidden',s!==x));el('auth-title').textContent=title;authMsg('')}
-function showLoginForm(){showStep('login','سجل الدخول للمتابعة')}
-function showRegisterForm(){showStep('register','إنشاء حساب جديد')}
-function showResetForm(){showStep('reset','استعادة كلمة المرور')}
-function showNewPasswordForm(){showAuthScreen();showStep('newpass','تعيين كلمة مرور جديدة')}
-function showAuthScreen(){
-    ['menu','lobby'].forEach(i=>el(i).classList.add('hidden'));el('game').style.display='none';
-    el('auth-screen').classList.remove('hidden');
-    ['logout-btn','settings-btn','user-status'].forEach(i=>el(i).style.display='none');
-    showLoginForm();
+// ---------- الاسم (بدون حساب) ----------
+function getName(){
+    const n=cleanName(el('player-name').value)||'لاعب';
+    try{localStorage.setItem('samra_name',n)}catch(e){}
+    return n;
 }
-function cleanup(){
-    clearTimeout(timer);clearTimeout(tTimer);
-    if(peer){try{peer.destroy()}catch(e){}peer=null;conn=null}
-    state=null;isHost=false;started=false;conns={};localSeat='bottom';leftHandled=false;
-    ['settings-modal','admin-modal','modal'].forEach(i=>el(i).style.display='none');
+function initApp(){
+    try{const n=localStorage.getItem('samra_name');if(n)el('player-name').value=cleanName(n)}catch(e){}
+    showStats();
 }
-const goodPass=p=>p.length>=8&&p.length<=72&&/\d/.test(p)&&/\D/.test(p);
-const goodMail=e=>/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)&&e.length<=254;
-let fails=0,lockUntil=0;
-function locked(){const r=Math.ceil((lockUntil-Date.now())/1000);if(r>0){authMsg('محاولات كثيرة. انتظر '+r+' ثانية');return true}return false}
-function fail(){if(++fails>=5){lockUntil=Date.now()+30000;fails=0}}
-
-async function initApp(){
-    supabaseClient.auth.onAuthStateChange((ev,session)=>{
-        if(ev==='PASSWORD_RECOVERY'){recovery=true;showNewPasswordForm();return}
-        if(ev==='SIGNED_IN'&&session){
-            if(recovery)return;
-            if(currentUser&&currentUser.id===session.user.id)return; // يمنع ظهور القائمة عند العودة للتبويب
-            currentUser=session.user;
-            setTimeout(()=>checkUserStatus(session.user),0);
-        }else if(ev==='SIGNED_OUT'){currentUser=null;currentUserRole='player';myName='';cleanup();showAuthScreen()}
-    });
-    const {data:{session}}=await supabaseClient.auth.getSession();
-    if(recovery&&session){showNewPasswordForm()}
-    else if(session&&!currentUser){currentUser=session.user;checkUserStatus(currentUser)}
-    else if(!session)showAuthScreen();
-    setInterval(recheckBan,120000);
-}
-
-async function kickBanned(p){
-    let msg='🚫 حسابك محظور.';
-    if(p.ban_until)msg+=' ينتهي الحظر في: '+new Date(p.ban_until).toLocaleString('ar-SA');
-    await supabaseClient.auth.signOut();showAuthScreen();authMsg(msg);
-}
-async function recheckBan(){
-    if(!currentUser)return;
-    const {data:p}=await supabaseClient.from('profiles').select('is_banned,ban_until').eq('id',currentUser.id).single();
-    if(p&&isBanned(p))kickBanned(p);
-}
-async function checkUserStatus(user){
-    const {data:p,error}=await supabaseClient.from('profiles').select('name,role,is_banned,ban_until').eq('id',user.id).single();
-    if(error||!p){await supabaseClient.auth.signOut();showAuthScreen();authMsg('تعذر جلب بيانات حسابك. حاول لاحقاً.');return}
-    if(isBanned(p)){await kickBanned(p);return}
-    currentUserRole=p.role==='admin'?'admin':'player';
-    myName=cleanName(p.name)||'لاعب';
-    showMainMenu(myName);
-}
-
-async function startRegister(){
-    const name=cleanName(el('reg-name').value),email=el('reg-email').value.trim().toLowerCase(),pass=el('reg-password').value;
-    if(locked())return;
-    if(name.length<2){authMsg('الاسم حرفان على الأقل ولا يحتوي رموزاً خاصة (< > & " \' `)');return}
-    if(!goodMail(email)){authMsg('البريد الإلكتروني غير صالح');return}
-    if(!goodPass(pass)){authMsg('كلمة المرور: 8 أحرف على الأقل وتحتوي حروفاً وأرقاماً');return}
-    authMsg('جاري إنشاء الحساب...','info');
-    const {error}=await supabaseClient.auth.signUp({email,password:pass,options:{data:{name},emailRedirectTo:location.origin+location.pathname}});
-    el('reg-password').value='';
-    if(error){fail();authMsg('تعذر إنشاء الحساب. تحقق من البيانات وحاول مرة أخرى.');return}
-    showLoginForm();authMsg('تم! افحص بريدك لتأكيد الحساب ثم سجل الدخول.','ok');
-}
-async function login(){
-    const email=el('login-email').value.trim().toLowerCase(),pass=el('login-password').value;
-    if(locked())return;
-    if(!email||!pass){authMsg('الرجاء إدخال البريد وكلمة المرور');return}
-    authMsg('جاري تسجيل الدخول...','info');
-    const {error}=await supabaseClient.auth.signInWithPassword({email,password:pass});
-    el('login-password').value='';
-    if(error){fail();authMsg('البريد أو كلمة المرور غير صحيحة، أو لم يتم تأكيد البريد بعد.')}
-}
-async function startPasswordReset(){
-    const email=el('reset-email').value.trim().toLowerCase();
-    if(locked())return;
-    if(!goodMail(email)){authMsg('الرجاء إدخال بريد صالح');return}
-    await supabaseClient.auth.resetPasswordForEmail(email,{redirectTo:location.origin+location.pathname});
-    fail();authMsg('إذا كان البريد مسجلاً لدينا فسيصلك رابط الاستعادة.','ok');
-}
-async function saveNewPassword(){
-    const p=el('new-password').value;
-    if(!goodPass(p)){authMsg('كلمة المرور: 8 أحرف على الأقل وتحتوي حروفاً وأرقاماً');return}
-    const {error}=await supabaseClient.auth.updateUser({password:p});
-    el('new-password').value='';
-    if(error){authMsg('تعذر تغيير كلمة المرور. اطلب رابطاً جديداً.');return}
-    recovery=false;history.replaceState(null,'',location.pathname);
-    const {data:{session}}=await supabaseClient.auth.getSession();
-    if(session){currentUser=session.user;checkUserStatus(currentUser)}else showAuthScreen();
-}
-async function logout(){await supabaseClient.auth.signOut()}
-
-function showMainMenu(name){
-    el('auth-screen').classList.add('hidden');el('menu').classList.remove('hidden');
-    const s=el('user-status');s.textContent='👤 '+name+(currentUserRole==='admin'?' 👑 (المالك)':'');s.style.color='var(--gold)';s.style.display='inline-block';
-    el('logout-btn').style.display='inline-block';el('settings-btn').style.display='inline-block';
-}
-
-// ---------- الإعدادات ولوحة المالك (الصلاحيات تُفرض من السيرفر عبر RLS/RPC) ----------
-function openSettings(){
-    if(!currentUser)return;
-    el('settings-email').textContent=currentUser.email;el('settings-name').value=myName;
-    el('admin-btn').classList.toggle('hidden',currentUserRole!=='admin');
-    el('settings-modal').style.display='flex';
-}
-function closeSettings(){el('settings-modal').style.display='none'}
-async function saveSettingsName(){
-    const n=cleanName(el('settings-name').value);
-    if(n.length<2){alert('الاسم حرفان على الأقل ولا يحتوي رموزاً خاصة');return}
-    const {error}=await supabaseClient.from('profiles').update({name:n}).eq('id',currentUser.id);
-    if(error){alert(error.code==='23505'?'هذا الاسم مستخدم بالفعل!':'تعذر حفظ الاسم');return}
-    myName=n;showMainMenu(n);closeSettings();
-}
-async function openAdminPanel(){
-    if(currentUserRole!=='admin')return;
-    closeSettings();el('admin-modal').style.display='flex';el('admin-search').value='';await renderAdminList();
-}
-function closeAdminPanel(){el('admin-modal').style.display='none'}
-async function renderAdminList(){
-    if(currentUserRole!=='admin')return;
-    const q=el('admin-search').value.toLowerCase().trim(),box=el('admin-user-list');
-    const {data:users,error}=await supabaseClient.rpc('admin_list_users');
-    if(error||!users){box.textContent='تعذر جلب البيانات.';return}
-    const rows=users.filter(u=>!q||String(u.name||'').toLowerCase().includes(q)||String(u.email||'').toLowerCase().includes(q));
-    box.innerHTML=rows.length?rows.map(u=>{
-        const b=isBanned(u),self=u.id===currentUser.id;
-        const st=b?`<span style="color:var(--red)">محظور 🚫<br><span style="font-size:10px;color:var(--muted)">${u.ban_until?'ينتهي: '+esc(new Date(u.ban_until).toLocaleString('ar-SA')):'حظر دائم'}</span></span>`:'<span style="color:var(--green)">نشط ✅</span>';
-        return `<div style="border-bottom:1px solid #ffffff20;padding:10px 0"><div><b style="color:var(--gold);font-size:14px">${esc(u.name)}</b></div><div style="font-size:11px;color:var(--muted)">📧 ${esc(u.email)}</div><div style="font-size:11px;margin:5px 0">الحالة: ${st}</div>${self?'':`<button class="btn small" style="${b?'background:var(--green);color:#000':'background:#963c45;color:#fff'}" data-id="${esc(u.id)}" data-b="${b?1:0}">${b?'فك الحظر':'حظر الحساب'}</button>`}</div>`;
-    }).join(''):'لا يوجد مستخدمون يطابقون البحث.';
-}
-el('admin-user-list').addEventListener('click',e=>{const b=e.target.closest('button[data-id]');if(b)toggleBan(b.dataset.id,b.dataset.b==='1')});
-async function toggleBan(id,banned){
-    if(currentUserRole!=='admin'||id===currentUser.id)return;
-    let mins=-1;
-    if(banned){if(!confirm('هل تريد إلغاء حظر هذا الحساب؟'))return}
-    else{
-        const v=prompt('مدة الحظر بالدقائق (0 = دائم):','60');if(v===null)return;
-        mins=parseInt(v,10);if(!Number.isInteger(mins)||mins<0||mins>525600){alert('قيمة غير صحيحة');return}
-    }
-    const {error}=await supabaseClient.rpc('admin_set_ban',{target:id,minutes:mins});
-    if(error)alert('تعذر تنفيذ العملية');
-    renderAdminList();
-}
-
 // ---------- منطق اللعبة ----------
 window.addEventListener('DOMContentLoaded',initApp);
 function selectMode(m){
@@ -358,6 +165,8 @@ function selectMode(m){
     el('bot-settings').classList.toggle('hidden',m!=='bots');el('online-settings').classList.toggle('hidden',m!=='online');
     el('start-btn').classList.toggle('hidden',m==='online');
 }
+const SORT=['♠','♥','♣','♦'];
+const cardCmp=(a,b)=>SORT.indexOf(a.s)-SORT.indexOf(b.s)||RANK[b.v]-RANK[a.v];
 function deck(){
     let d=[];for(let s of SUITS)for(let v of Object.keys(RANK))d.push({s,v});
     const r=new Uint32Array(d.length);crypto.getRandomValues(r);
@@ -365,11 +174,11 @@ function deck(){
     return d;
 }
 function fresh(){
-    return{scores:[0,0],hands:{bottom:[],right:[],top:[],left:[]},played:{bottom:null,right:null,top:null,left:null},turn:'bottom',lead:null,winner:null,roundEnd:false,matchEnd:false,
+    return{scores:[0,0],hands:{bottom:[],right:[],top:[],left:[]},played:{bottom:null,right:null,top:null,left:null},turn:'bottom',lead:null,winner:null,roundEnd:false,matchEnd:false,dbl:null,msg:'',pend:null,
     names:{bottom:'أنت',right:'الكمبيوتر 1',top:'الشريك',left:'الكمبيوتر 2'},isBot:{bottom:false,right:true,top:true,left:true}}
 }
 function startMatch(){
-    mode='bots';localSeat='bottom';player=myName||'لاعب';difficulty=el('difficulty').value;
+    mode='bots';localSeat='bottom';player=getName();difficulty=el('difficulty').value;
     state=fresh();state.names={bottom:player,right:'الكمبيوتر 1',top:'الكمبيوتر 3',left:'الكمبيوتر 2'};
     dealCards();
     el('menu').classList.add('hidden');el('game').style.display='block';
@@ -380,12 +189,21 @@ function dealCards(){
     let d=deck();
     state.hands={bottom:[],right:[],top:[],left:[]};state.played={bottom:null,right:null,top:null,left:null};
     for(let n=0;n<13;n++)for(let s of SEATS)state.hands[s].push(d.pop());
-    state.turn=state.winner||'bottom';state.lead=null;state.roundEnd=false;state.matchEnd=false;
+    for(const k of SEATS)state.hands[k].sort(cardCmp);
+    state.turn=state.winner||'bottom';state.lead=null;state.roundEnd=false;state.matchEnd=false;state.dbl=null;state.msg='';state.pend=null;
+    for(const k of SEATS){
+        const h=state.hands[k];
+        if(state.isBot[k]&&difficulty!=='easy'&&h.some(c=>c.s==='♦'&&c.v==='10')&&h.some(c=>c.s==='♦'&&c.v==='A')&&Math.random()<.6){
+            state.dbl=k;notify(state.names[k]+' كشف عشرة الديمن والأكة: دبل ×2 (20 نقطة)!');
+            if(mode==='online')broadcastNotice({kind:'dbl',name:state.names[k]});
+        }
+    }
     render();botTurn();
 }
 function dealNew(){
     if(!state)return;
     if(mode==='online'&&!isHost){alert('فقط المضيف يمكنه توزيع صكة جديدة');return}
+    if(!state.matchEnd&&state.hands.some(h=>h.length>0)&&!confirm('تبي تبدأ صكة جديدة؟ سيتم إلغاء الصكة الحالية.'))return;
     if(state.matchEnd){const n=state.names,b=state.isBot;state=fresh();state.names=n;state.isBot=b}
     dealCards();
 }
@@ -398,6 +216,7 @@ function humanPlay(i){
     play(localSeat,i);
 }
 function play(s,i){
+    state.msg='';
     let c=state.hands[s].splice(i,1)[0];
     if(!state.lead)state.lead=c.s;
     state.played[s]=c;state.turn=SEATS[(SEATS.indexOf(s)+1)%4];
@@ -408,7 +227,7 @@ function play(s,i){
 function botPick(s){
     let h=state.hands[s],valid=h.map((c,i)=>({c,i})).filter(x=>canPlay(x.c,s));
     let pool=valid.length?valid:h.map((c,i)=>({c,i}));
-    let penalty=c=>c.s==='♥'?(c.v==='Q'?13:1):(c.s==='♦'&&c.v==='10'?10:0);
+    let penalty=c=>c.s==='♥'?1:(c.s==='♠'&&c.v==='Q'?13:(c.s==='♦'&&c.v==='10'?(state.dbl?20:10):0));
     if(difficulty==='easy')return pool[Math.floor(Math.random()*pool.length)].i;
     if(difficulty==='hard'){
         let top=Math.max(-1,...SEATS.filter(z=>state.played[z]&&state.played[z].s===state.lead).map(z=>RANK[state.played[z].v]));
@@ -432,29 +251,54 @@ function scoreTrick(){
         let c=state.played[s];
         if(c.s===state.lead&&RANK[c.v]>high){high=RANK[c.v];win=s}
         if(c.s==='♥')points++;
-        if(c.s==='♥'&&c.v==='Q')points+=12;
-        if(c.s==='♦'&&c.v==='10')points+=10;
+        if(c.s==='♠'&&c.v==='Q')points+=13;
+        if(c.s==='♦'&&c.v==='10')points+=state.dbl?20:10;
     }
     let team=['bottom','top'].includes(win)?0:1;
-    state.scores[team]+=points;state.winner=win;state.turn=win;
-    render();say(state.names[win]+' أخذ الجولة · '+points+' نقطة سلبية');
-    tTimer=setTimeout(()=>{
-        if(!state)return;
-        if(state.scores.some(x=>x>=100)){
-            state.matchEnd=true;render();
-            matchEndPopup();return;
-        }
-        state.played={bottom:null,right:null,top:null,left:null};state.lead=null;state.roundEnd=false;
-        if(SEATS.every(s=>state.hands[s].length===0)){render();popup('انتهت الصكة','انتهت الأوراق. ابدأ صكة جديدة مع بقاء النتيجة.');return}
-        state.turn=win;render();botTurn();
-    },1700);
+    state.pend=[team,points];state.winner=win;state.turn=win;
+    state.msg=state.names[win]+' أخذ الجولة · '+points+' نقطة سلبية';render();
+    tTimer=setTimeout(afterTrick,1700);
+}
+function canDouble(seat){
+    if(!state||state.dbl||state.roundEnd||state.matchEnd)return false;
+    const h=state.hands[seat];
+    return !!h&&h.length===13&&h.some(c=>c&&c.s==='♦'&&c.v==='10')&&h.some(c=>c&&c.s==='♦'&&c.v==='A');
+}
+function doDouble(seat){
+    if(!canDouble(seat))return;
+    state.dbl=seat;
+    const n=state.names[seat];
+    notify(n+' كشف عشرة الديمن والأكة: دبل ×2 (20 نقطة)!');
+    if(mode==='online'&&isHost)broadcastNotice({kind:'dbl',name:n});
+    render();
+}
+function humanDouble(){
+    if(!state)return;
+    if(mode==='online'&&!isHost){if(conn&&conn.open)conn.send({type:'double'});return}
+    doDouble(localSeat);
+}
+function afterTrick(){
+    if(!state)return;
+    const win=state.winner||state.turn;
+    if(state.pend){state.scores[state.pend[0]]+=state.pend[1];state.pend=null}
+    if(state.scores.some(x=>x>=100)){state.matchEnd=true;render();matchEndPopup();return}
+    state.played={bottom:null,right:null,top:null,left:null};state.lead=null;state.roundEnd=false;state.msg='';
+    if(SEATS.every(k=>state.hands[k].length===0)){render();popup('انتهت الصكة','انتهت الأوراق. ابدأ صكة جديدة مع بقاء النتيجة.');return}
+    state.turn=win;render();botTurn();
 }
 function cardHTML(c){
     if(!c||!SUITS.includes(c.s)||!has(RANK,c.v))return '<div class="empty"></div>';
     return `<div class="card ${c.s==='♥'||c.s==='♦'?'red':''}"><div class="corner">${has(FACE,c.v)?FACE[c.v]:c.v}<br>${c.s}</div><div class="symbol">${c.s}</div></div>`;
 }
 function getVisualSeat(a){return['bottom','right','top','left'][(SEATS.indexOf(a)-SEATS.indexOf(localSeat)+4)%4]}
-function matchEndPopup(){const t=['bottom','top'].includes(localSeat)?0:1;popup('انتهت المباراة',state.scores[t]>=100?'فريقك وصل 100 نقطة وخسر!':'الخصم وصل 100 نقطة وخسر!')}
+function loadStats(){try{return JSON.parse(localStorage.getItem('samra_stats'))||{w:0,l:0}}catch(e){return{w:0,l:0}}}
+function showStats(){const t=loadStats();el('stats').textContent='🏆 انتصاراتك: '+t.w+' · خسائرك: '+t.l}
+function matchEndPopup(){
+    const t=['bottom','top'].includes(localSeat)?0:1,won=state.scores[t]<state.scores[1-t];
+    try{const st=loadStats();won?st.w++:st.l++;localStorage.setItem('samra_stats',JSON.stringify(st))}catch(e){}
+    SFX.end();showStats();
+    popup(won?'🏆 فزتم!':'انتهت المباراة',state.scores[t]>=100?'فريقك وصل 100 نقطة وخسر!':'الخصم وصل 100 نقطة وخسر!');
+}
 // نسخة من الحالة لكل ضيف: أوراقه فقط، وبقية الأيدي أعداد فارغة (يمنع الغش)
 function stateFor(seat){
     const c=JSON.parse(JSON.stringify(state));
@@ -476,7 +320,13 @@ function cleanState(s){
     }
     if(!SEATS.includes(s.turn))return null;
     if(!(s.lead===null||SUITS.includes(s.lead)))return null;
-    return{scores:[s.scores[0],s.scores[1]],hands,played,turn:s.turn,lead:s.lead,winner:SEATS.includes(s.winner)?s.winner:null,roundEnd:!!s.roundEnd,matchEnd:!!s.matchEnd,names,isBot:{bottom:false,right:true,top:false,left:true}};
+    return{scores:[s.scores[0],s.scores[1]],hands,played,turn:s.turn,lead:s.lead,msg:String(s.msg||'').replace(BAD,'').slice(0,90),pend:(Array.isArray(s.pend)&&s.pend.length===2&&s.pend.every(Number.isFinite))?[s.pend[0],s.pend[1]]:null,dbl:SEATS.includes(s.dbl)?s.dbl:null,winner:SEATS.includes(s.winner)?s.winner:null,roundEnd:!!s.roundEnd,matchEnd:!!s.matchEnd,names,isBot:{bottom:false,right:true,top:false,left:true}};
+}
+function cleanFull(s){
+    const r=cleanState(s);if(!r)return null;
+    r.isBot={};for(const k of SEATS)r.isBot[k]=!!(s.isBot&&s.isBot[k]);
+    for(const k of SEATS)if(r.hands[k].some(c=>!c))return null;
+    return r;
 }
 function render(){
     if(!state)return;
@@ -487,51 +337,145 @@ function render(){
         el('name-'+v).style.color=own?'var(--gold)':'';
         const sm=document.querySelector('#seat-'+v+' small');
         if(sm)sm.textContent=actual===localSeat?'أنت':(['bottom','top'].includes(actual)===mineTop?'فريقك':'الخصم');
-        el('slot-'+v).innerHTML=cardHTML(state.played[actual]);
+        const pc=state.played[actual],key=pc?pc.s+pc.v:'';
+        el('slot-'+v).innerHTML=cardHTML(pc);
+        const ce=el('slot-'+v).firstElementChild;
+        if(ce&&ce.classList.contains('card')){if(prevSlot[actual]!==key)ce.classList.add('new');if(state.roundEnd&&state.winner===actual)ce.classList.add('win')}
+        prevSlot[actual]=key;
+        const db=el('dbl-'+v);db.textContent='10♦ + A♦ ×2 (مكشوفة)';db.classList.toggle('on',state.dbl===actual);
         el('seat-'+v).classList.toggle('active',state.turn===actual&&!state.matchEnd);
         if(v!=='bottom')el('backs-'+v).innerHTML=Array.from({length:state.hands[actual].length},()=>'<i class="back"></i>').join('');
     }
+    el('dbl-btn').classList.toggle('hidden',!canDouble(localSeat));
+    const np=SEATS.filter(k=>state.played[k]).length,mine=state.turn===localSeat&&!state.roundEnd&&!state.matchEnd;
+    if(np>prevPlayed)SFX.play();
+    if(state.roundEnd&&!prevRound)SFX.trick();
+    if(state.dbl&&!prevDbl)SFX.dbl();
+    if(mine&&!wasMine)SFX.turn();
+    prevPlayed=np;prevRound=state.roundEnd;prevDbl=state.dbl;wasMine=mine;
+    el('hand').parentElement.classList.toggle('my-turn',mine);
+    el('message').textContent=state.msg||(state.matchEnd?'انتهت المباراة':mine?'دورك! اختر ورقة':'الدور على '+state.names[state.turn]);
+    if(!awake){awake=true;keepAwake()}
     el('score1').textContent=state.scores[myTeam];el('score2').textContent=state.scores[1-myTeam];
     el('turn-label').innerHTML='الدور: <strong>'+esc(state.names[state.turn])+'</strong>';
     el('hand-count').textContent=state.hands[localSeat].length+' ورقة متبقية';
     let h=el('hand');h.innerHTML='';
+    h.classList.toggle('deal',state.hands[localSeat].length===13&&prevLen!==13);prevLen=state.hands[localSeat].length;
     state.hands[localSeat].forEach((c,i)=>{
         if(!c)return;
         let w=document.createElement('div');w.innerHTML=cardHTML(c);
         let a=w.firstElementChild;
         if(state.turn!==localSeat||state.roundEnd||state.matchEnd)a.classList.add('disabled');
         else if(el('hints')?.checked!==false&&canPlay(c,localSeat))a.classList.add('playable');
-        a.onclick=()=>humanPlay(i);h.appendChild(a);
+        a.onclick=()=>humanPlay(i);
+        a.setAttribute('role','button');a.tabIndex=0;a.setAttribute('aria-label',c.v+' '+c.s);
+        a.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();humanPlay(i)}};
+        a.style.setProperty('--i',i);h.appendChild(a);
     });
-    if(mode==='online'&&isHost&&started)for(const k in conns){const c=conns[k];if(c&&c.open)c.send({type:'state',state:stateFor(k)})}
+    if(mode==='online'&&isHost&&started&&!migrating){
+        for(const k in conns){const c=conns[k];if(c&&c.open)c.send({type:'state',state:stateFor(k)})}
+        const sc=succSeat&&conns[succSeat];
+        if(sc&&sc.open)sc.send({type:'backup',state:JSON.parse(JSON.stringify(state))});
+    }
 }
 function say(t){el('message').textContent=t}
 function popup(t,m){el('modal-title').textContent=t;el('modal-text').textContent=m;el('modal').style.display='flex'}
 function closeModal(){el('modal').style.display='none'}
-function showRules(){popup('قوانين سَمْرَة','أربعة لاعبين بفريقين: أنت مع الشريك المقابل. لكل لاعب 13 ورقة. يجب اتباع النوع إذا كان معك. أعلى ورقة من النوع الذي بدأ به الدور تفوز بالجولة. كل قلب نقطة، بنت القلوب 13 نقطة إجمالاً، وعشرة الديناري 10 نقاط. أول فريق يصل إلى 100 نقطة يخسر.')}
+function showRules(){popup('قوانين سَمْرَة','أربعة لاعبين بفريقين: أنت مع الشريك المقابل. لكل لاعب 13 ورقة، ويجب اتباع النوع إذا كان معك، وأعلى ورقة من نوع الدور تفوز بالجولة. النقاط سلبية على الفريق الذي يأخذ الجولة: كل قلب نقطة، بنت السبيت 13 نقطة، وعشرة الديمن 10 نقاط. من معه عشرة الديمن وأكة الديمن معاً يقدر يضغط دبل قبل أن يلعب أول ورقة ويكشفهما للجميع فتصير عشرة الديمن 20 نقطة. أول فريق يصل 100 نقطة يخسر.')}
+
+function beep(f,d,type,vol,delay){
+    const sd=el('sound');if(sd&&!sd.checked)return;
+    try{
+        AC=AC||new (window.AudioContext||window.webkitAudioContext)();
+        const t=AC.currentTime+(delay||0),o=AC.createOscillator(),g=AC.createGain();
+        o.type=type||'sine';o.frequency.setValueAtTime(f,t);
+        g.gain.setValueAtTime(vol||.06,t);g.gain.exponentialRampToValueAtTime(.0001,t+d);
+        o.connect(g);g.connect(AC.destination);o.start(t);o.stop(t+d);
+    }catch(e){}
+}
+const SFX={
+    play(){beep(520,.07,'triangle',.07)},
+    trick(){beep(660,.1,'sine',.06);beep(880,.14,'sine',.06,.1)},
+    turn(){beep(740,.07,'sine',.05);beep(988,.09,'sine',.05,.08)},
+    dbl(){beep(200,.25,'sawtooth',.05);beep(150,.3,'sawtooth',.05,.1)},
+    end(){[523,659,784,1046].forEach((f,i)=>beep(f,.18,'sine',.06,i*.12))}
+};
+async function keepAwake(){
+    try{if('wakeLock' in navigator&&!wl){wl=await navigator.wakeLock.request('screen');wl.addEventListener('release',()=>{wl=null})}}catch(e){}
+}
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&state)keepAwake()});
+window.addEventListener('beforeunload',e=>{if(state&&mode==='online'){e.preventDefault();e.returnValue=''}});
+const ID_RE=/^[\w-]{1,64}$/;
+function notify(t){
+    const x=el('toast');x.textContent=t;x.style.display='block';
+    clearTimeout(toastT);toastT=setTimeout(()=>x.style.display='none',6500);
+}
+function showMic(v){document.querySelectorAll('.mic-btn').forEach(b=>b.classList.toggle('hidden',!v))}
+function updateMicBtn(){
+    const t=!localStream?'🎤 تشغيل المايك':micOn?'🎙️ المايك شغّال (اضغط للكتم)':'🔇 مكتوم (اضغط للتشغيل)';
+    document.querySelectorAll('.mic-btn').forEach(b=>b.textContent=t);
+}
+function stopVoice(){
+    if(localStream)localStream.getTracks().forEach(t=>t.stop());
+    localStream=null;micOn=false;
+    for(const id in calls){try{calls[id].close()}catch(e){}}calls={};
+    for(const id in audios){const a=audios[id];a.srcObject=null;a.remove()}audios={};
+    peerIds={};showMic(false);updateMicBtn();
+}
+async function toggleMic(){
+    if(!peer)return;
+    if(!localStream){
+        try{localStream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true},video:false})}
+        catch(e){notify('تعذر تشغيل المايك. اسمح للمتصفح باستخدامه (يحتاج رابط HTTPS).');return}
+        micOn=true;ensureCalls();
+    }else{micOn=!micOn;localStream.getAudioTracks().forEach(t=>t.enabled=micOn)}
+    updateMicBtn();
+}
+function ensureCalls(){
+    if(!peer||!localStream)return;
+    for(const k in peerIds){
+        const id=peerIds[k];if(!id||id===peer.id||calls[id])continue;
+        const call=peer.call(id,localStream);if(!call)continue;
+        calls[id]=call;
+        call.on('close',()=>{delete calls[id]});call.on('error',()=>{delete calls[id]});
+    }
+}
+function acceptCall(call,tries){
+    if(Object.values(peerIds).includes(call.peer)){call.answer();wireCall(call);return}
+    if(tries<6)setTimeout(()=>acceptCall(call,tries+1),500);else try{call.close()}catch(e){}
+}
+function wireCall(call){
+    call.on('stream',st=>{
+        let a=audios[call.peer];
+        if(!a){a=document.createElement('audio');a.autoplay=true;a.setAttribute('playsinline','');document.body.appendChild(a);audios[call.peer]=a}
+        a.srcObject=st;a.play().catch(()=>{});
+    });
+    const rm=()=>{const a=audios[call.peer];if(a){a.srcObject=null;a.remove();delete audios[call.peer]}};
+    call.on('close',rm);call.on('error',rm);
+}
+document.addEventListener('click',()=>{for(const k in audios)audios[k].play().catch(()=>{})});
 
 function backToMenu(){
-    clearTimeout(timer);clearTimeout(tTimer);
+    clearTimeout(timer);clearTimeout(tTimer);clearTimeout(migTimer);
+    stopVoice();
     const old=peer;conns={};conn=null;peer=null;
     if(old){try{old.destroy()}catch(e){}}
-    state=null;isHost=false;started=false;localSeat='bottom';leftHandled=false;
+    state=null;isHost=false;started=false;migrating=false;rejoined=false;succ=null;succSeat=null;backup=null;hostSeat='bottom';expected=new Set();pendingHostNotice=null;
+    localSeat='bottom';leftHandled=false;
     lobbyNames={bottom:'',top:'',right:'',left:''};
+    prevPlayed=0;prevRound=false;prevDbl=null;wasMine=false;prevLen=0;prevSlot={};awake=false;if(wl){try{wl.release()}catch(e){}wl=null}
     el('game').style.display='none';el('lobby').classList.add('hidden');el('menu').classList.remove('hidden');
     el('connection-status').textContent='● وضع فردي';
     el('online-inputs').style.display='flex';el('online-actions-btns').style.display='flex';
     el('start-online-btn').classList.add('hidden');el('online-hint').textContent=HINT;
 }
 function leaveGame(){
-    if(!confirm('هل أنت متأكد من الانسحاب؟'))return;
+    if(!confirm(mode==='online'?'هل أنت متأكد من الانسحاب؟ سيحل مكانك الكمبيوتر'+(isHost?'، وتنتقل الإدارة للاعب آخر.':'.'):'هل تريد مغادرة المباراة؟'))return;
     if(mode==='online'){
         if(isHost){for(const k in conns){try{conns[k].open&&conns[k].send({type:'leave'})}catch(e){}}}
         else if(conn&&conn.open){try{conn.send({type:'leave'})}catch(e){}}
-        setTimeout(backToMenu,250);
+        setTimeout(backToMenu,300);
     }else backToMenu();
-}
-function handleHostLeft(){
-    if(leftHandled)return;leftHandled=true;
-    alert('المضيف أنهى اللعبة أو انقطع اتصاله.');backToMenu();
 }
 function updateLobbyUI(){
     el('menu').classList.add('hidden');el('lobby').classList.remove('hidden');
@@ -542,32 +486,55 @@ function updateLobbyUI(){
         el('l-seat-'+k).className='lobby-seat '+(k==='bottom'?'host':n?'guest':'bot');
     }
 }
-function broadcastLobby(){for(const k in conns){const c=conns[k];if(c&&c.open)c.send({type:'lobby',names:lobbyNames})}}
+function sendAll(o){for(const k in conns){const c=conns[k];if(c&&c.open)c.send(o)}}
+function broadcastLobby(){sendAll({type:'lobby',names:lobbyNames})}
+function broadcastNotice(o){sendAll(Object.assign({type:'notice'},o))}
+function broadcastPeers(){
+    const ids={};ids[localSeat]=peer?peer.id:null;
+    for(const k in conns){if(conns[k]&&conns[k].peer)ids[k]=conns[k].peer}
+    peerIds=ids;sendAll({type:'peers',ids});ensureCalls();
+}
+function pickSuccessor(){
+    const open=Object.keys(conns).filter(k=>conns[k]&&conns[k].open);
+    succSeat=open.length?open[Math.floor(Math.random()*open.length)]:null;
+    sendAll({type:'succ',seat:succSeat,id:succSeat?conns[succSeat].peer:null,hostSeat:localSeat});
+}
 function uniqueName(b){let n=b,i=2;while(Object.values(lobbyNames).includes(n))n=b+' '+i++;return n}
 function newRoomId(){
     const a=new Uint8Array(10);crypto.getRandomValues(a);
     return 'samra-'+Array.from(a,b=>(b%36).toString(36)).join('');
 }
+function onIncoming(c){
+    if(isHost&&!started){lobbyConn(c);return}
+    if(migrating||(isHost&&started)){
+        c.on('data',m=>{if(m&&typeof m==='object'&&m.type==='rejoin')handleRejoin(c,m.seat,0)});
+        setTimeout(()=>{if(!c._ok)try{c.close()}catch(e){}},20000);
+        return;
+    }
+    c.on('open',()=>{c.send({type:'reject'});setTimeout(()=>c.close(),300)});
+}
+function lobbyConn(c){
+    const seat=['top','right','left'].find(x=>!conns[x]);
+    if(!seat){c.on('open',()=>{c.send({type:'reject'});setTimeout(()=>c.close(),300)});return}
+    conns[seat]=c;wireHost(c,seat);
+}
 function createRoom(){
     if(typeof Peer==='undefined'){alert('تعذر تحميل خدمة الاتصال. تأكد من الإنترنت.');return}
     if(peer)peer.destroy();
-    isHost=true;mode='online';localSeat='bottom';started=false;conns={};conn=null;
+    isHost=true;mode='online';localSeat='bottom';hostSeat='bottom';started=false;conns={};conn=null;
     lobbyNames={bottom:'',top:'',right:'',left:''};roomId=newRoomId();
     peer=new Peer(roomId);
     el('online-inputs').style.display='none';el('online-actions-btns').style.display='none';
     el('online-hint').textContent='جاري إنشاء الغرفة...';
     peer.on('open',id=>{
-        roomId=id;player=myName||'لاعب';lobbyNames.bottom=player;updateLobbyUI();
+        roomId=id;player=getName();lobbyNames.bottom=player;peerIds={bottom:id};updateLobbyUI();
         el('lobby-status').textContent='أرسل الكود لأصدقائك (حتى 3). يمكنك البدء في أي وقت.';
-        el('start-online-btn').classList.remove('hidden');
+        el('start-online-btn').classList.remove('hidden');showMic(true);updateMicBtn();
     });
-    peer.on('connection',c=>{
-        const seat=started?null:['top','right','left'].find(x=>!conns[x]);
-        if(!seat){c.on('open',()=>{c.send({type:'reject'});setTimeout(()=>c.close(),300)});return}
-        conns[seat]=c;wireHost(c,seat);
-    });
+    peer.on('connection',onIncoming);
+    peer.on('call',call=>acceptCall(call,0));
     peer.on('error',e=>{
-        if(started){say('خطأ في الاتصال: '+e.type);return}
+        if(started){notify('خطأ في الاتصال: '+e.type);return}
         backToMenu();el('online-hint').textContent='تعذر إنشاء الغرفة: '+e.type;
     });
 }
@@ -576,7 +543,7 @@ function wireHost(c,seat){
         if(conns[seat]!==c)return;
         el('connection-status').textContent='● متصل';
         lobbyNames[seat]=uniqueName('لاعب '+(SEATS.indexOf(seat)+1));
-        c.send({type:'seat',seat});broadcastLobby();updateLobbyUI();
+        c.send({type:'seat',seat});broadcastLobby();updateLobbyUI();broadcastPeers();
     });
     c.on('data',m=>{
         if(conns[seat]!==c||!m||typeof m!=='object')return;
@@ -587,48 +554,84 @@ function wireHost(c,seat){
         }else if(m.type==='move'&&state&&started&&state.turn===seat&&!state.isBot[seat]&&!state.roundEnd&&!state.matchEnd&&Number.isInteger(m.index)){
             const card=state.hands[seat][m.index];
             if(card&&canPlay(card,seat))play(seat,m.index);
-        }
+        }else if(m.type==='double'&&state&&started)doDouble(seat);
     });
     c.on('close',()=>{if(conns[seat]===c)seatLeft(seat)});
 }
 function seatLeft(seat){
-    const c=conns[seat];delete conns[seat];try{c&&c.close()}catch(e){}
-    if(!started){lobbyNames[seat]='';broadcastLobby();updateLobbyUI();return}
+    const c=conns[seat];delete conns[seat];delete peerIds[seat];try{c&&c.close()}catch(e){}
+    if(!started){lobbyNames[seat]='';broadcastLobby();updateLobbyUI();broadcastPeers();return}
     if(!state)return;
+    const nm=state.names[seat];
     state.isBot[seat]=true;state.names[seat]='كمبيوتر (منسحب)';
-    say('انسحب لاعب وحلّ مكانه الكمبيوتر');render();botTurn();
+    notify(nm+' انسحب وحلّ مكانه الكمبيوتر');broadcastNotice({kind:'left',name:nm});
+    if(seat===succSeat)pickSuccessor();
+    broadcastPeers();render();botTurn();
 }
 function joinRoom(){
     if(typeof Peer==='undefined'){alert('تعذر تحميل خدمة الاتصال. تأكد من الإنترنت.');return}
     let id=el('room-code').value.trim().toLowerCase();
     if(!/^samra-[a-z0-9]{10}$/.test(id)){el('online-hint').textContent='رمز الغرفة غير صحيح.';return}
     if(peer)peer.destroy();
-    isHost=false;mode='online';localSeat='top';started=false;player=myName||'لاعب';
+    isHost=false;mode='online';localSeat='top';started=false;migrating=false;succ=null;backup=null;hostSeat='bottom';player=getName();
     lobbyNames={bottom:'المضيف',top:'',right:'',left:''};
     peer=new Peer();
     peer.on('open',()=>{
         conn=peer.connect(id,{reliable:true});wireGuest();
-        roomId=id;updateLobbyUI();
+        roomId=id;updateLobbyUI();showMic(true);updateMicBtn();
         el('lobby-status').textContent='بانتظار بدء اللعبة من المضيف...';
         el('start-online-btn').classList.add('hidden');
     });
-    peer.on('error',e=>{backToMenu();el('online-hint').textContent='تعذر الاتصال: '+e.type});
+    peer.on('connection',onIncoming);
+    peer.on('call',call=>acceptCall(call,0));
+    peer.on('error',e=>{
+        if(migrating||(state&&el('game').style.display==='block')){notify('خطأ في الاتصال: '+e.type);return}
+        backToMenu();el('online-hint').textContent='تعذر الاتصال: '+e.type;
+    });
 }
 function wireGuest(){
     const me=conn;leftHandled=false;
-    me.on('open',()=>{el('connection-status').textContent='● متصل';me.send({type:'hello',name:player})});
+    me.on('open',()=>{
+        el('connection-status').textContent='● متصل';
+        me.send(migrating?{type:'rejoin',seat:localSeat}:{type:'hello',name:player});
+    });
     me.on('data',m=>{
         if(me!==conn||!m||typeof m!=='object')return;
-        if(m.type==='leave'){handleHostLeft();return}
+        if(m.type==='leave'){hostGone();return}
         if(m.type==='reject'){alert('الغرفة ممتلئة أو أن اللعبة بدأت بالفعل.');backToMenu();return}
-        if(m.type==='seat'){if(SEATS.includes(m.seat)&&m.seat!=='bottom')localSeat=m.seat;return}
+        if(m.type==='seat'){
+            if(SEATS.includes(m.seat)&&m.seat!=='bottom')localSeat=m.seat;
+            if(migrating)rejoined=true;
+            return;
+        }
         if(m.type==='lobby'&&m.names&&typeof m.names==='object'){
             for(const k of SEATS)lobbyNames[k]=cleanName(m.names[k]);
             if(!el('lobby').classList.contains('hidden'))updateLobbyUI();
             return;
         }
+        if(m.type==='peers'){
+            const r={};
+            if(m.ids&&typeof m.ids==='object')for(const k of SEATS){const v=m.ids[k];if(typeof v==='string'&&ID_RE.test(v))r[k]=v}
+            peerIds=r;ensureCalls();return;
+        }
+        if(m.type==='succ'){
+            succ=(SEATS.includes(m.seat)&&typeof m.id==='string'&&ID_RE.test(m.id))?{seat:m.seat,id:m.id}:null;
+            if(SEATS.includes(m.hostSeat))hostSeat=m.hostSeat;
+            if(!succ||succ.seat!==localSeat)backup=null;
+            return;
+        }
+        if(m.type==='backup'){
+            if(succ&&succ.seat===localSeat){const b=cleanFull(m.state);if(b)backup=b}
+            return;
+        }
+        if(m.type==='notice'){
+            const n=cleanName(m.name)||'لاعب';
+            notify(m.kind==='dbl'?n+' كشف عشرة الديمن والأكة: دبل ×2 (20 نقطة)!':m.kind==='host'?n+' (المضيف) غادر وحلّ مكانه الكمبيوتر. المضيف الجديد: '+(cleanName(m.newHost)||'لاعب')+' 👑':n+' انسحب وحلّ مكانه الكمبيوتر');
+            return;
+        }
         if(m.type==='state'||m.type==='start_game'){
             const s=cleanState(m.state);if(!s)return;
+            if(migrating){migrating=false;clearTimeout(migTimer)}
             const was=state&&state.matchEnd;state=s;player=s.names[localSeat];
             if(el('game').style.display!=='block'){
                 el('lobby').classList.add('hidden');el('game').style.display='block';
@@ -641,9 +644,67 @@ function wireGuest(){
     me.on('close',()=>{
         if(me!==conn)return;
         el('connection-status').textContent='● انقطع الاتصال';
-        if(el('game').style.display==='block'&&state)handleHostLeft();
-        else el('lobby-status').textContent='انقطع الاتصال بالمضيف.';
+        if(el('game').style.display==='block'&&state)hostGone();
+        else if(!migrating)el('lobby-status').textContent='انقطع الاتصال بالمضيف.';
     });
+}
+// ---------- خروج المضيف: ينتقل الدور للاعب حقيقي ويحل الكمبيوتر مكانه ----------
+function hostGone(){
+    if(migrating||isHost)return;
+    if(el('game').style.display!=='block'||!state){alert('المضيف أنهى الغرفة.');backToMenu();return}
+    if(!succ){alert('انتهت اللعبة: لا يوجد لاعب آخر ليصبح مضيفاً.');backToMenu();return}
+    migrating=true;rejoined=false;
+    notify('المضيف غادر… جاري نقل الإدارة 👑');
+    if(succ.seat===localSeat){try{conn&&conn.close()}catch(e){}conn=null;becomeHost()}
+    else{
+        migTimer=setTimeout(()=>{if(migrating){alert('انتهت اللعبة: تعذر الاتصال بالمضيف الجديد.');backToMenu()}},25000);
+        connectToNewHost(0);
+    }
+}
+function connectToNewHost(n){
+    if(!migrating||!succ||rejoined)return;
+    if(n>=5){alert('تعذر الاتصال بالمضيف الجديد. انتهت اللعبة.');backToMenu();return}
+    try{if(conn)conn.close()}catch(e){}
+    conn=peer.connect(succ.id,{reliable:true});wireGuest();
+    setTimeout(()=>{if(migrating&&!rejoined)connectToNewHost(n+1)},3500);
+}
+function becomeHost(){
+    if(!backup){alert('تعذر إكمال اللعبة بعد خروج المضيف.');backToMenu();return}
+    const oldSeat=hostSeat;
+    state=backup;backup=null;
+    const oldName=state.names[oldSeat];
+    expected=new Set(SEATS.filter(k=>k!==localSeat&&k!==oldSeat&&!state.isBot[k]));
+    state.isBot[oldSeat]=true;state.names[oldSeat]='كمبيوتر (المضيف)';state.isBot[localSeat]=false;
+    isHost=true;started=true;conns={};hostSeat=localSeat;succ=null;succSeat=null;
+    delete peerIds[oldSeat];peerIds[localSeat]=peer.id;
+    difficulty=el('difficulty').value;
+    el('deal-btn').classList.remove('hidden');
+    el('connection-status').textContent='● أنت المضيف الآن';
+    notify('المضيف غادر وحلّ مكانه الكمبيوتر. أنت المضيف الآن 👑');
+    pendingHostNotice={name:oldName,newHost:player};
+    render();
+    if(expected.size===0){finishMigration();return}
+    migTimer=setTimeout(finishMigration,9000);
+}
+function handleRejoin(c,seat,tries){
+    if(!isHost||!migrating){
+        if(tries<10)setTimeout(()=>handleRejoin(c,seat,tries+1),400);else try{c.close()}catch(e){}
+        return;
+    }
+    if(!SEATS.includes(seat)||!expected.has(seat)||conns[seat]||peerIds[seat]!==c.peer){try{c.close()}catch(e){}return}
+    c._ok=true;conns[seat]=c;wireHost(c,seat);
+    try{c.send({type:'seat',seat})}catch(e){}
+    expected.delete(seat);
+    if(expected.size===0)finishMigration();
+}
+function finishMigration(){
+    if(!migrating||!isHost)return;
+    clearTimeout(migTimer);
+    for(const k of expected){state.isBot[k]=true;state.names[k]='كمبيوتر (غير متصل)'}
+    expected=new Set();migrating=false;
+    pickSuccessor();broadcastPeers();
+    if(pendingHostNotice){broadcastNotice({kind:'host',name:pendingHostNotice.name,newHost:pendingHostNotice.newHost});pendingHostNotice=null}
+    if(state.roundEnd)afterTrick();else{render();botTurn()}
 }
 function startOnlineMatch(){
     if(!isHost||started||!peer)return;
@@ -656,9 +717,10 @@ function startOnlineMatch(){
         if(c&&!h)delete conns[k];
         state.names[k]=h?(lobbyNames[k]||'لاعب'):def[k];state.isBot[k]=!h;
     }
-    started=true;
+    started=true;hostSeat='bottom';
     el('lobby').classList.add('hidden');el('game').style.display='block';
     el('deal-btn').classList.remove('hidden');el('connection-status').textContent='● لعبة أونلاين';
+    broadcastPeers();pickSuccessor();
     dealCards();
 }
 function copyRoom(){
