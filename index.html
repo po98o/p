@@ -70,6 +70,16 @@ body.noanim *{animation:none!important;transition:none!important}
 #lb-list{max-height:230px;overflow:auto;margin-top:8px}
 .lb-row{display:grid;grid-template-columns:34px 1fr auto;gap:8px;padding:6px 4px;border-bottom:1px solid #ffffff12;font-size:13px;align-items:center}
 .lb-row.me{background:#e9bd6118;border-radius:8px}.lb-row b{color:var(--gold)}.lb-row .rp{color:var(--muted)}
+.menu{position:relative}
+.lb-btn{position:absolute;top:14px;right:14px;width:46px;height:46px;border-radius:14px;border:1px solid #ffffff30;background:#ffffff10;font-size:24px;color:var(--cream);box-shadow:0 4px 14px #0004}
+.lb-btn:hover{background:#e9bd6122;border-color:var(--gold)}
+.modal{position:relative}
+.x-close{position:sticky;top:0;float:left;z-index:3;width:36px;height:36px;border-radius:50%;border:1px solid #ffffff35;background:#0b2119;color:var(--cream);font-size:16px;line-height:1;margin:-8px 0 0 -8px}
+.x-close:hover{border-color:var(--gold);color:var(--gold)}
+.seat .dbl{position:absolute;margin:0;white-space:nowrap;font-size:10px;padding:2px 7px;z-index:3}
+.seat-top .dbl,.seat-bottom .dbl{left:calc(100% + 6px);top:50%;transform:translateY(-50%)}
+.seat-left .dbl{left:0;bottom:calc(100% + 4px)}
+.seat-right .dbl{right:0;bottom:calc(100% + 4px)}
 </style></head>
 <body>
 <header><div class="brand"><div class="brand-icon">♠</div><div><b>سَمْرَة</b><small>تحدّاك تجمع أقل نقاط</small></div></div>
@@ -77,13 +87,7 @@ body.noanim *{animation:none!important;transition:none!important}
 <main>
 
 <section id="menu" class="panel menu">
- <div class="lb">
-  <div class="lb-head"><b>🏆 لوحة المتصدرين</b><button class="btn secondary small" onclick="loadBoard()" aria-label="تحديث">↻</button></div>
-  <div><span id="rank-badge" style="font-weight:800">🥉 برونز</span> · <span id="rank-rp">0</span> نقطة <span id="lb-pos" class="hint"></span></div>
-  <div class="bar"><i id="rank-bar"></i></div>
-  <div class="hint" id="rank-next" style="margin:0"></div>
-  <div id="lb-list"></div><p class="hint" id="lb-msg"></p>
- </div>
+ <button class="lb-btn" onclick="openBoard()" aria-label="لوحة المتصدرين">🏆</button>
  <div class="hero-icon">🂡</div><h1>مرحباً بك في سَمْرَة</h1><p class="sub">اكتب اسمك واختر طريقة اللعب</p>
  <div class="formrow"><input id="player-name" class="field name" placeholder="اسمك في اللعبة" maxlength="18" autocomplete="nickname"></div>
  <p class="hint" id="stats"></p>
@@ -145,7 +149,18 @@ body.noanim *{animation:none!important;transition:none!important}
 </section>
 </main>
 
+<div class="modal-bg" id="lb-modal"><div class="modal" style="text-align:right;max-height:90vh;overflow:auto">
+ <button class="x-close" onclick="closeBoard()" aria-label="إغلاق">✕</button>
+ <h2>🏆 لوحة المتصدرين</h2>
+ <div><span id="rank-badge" style="font-weight:800">🥉 برونز</span> · <span id="rank-rp">0</span> نقطة <span id="lb-pos" class="hint"></span></div>
+ <div class="bar"><i id="rank-bar"></i></div>
+ <div class="hint" id="rank-next" style="margin:0"></div>
+ <div id="lb-list"></div><p class="hint" id="lb-msg"></p>
+ <p class="hint">الرانك يُحسب من اللعب ضد الكمبيوتر فقط، واللوحة عامة يشوفها كل اللاعبين.</p>
+ <div style="display:flex;gap:8px"><button class="btn secondary small" style="flex:1" onclick="loadBoard()">↻ تحديث</button><button class="btn small" style="flex:1" onclick="closeBoard()">تمام</button></div>
+</div></div>
 <div class="modal-bg" id="settings-modal"><div class="modal" style="text-align:right;max-height:90vh;overflow:auto">
+ <button class="x-close" onclick="closeSettings()" aria-label="إغلاق">✕</button>
  <h2>⚙️ إعدادات اللعبة</h2>
  <h3 class="sh">🎮 اللعب</h3>
  <div class="setting-row"><label for="difficulty">مستوى الكمبيوتر (الأونلاين دائماً صعب)</label><select id="difficulty" class="field" onchange="onPref()"><option value="easy">سهل</option><option value="normal" selected>متوسط</option><option value="hard">صعب</option></select></div>
@@ -176,6 +191,7 @@ body.noanim *{animation:none!important;transition:none!important}
  <button class="btn" style="width:100%;margin-top:6px" onclick="closeSettings()">تمام</button>
 </div></div>
 <div class="modal-bg" id="voice-modal"><div class="modal" style="text-align:right;max-height:88vh;overflow:auto">
+ <button class="x-close" onclick="closeVoice()" aria-label="إغلاق">✕</button>
  <h2>🎧 إعدادات الصوت</h2>
  <div class="setting-row"><label for="deaf">🔇 كتم الجميع (ما أسمع أحد)</label><input id="deaf" type="checkbox" class="toggle" onchange="setDeaf(this.checked)"></div>
  <div class="setting-row"><label for="mvol">مستوى صوت الجميع</label><input id="mvol" type="range" min="0" max="100" value="100" oninput="setMaster(this.value)"></div>
@@ -194,7 +210,7 @@ body.noanim *{animation:none!important;transition:none!important}
 <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script>
-const SEATS=['bottom','right','top','left'],SUITS=['♠','♣','♥','♦'],RANK={'2':2,'3':3,'4':4,'5':5,'6':6,'7':7,'8':8,'9':9,'10':10,'J':11,'Q':12,'K':13,'A':14},FACE={J:'🧑',Q:'👩',K:'🧓',A:'A'};
+const SEATS=['bottom','right','top','left'],SUITS=['♠','♣','♥','♦'],RANK={'2':2,'3':3,'4':4,'5':5,'6':6,'7':7,'8':8,'9':9,'10':10,'J':11,'Q':12,'K':13,'A':14},FACE={J:'🧑',Q:'👩',K:'🧓'};
 let mode='bots',state=null,player='لاعب',timer=null,tTimer=null,peer=null,conn=null,isHost=false,roomId='',difficulty='normal';
 let localSeat='bottom',onlineGuestName='',currentUser=null,currentUserRole='player',myName='',recovery=/type=recovery/.test(location.hash),leftHandled=false;
 
@@ -412,7 +428,7 @@ function render(){
         const ce=el('slot-'+v).firstElementChild;
         if(ce&&ce.classList.contains('card')){if(prevSlot[actual]!==key)ce.classList.add('new');if(state.roundEnd&&state.winner===actual)ce.classList.add('win')}
         prevSlot[actual]=key;
-        const db=el('dbl-'+v);db.textContent='10♦ + A♦ ×2 (مكشوفة)';db.classList.toggle('on',state.dbl===actual);
+        const db=el('dbl-'+v);db.textContent='10♦ + A♦ ×2';db.classList.toggle('on',state.dbl===actual);
         el('seat-'+v).classList.toggle('active',state.turn===actual&&!state.matchEnd);
         if(v!=='bottom')el('backs-'+v).innerHTML=Array.from({length:state.hands[actual].length},()=>'<i class="back"></i>').join('');
     }
@@ -456,7 +472,7 @@ function render(){
 function say(t){el('message').textContent=t}
 function popup(t,m){el('modal-title').textContent=t;el('modal-text').textContent=m;el('modal').style.display='flex'}
 function closeModal(){el('modal').style.display='none'}
-function showRules(){popup('قوانين سَمْرَة','أربعة لاعبين بفريقين: أنت مع الشريك المقابل. لكل لاعب 13 ورقة، ويجب اتباع النوع إذا كان معك، وأعلى ورقة من نوع الدور تفوز بالجولة. النقاط سلبية على الفريق الذي يأخذ الجولة:  كل قلب نقطة، بنت السبيت 13 نقطة، وعشرة الديمن 10 نقاط. من معه عشرة الديمن وأكة الديمن معاً يقدر يضغط دبل قبل أن يلعب أول ورقة ويكشفهما للجميع فتصير عشرة الديمن 20 نقطة. أول فريق يصل 100 نقطة يخسر.')}
+function showRules(){popup('قوانين سَمْرَة','أربعة لاعبين بفريقين: أنت مع الشريك المقابل. لكل لاعب 13 ورقة، ويجب اتباع النوع إذا كان معك، وأعلى ورقة من نوع الدور تفوز بالجولة. النقاط سلبية على الفريق الذي يأخذ الجولة: كل قلب نقطة، بنت السبيت 13 نقطة، وعشرة الديمن 10 نقاط. من معه عشرة الديمن وأكة الديمن معاً يقدر يضغط دبل قبل أن يلعب أول ورقة ويكشفهما للجميع فتصير عشرة الديمن 20 نقطة. أول فريق يصل 100 نقطة يخسر.')}
 
 function beep(f,d,type,vol,delay){
     const sd=el('sound');if(sd&&!sd.checked)return;
@@ -653,6 +669,8 @@ function rankResult(won){
     const t=tierOf(rk.rp);
     return 'الرانك: '+(real>=0?'+':'')+real+' نقطة ← '+t.e+' '+t.n+' ('+rk.rp+')';
 }
+function openBoard(){el('lb-modal').style.display='flex';loadBoard()}
+function closeBoard(){el('lb-modal').style.display='none'}
 function boardMsg(t){const m=el('lb-msg');if(m)m.textContent=t}
 async function syncRank(){
     const {data,error}=await sb.from('leaderboard').select('name,rp,wins,losses').eq('id',sbUser.id).maybeSingle();
@@ -670,18 +688,21 @@ async function initBoard(){
     if(typeof supabase==='undefined'){boardMsg('اللوحة غير متصلة. رانكك محفوظ على جهازك.');return}
     try{
         sb=supabase.createClient(SB_URL,SB_KEY,{auth:{persistSession:true,autoRefreshToken:true}});
+    }catch(e){sb=null;boardMsg('اللوحة غير متصلة.');return}
+    try{
         let {data:{session}}=await sb.auth.getSession();
         if(!session){const r=await sb.auth.signInAnonymously();if(r.error)throw r.error;session=r.data.session}
         sbUser=session.user;
-        await syncRank();await loadBoard();
-    }catch(e){sb=null;sbUser=null;boardMsg('اللوحة غير متصلة (تحتاج إعداد Supabase). رانكك محفوظ على جهازك.')}
+        await syncRank();
+    }catch(e){sbUser=null}
+    loadBoard();
 }
 async function loadBoard(){
     if(!sb)return;
     const box=el('lb-list');
     const {data,error}=await sb.from('leaderboard').select('id,name,rp,wins,losses').order('rp',{ascending:false}).limit(10);
-    if(error||!data){boardMsg('تعذر تحميل اللوحة.');return}
-    boardMsg(data.length?'':'ما فيه أحد في اللوحة بعد. كن أول واحد!');
+    if(error||!data){boardMsg('تعذر تحميل اللوحة. تأكد أن جدول leaderboard منشأ في Supabase.');return}
+    boardMsg(data.length?(sbUser?'':'عرض فقط: فعّل Anonymous sign-ins في Supabase لتسجيل رانكك.'):'ما فيه أحد في اللوحة بعد. كن أول واحد!');
     box.innerHTML='';
     data.forEach((r,i)=>{
         const row=document.createElement('div');row.className='lb-row'+(sbUser&&r.id===sbUser.id?' me':'');
@@ -690,7 +711,7 @@ async function loadBoard(){
         const rp=document.createElement('span');rp.className='rp';const t=tierOf(r.rp);rp.textContent=t.e+' '+r.rp;
         row.appendChild(n);row.appendChild(nm);row.appendChild(rp);box.appendChild(row);
     });
-    try{
+    if(sbUser)try{
         const c=await sb.from('leaderboard').select('id',{count:'exact',head:true}).gt('rp',rk.rp);
         if(!c.error)el('lb-pos').textContent='· ترتيبك #'+((c.count||0)+1);
     }catch(e){}
@@ -730,8 +751,8 @@ function resetStats(){
 }
 function openSettings(){el('settings-modal').style.display='flex'}
 function closeSettings(){el('settings-modal').style.display='none'}
-for(const id of ['settings-modal','voice-modal'])el(id).addEventListener('click',e=>{if(e.target===e.currentTarget){id==='voice-modal'?closeVoice():closeSettings()}});
-document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeSettings();closeVoice()}});
+for(const id of ['settings-modal','voice-modal','lb-modal'])el(id).addEventListener('click',e=>{if(e.target===e.currentTarget){id==='voice-modal'?closeVoice():id==='lb-modal'?closeBoard():closeSettings()}});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeSettings();closeVoice();closeBoard()}});
 const vol={master:1,deaf:false,mute:{},pv:{}};
 function applyVolumes(){
     for(const id in audios){
