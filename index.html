@@ -81,6 +81,7 @@ body.noanim *{animation:none!important;transition:none!important}
 .seat-left .dbl{left:0;bottom:calc(100% + 4px)}
 .seat-right .dbl{right:0;bottom:calc(100% + 4px)}
 .mode-grid{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))!important}
+.lb-btn{z-index:2;touch-action:manipulation}
 </style></head>
 <body>
 <header><div class="brand"><div class="brand-icon">♠</div><div><b>سَمْرَة</b><small>تحدّاك تجمع أقل نقاط</small></div></div>
@@ -376,7 +377,11 @@ function afterTrick(){
     if(state.pend){state.scores[state.pend[0]]+=state.pend[1];state.pend=null}
     if(state.scores.some(x=>x>=100)){state.matchEnd=true;render();matchEndPopup();return}
     state.played={bottom:null,right:null,top:null,left:null};state.lead=null;state.roundEnd=false;state.msg='';
-    if(SEATS.every(k=>state.hands[k].length===0)){render();popup('انتهت الصكة','انتهت الأوراق. ابدأ صكة جديدة مع بقاء النتيجة.');return}
+    if(SEATS.every(k=>state.hands[k].length===0)){
+        state.msg='انتهت الصكة · توزيع أوراق جديدة بعد لحظات';render();notify('انتهت الصكة! جاري توزيع أوراق جديدة…');
+        tTimer=setTimeout(()=>{if(state&&!state.matchEnd&&SEATS.every(k=>state.hands[k].length===0))dealCards()},2600);
+        return;
+    }
     state.turn=win;render();botTurn();
 }
 function cardHTML(c){
@@ -723,14 +728,22 @@ async function playFrames(frames,result){
     }
     if(!last)return;
     if(last.matchEnd&&result){applyResult(result);matchEndPopup(rankText(result))}
-    else if(last.handOver)popup('انتهت الصكة','انتهت الأوراق. اضغط «صكة جديدة» لتكمل.');
+    else if(last.handOver){
+        state.msg='انتهت الصكة · توزيع أوراق جديدة بعد لحظات';render();notify('انتهت الصكة! جاري توزيع أوراق جديدة…');
+        await sleep(2600);
+        if(mode==='ranked'&&state&&state.handOver){
+            const r=await callRanked({action:'deal'});
+            if(r&&r.frames)await playFrames(r.frames,r.result);
+        }
+    }
 }
 async function rankedAbandonNow(){
     const r=await callRanked({action:'abandon'});
     if(r&&r.result)applyResult(r.result);
     backToMenu();
 }
-function openBoard(){el('lb-modal').style.display='flex';loadBoard()}
+let modalOpenedAt=0;
+function openBoard(){modalOpenedAt=Date.now();el('lb-modal').style.display='flex';loadBoard()}
 function closeBoard(){el('lb-modal').style.display='none'}
 function boardMsg(t){const m=el('lb-msg');if(m)m.textContent=t}
 async function syncRank(){
@@ -742,37 +755,56 @@ async function syncRank(){
     }
     saveRank();renderRank();
 }
+const withTimeout=(p,ms)=>Promise.race([p,new Promise((_,rej)=>setTimeout(()=>rej(new Error('timeout')),ms))]);
 async function initBoard(){
-    if(typeof supabase==='undefined'){boardMsg('اللوحة غير متصلة. رانكك محفوظ على جهازك.');return}
+    if(typeof supabase==='undefined'){loadBoard();return}
+    try{sb=supabase.createClient(SB_URL,SB_KEY,{auth:{persistSession:true,autoRefreshToken:true}})}
+    catch(e){sb=null;loadBoard();return}
     try{
-        sb=supabase.createClient(SB_URL,SB_KEY,{auth:{persistSession:true,autoRefreshToken:true}});
-    }catch(e){sb=null;boardMsg('اللوحة غير متصلة.');return}
-    try{
-        let {data:{session}}=await sb.auth.getSession();
-        if(!session){const r=await sb.auth.signInAnonymously();if(r.error)throw r.error;session=r.data.session}
+        const g=await withTimeout(sb.auth.getSession(),8000);
+        let session=g.data.session;
+        if(!session){const r=await withTimeout(sb.auth.signInAnonymously(),10000);if(r.error)throw r.error;session=r.data.session}
         sbUser=session.user;
-        await syncRank();
+        await withTimeout(syncRank(),10000);
     }catch(e){sbUser=null}
     loadBoard();
 }
-async function loadBoard(){
-    if(!sb)return;
-    const box=el('lb-list');
-    const {data,error}=await sb.from('leaderboard').select('id,name,rp,wins,losses').order('rp',{ascending:false}).limit(10);
-    if(error||!data){boardMsg('تعذر تحميل اللوحة. تأكد أن جدول leaderboard منشأ في Supabase.');return}
-    boardMsg(data.length?(sbUser?'':'عرض فقط: فعّل Anonymous sign-ins في Supabase لتسجيل رانكك.'):'ما فيه أحد في اللوحة بعد. كن أول واحد!');
-    box.innerHTML='';
+let lbBusy=false;
+function drawBoard(data){
+    const box=el('lb-list');box.innerHTML='';
     data.forEach((r,i)=>{
         const row=document.createElement('div');row.className='lb-row'+(sbUser&&r.id===sbUser.id?' me':'');
         const n=document.createElement('b');n.textContent=['🥇','🥈','🥉'][i]||('#'+(i+1));
         const nm=document.createElement('span');nm.textContent=cleanName(r.name)||'لاعب';
-        const rp=document.createElement('span');rp.className='rp';const t=tierOf(r.rp);rp.textContent=t.e+' '+r.rp;
+        const rp=document.createElement('span');rp.className='rp';rp.textContent=tierOf(r.rp|0).e+' '+(r.rp|0);
         row.appendChild(n);row.appendChild(nm);row.appendChild(rp);box.appendChild(row);
     });
-    if(sbUser)try{
-        const c=await sb.from('leaderboard').select('id',{count:'exact',head:true}).gt('rp',rk.rp);
-        if(!c.error)el('lb-pos').textContent='· ترتيبك #'+((c.count||0)+1);
-    }catch(e){}
+}
+// قراءة اللوحة مباشرة بمفتاح القراءة العام (لا تعتمد على تسجيل الدخول ولا تعلق)
+async function restGet(path,extra){
+    const ctl=new AbortController(),t=setTimeout(()=>ctl.abort(),8000);
+    try{return await fetch(SB_URL+'/rest/v1/'+path,{headers:Object.assign({apikey:SB_KEY},extra||{}),signal:ctl.signal})}
+    finally{clearTimeout(t)}
+}
+async function loadBoard(){
+    if(lbBusy)return;lbBusy=true;
+    try{
+        try{const c=JSON.parse(localStorage.getItem('samra_lb')||'null');if(c&&c.length&&!el('lb-list').firstChild)drawBoard(c)}catch(e){}
+        boardMsg('جاري التحميل…');
+        const r=await restGet('leaderboard?select=id,name,rp,wins,losses&order=rp.desc&limit=10');
+        if(!r.ok){boardMsg(r.status===404?'جدول leaderboard غير موجود. شغّل ملف setup.sql في Supabase.':'تعذر تحميل اللوحة (رمز '+r.status+'). اضغط ↻ للمحاولة.');return}
+        const data=await r.json();
+        drawBoard(data);
+        try{localStorage.setItem('samra_lb',JSON.stringify(data))}catch(e){}
+        boardMsg(data.length?(sbUser?'':'عرض فقط: فعّل Anonymous sign-ins في Supabase لتسجيل رانكك.'):'ما فيه أحد في اللوحة بعد. العب مباراة رانك وكن أول واحد!');
+        if(sbUser){
+            const c=await restGet('leaderboard?select=id&rp=gt.'+(rk.rp|0),{Prefer:'count=exact',Range:'0-0'});
+            const m=/\/(\d+)$/.exec(c.headers.get('content-range')||'');
+            if(m)el('lb-pos').textContent='· ترتيبك #'+(Number(m[1])+1);
+        }
+    }catch(e){
+        boardMsg(e&&e.name==='AbortError'?'الاتصال بطيء. اضغط ↻ لإعادة المحاولة.':'تعذر الاتصال باللوحة. تأكد من الإنترنت واضغط ↻.');
+    }finally{lbBusy=false}
 }
 let micDevice='',meterT=null,autoT=null;
 const PREF_IDS=['difficulty','delay','tdelay','hints','autoplay','confirmrisk','confirmleave','tbl','cback','csize','noanim','keepon','sound','sfxvol','turnsnd','toasts'];
@@ -807,9 +839,9 @@ function resetStats(){
     try{localStorage.removeItem('samra_stats')}catch(e){}
     showStats();
 }
-function openSettings(){el('settings-modal').style.display='flex'}
+function openSettings(){modalOpenedAt=Date.now();el('settings-modal').style.display='flex'}
 function closeSettings(){el('settings-modal').style.display='none'}
-for(const id of ['settings-modal','voice-modal','lb-modal'])el(id).addEventListener('click',e=>{if(e.target===e.currentTarget){id==='voice-modal'?closeVoice():id==='lb-modal'?closeBoard():closeSettings()}});
+for(const id of ['settings-modal','voice-modal','lb-modal'])el(id).addEventListener('click',e=>{if(e.target===e.currentTarget&&Date.now()-modalOpenedAt>350){id==='voice-modal'?closeVoice():id==='lb-modal'?closeBoard():closeSettings()}});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeSettings();closeVoice();closeBoard()}});
 const vol={master:1,deaf:false,mute:{},pv:{}};
 function applyVolumes(){
@@ -868,7 +900,7 @@ async function changeMicDevice(v){
     micDevice=v;saveVoicePrefs();
     if(micOn){await restartMic();updateMicBtn()}
 }
-function openVoice(){
+function openVoice(){modalOpenedAt=Date.now();
     el('deaf').checked=vol.deaf;el('mvol').value=Math.round(vol.master*100);
     renderVoiceList();populateDevices();
     el('voice-modal').style.display='flex';
