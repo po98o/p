@@ -80,6 +80,7 @@ body.noanim *{animation:none!important;transition:none!important}
 .seat-top .dbl,.seat-bottom .dbl{left:calc(100% + 6px);top:50%;transform:translateY(-50%)}
 .seat-left .dbl{left:0;bottom:calc(100% + 4px)}
 .seat-right .dbl{right:0;bottom:calc(100% + 4px)}
+.mode-grid{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))!important}
 </style></head>
 <body>
 <header><div class="brand"><div class="brand-icon">♠</div><div><b>سَمْرَة</b><small>تحدّاك تجمع أقل نقاط</small></div></div>
@@ -92,7 +93,8 @@ body.noanim *{animation:none!important;transition:none!important}
  <div class="formrow"><input id="player-name" class="field name" placeholder="اسمك في اللعبة" maxlength="18" autocomplete="nickname"></div>
  <p class="hint" id="stats"></p>
  <div class="mode-grid">
-  <button class="mode selected" id="mode-bots" onclick="selectMode('bots')"><span class="ico">🤖</span><b>ضد الكمبيوتر</b><small>العب ضد 3 خصوم بذكاء قابل للتعديل</small></button>
+  <button class="mode selected" id="mode-bots" onclick="selectMode('bots')"><span class="ico">🤖</span><b>تدريب ضد الكمبيوتر</b><small>بدون رانك، للتجربة والتدريب</small></button>
+  <button class="mode" id="mode-ranked" onclick="selectMode('ranked')"><span class="ico">🏅</span><b>رانك ضد الكمبيوتر</b><small>نتائج موثّقة من السيرفر بدون غش</small></button>
   <button class="mode" id="mode-online" onclick="selectMode('online')"><span class="ico">🌐</span><b>لعب أونلاين</b><small>أنشئ غرفة أو ادخل مع صديق برمز</small></button>
  </div>
  <div id="bot-settings" class="settings"><h3>⚙️ إعدادات المباراة</h3><p class="hint" id="settings-summary" style="margin:0 0 10px"></p><button class="btn secondary" style="width:100%" onclick="openSettings()">⚙️ تعديل إعدادات اللعبة</button></div>
@@ -245,10 +247,12 @@ function initApp(){
 window.addEventListener('DOMContentLoaded',initApp);
 function selectMode(m){
     mode=m;
-    el('mode-bots').classList.toggle('selected',m==='bots');el('mode-online').classList.toggle('selected',m==='online');
-    el('bot-settings').classList.toggle('hidden',m!=='bots');el('online-settings').classList.toggle('hidden',m!=='online');
+    ['bots','ranked','online'].forEach(k=>el('mode-'+k).classList.toggle('selected',m===k));
+    el('bot-settings').classList.toggle('hidden',m==='online');el('online-settings').classList.toggle('hidden',m!=='online');
     el('start-btn').classList.toggle('hidden',m==='online');
+    el('start-btn').textContent=m==='ranked'?'ابدأ مباراة رانك ←':'ابدأ المباراة ←';
 }
+
 const SORT=['♠','♥','♣','♦'];
 const cardCmp=(a,b)=>SORT.indexOf(a.s)-SORT.indexOf(b.s)||RANK[b.v]-RANK[a.v];
 function deck(){
@@ -262,6 +266,7 @@ function fresh(){
     names:{bottom:'أنت',right:'الكمبيوتر 1',top:'الشريك',left:'الكمبيوتر 2'},isBot:{bottom:false,right:true,top:true,left:true}}
 }
 function startMatch(){
+    if(mode==='ranked'){startRanked();return}
     mode='bots';localSeat='bottom';player=getName();difficulty=el('difficulty').value;
     state=fresh();state.names={bottom:player,right:'الكمبيوتر 1',top:'الكمبيوتر 3',left:'الكمبيوتر 2'};
     dealCards();
@@ -286,6 +291,7 @@ function dealCards(){
 }
 function dealNew(){
     if(!state)return;
+    if(mode==='ranked'){if(state.handOver)rankedAct({action:'deal'});else notify('أنهِ الصكة الحالية أولاً.');return}
     if(mode==='online'&&!isHost){alert('فقط المضيف يمكنه توزيع صكة جديدة');return}
     if(!state.matchEnd&&state.hands.some(h=>h.length>0)&&!confirm('تبي تبدأ صكة جديدة؟ سيتم إلغاء الصكة الحالية.'))return;
     if(state.matchEnd){const n=state.names,b=state.isBot;state=fresh();state.names=n;state.isBot=b}
@@ -293,10 +299,11 @@ function dealNew(){
 }
 function canPlay(c,s){return !state.lead||!state.hands[s].some(x=>x&&x.s===state.lead)||c.s===state.lead}
 function humanPlay(i){
-    if(!state||state.turn!==localSeat||state.roundEnd||state.matchEnd)return;
+    if(!state||rankedBusy||state.turn!==localSeat||state.roundEnd||state.matchEnd)return;
     let c=state.hands[localSeat][i];if(!c)return;
     if(!canPlay(c,localSeat)){say('لازم تلعب من نفس النوع '+state.lead);return}
     if(el('confirmrisk').checked&&((c.s==='♠'&&c.v==='Q')||(c.s==='♦'&&c.v==='10'))&&state.hands[localSeat].filter(x=>x&&canPlay(x,localSeat)).length>1&&!confirm('هذي ورقة خطرة، تبي تلعبها؟'))return;
+    if(mode==='ranked'){rankedAct({action:'move',index:i});return}
     if(mode==='online'&&!isHost){if(conn&&conn.open)conn.send({type:'move',index:i});return}
     play(localSeat,i);
 }
@@ -359,6 +366,7 @@ function doDouble(seat){
 }
 function humanDouble(){
     if(!state)return;
+    if(mode==='ranked'){rankedAct({action:'double'});return}
     if(mode==='online'&&!isHost){if(conn&&conn.open)conn.send({type:'double'});return}
     doDouble(localSeat);
 }
@@ -378,11 +386,11 @@ function cardHTML(c){
 function getVisualSeat(a){return['bottom','right','top','left'][(SEATS.indexOf(a)-SEATS.indexOf(localSeat)+4)%4]}
 function loadStats(){try{return JSON.parse(localStorage.getItem('samra_stats'))||{w:0,l:0}}catch(e){return{w:0,l:0}}}
 function showStats(){const t=loadStats();el('stats').textContent='🏆 انتصاراتك: '+t.w+' · خسائرك: '+t.l}
-function matchEndPopup(){
+function matchEndPopup(ex){
     const t=['bottom','top'].includes(localSeat)?0:1,won=state.scores[t]<state.scores[1-t];
     try{const st=loadStats();won?st.w++:st.l++;localStorage.setItem('samra_stats',JSON.stringify(st))}catch(e){}
     SFX.end();showStats();
-    const extra=mode==='bots'?' '+rankResult(won):'';
+    const extra=ex?' '+ex:'';
     popup(won?'🏆 فزتم!':'انتهت المباراة',(state.scores[t]>=100?'فريقك وصل 100 نقطة وخسر!':'الخصم وصل 100 نقطة وخسر!')+extra);
 }
 // نسخة من الحالة لكل ضيف: أوراقه فقط، وبقية الأيدي أعداد فارغة (يمنع الغش)
@@ -660,14 +668,67 @@ function renderRank(){
     el('rank-bar').style.width=(nx?Math.round((rk.rp-t.m)/(nx.m-t.m)*100):100)+'%';
     el('rank-next').textContent=(nx?'باقي '+(nx.m-rk.rp)+' نقطة للوصول إلى '+nx.e+' '+nx.n:'وصلت لأعلى رانك!')+' · انتصارات: '+rk.w+' · خسائر: '+rk.l;
 }
-function rankedAbandon(){return !!state&&!state.matchEnd&&(state.scores[0]+state.scores[1])>0}
-function rankResult(won){
-    const d=(DELTA[difficulty]||DELTA.normal)[won?0:1],before=rk.rp;
-    rk.rp=Math.max(0,rk.rp+d);const real=rk.rp-before;
-    won?rk.w++:rk.l++;saveRank();renderRank();
-    if(sb&&sbUser)sb.from('leaderboard').update({rp:rk.rp,wins:rk.w,losses:rk.l}).eq('id',sbUser.id).then(r=>{if(r.error)syncRank().catch(()=>{});else loadBoard()});
-    const t=tierOf(rk.rp);
-    return 'الرانك: '+(real>=0?'+':'')+real+' نقطة ← '+t.e+' '+t.n+' ('+rk.rp+')';
+let ranked=null,rankedBusy=false;
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+function applyResult(r){rk={rp:r.rp,w:r.wins,l:r.losses};saveRank();renderRank();loadBoard()}
+function rankText(r){const t=tierOf(r.rp);return 'الرانك: '+(r.delta>=0?'+':'')+r.delta+' نقطة ← '+t.e+' '+t.n+' ('+r.rp+')'}
+async function callRanked(body){
+    try{
+        const r=await sb.functions.invoke('ranked',{body:Object.assign({id:ranked&&ranked.id,name:curName()},body)});
+        if(r.error)return {error:'server'};
+        return r.data||{error:'empty'};
+    }catch(e){return {error:'network'}}
+}
+async function rankedAct(body){
+    if(rankedBusy||!ranked)return;
+    rankedBusy=true;
+    const r=await callRanked(body);
+    if(!r||r.error){
+        notify(r&&r.error==='illegal'?'حركة غير مسموحة.':'تعذر الاتصال بالسيرفر. حاول مرة أخرى.');
+        if(r&&(r.error==='stale'||r.error==='conflict')){
+            const s2=await callRanked({action:'resume'});
+            if(s2&&s2.frames)await playFrames(s2.frames,null);
+        }
+        rankedBusy=false;return;
+    }
+    await playFrames(r.frames||[],r.result);
+    rankedBusy=false;
+}
+async function startRanked(){
+    if(!sb||!sbUser){alert('الرانك يحتاج الاتصال بـ Supabase وتفعيل Anonymous sign-ins ونشر دالة ranked.');return}
+    if(rankedBusy)return;
+    rankedBusy=true;ranked={id:null};
+    let r=await callRanked({action:'resume'});
+    if(r&&r.none)r=await callRanked({action:'start',difficulty:el('difficulty').value});
+    if(!r||r.error||!r.id){rankedBusy=false;ranked=null;alert('تعذر بدء مباراة الرانك. تأكد من نشر دالة ranked وتشغيل ملف SQL.');return}
+    ranked.id=r.id;mode='ranked';localSeat='bottom';player=curName();difficulty=r.difficulty||'normal';
+    el('menu').classList.add('hidden');el('game').style.display='block';
+    el('connection-status').textContent='● رانك';el('deal-btn').classList.remove('hidden');
+    if(r.resumed)notify('تم استئناف مباراتك الجارية في الرانك');
+    await playFrames(r.frames||[],r.result);
+    rankedBusy=false;
+}
+async function playFrames(frames,result){
+    let last=null;
+    for(let i=0;i<frames.length;i++){
+        const f=frames[i],s2=cleanState(f.s);if(!s2)continue;
+        s2.names.bottom=player;s2.handOver=!!f.s.handOver;state=s2;last=f.s;
+        if(f.note)notify(f.note);
+        render();
+        if(i<frames.length-1){
+            const nk=frames[i+1].k;
+            await sleep(nk==='collect'?(Number(el('tdelay').value)||1700):Math.round((Number(el('delay').value)||1600)*.6));
+        }
+        if(!state||mode!=='ranked')return;
+    }
+    if(!last)return;
+    if(last.matchEnd&&result){applyResult(result);matchEndPopup(rankText(result))}
+    else if(last.handOver)popup('انتهت الصكة','انتهت الأوراق. اضغط «صكة جديدة» لتكمل.');
+}
+async function rankedAbandonNow(){
+    const r=await callRanked({action:'abandon'});
+    if(r&&r.result)applyResult(r.result);
+    backToMenu();
 }
 function openBoard(){el('lb-modal').style.display='flex';loadBoard()}
 function closeBoard(){el('lb-modal').style.display='none'}
@@ -675,10 +736,7 @@ function boardMsg(t){const m=el('lb-msg');if(m)m.textContent=t}
 async function syncRank(){
     const {data,error}=await sb.from('leaderboard').select('name,rp,wins,losses').eq('id',sbUser.id).maybeSingle();
     if(error)throw error;
-    if(!data){
-        const r=await sb.from('leaderboard').insert({id:sbUser.id,name:curName()});if(r.error)throw r.error;
-        rk={rp:0,w:0,l:0};
-    }else{
+    if(!data){rk={rp:0,w:0,l:0}}else{
         rk={rp:data.rp,w:data.wins,l:data.losses};
         if(data.name!==curName())sb.from('leaderboard').update({name:curName()}).eq('id',sbUser.id).then(()=>{});
     }
@@ -852,15 +910,15 @@ function backToMenu(){
     state=null;isHost=false;started=false;migrating=false;rejoined=false;succ=null;succSeat=null;backup=null;hostSeat='bottom';expected=new Set();pendingHostNotice=null;
     localSeat='bottom';leftHandled=false;
     lobbyNames={bottom:'',top:'',right:'',left:''};
-    prevPlayed=0;prevRound=false;prevDbl=null;wasMine=false;prevLen=0;prevSlot={};awake=false;if(wl){try{wl.release()}catch(e){}wl=null}
+    ranked=null;rankedBusy=false;prevPlayed=0;prevRound=false;prevDbl=null;wasMine=false;prevLen=0;prevSlot={};awake=false;if(wl){try{wl.release()}catch(e){}wl=null}
     el('game').style.display='none';el('lobby').classList.add('hidden');el('menu').classList.remove('hidden');
     el('connection-status').textContent='● وضع فردي';
     el('online-inputs').style.display='flex';el('online-actions-btns').style.display='flex';
     el('start-online-btn').classList.add('hidden');el('online-hint').textContent=HINT;
 }
 function leaveGame(){
-    if(el('confirmleave').checked&&!confirm(mode==='online'?'هل أنت متأكد من الانسحاب؟ سيحل مكانك الكمبيوتر'+(isHost?'، وتنتقل الإدارة للاعب آخر.':'.'):'هل تريد مغادرة المباراة؟'+(rankedAbandon()?' سيُحسب ذلك خسارة في الرانك.':'')))return;
-    if(mode==='bots'&&rankedAbandon())rankResult(false);
+    if(el('confirmleave').checked&&!confirm(mode==='online'?'هل أنت متأكد من الانسحاب؟ سيحل مكانك الكمبيوتر'+(isHost?'، وتنتقل الإدارة للاعب آخر.':'.'):(mode==='ranked'?'الانسحاب من مباراة الرانك يُحسب خسارة. متأكد؟':'هل تريد مغادرة المباراة؟')))return;
+    if(mode==='ranked'){rankedAbandonNow();return}
     if(mode==='online'){
         if(isHost){for(const k in conns){try{conns[k].open&&conns[k].send({type:'leave'})}catch(e){}}}
         else if(conn&&conn.open){try{conn.send({type:'leave'})}catch(e){}}
