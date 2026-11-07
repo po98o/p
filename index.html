@@ -296,7 +296,7 @@ function play(s,i){
 function botPick(s){
     let h=state.hands[s],valid=h.map((c,i)=>({c,i})).filter(x=>canPlay(x.c,s));
     let pool=valid.length?valid:h.map((c,i)=>({c,i}));
-    let penalty=c=>c.s==='♥'?RANK[c.v]:(c.s==='♠'&&c.v==='Q'?13:(c.s==='♦'&&c.v==='10'?(state.dbl?20:10):0));
+    let penalty=c=>c.s==='♥'?1:(c.s==='♠'&&c.v==='Q'?13:(c.s==='♦'&&c.v==='10'?(state.dbl?20:10):0));
     if(difficulty==='easy')return pool[Math.floor(Math.random()*pool.length)].i;
     if(difficulty==='hard'){
         let top=Math.max(-1,...SEATS.filter(z=>state.played[z]&&state.played[z].s===state.lead).map(z=>RANK[state.played[z].v]));
@@ -319,7 +319,7 @@ function scoreTrick(){
     for(let s of SEATS){
         let c=state.played[s];
         if(c.s===state.lead&&RANK[c.v]>high){high=RANK[c.v];win=s}
-        if(c.s==='♥')points+=RANK[c.v];
+        if(c.s==='♥')points++;
         if(c.s==='♠'&&c.v==='Q')points+=13;
         if(c.s==='♦'&&c.v==='10')points+=state.dbl?20:10;
     }
@@ -456,7 +456,7 @@ function render(){
 function say(t){el('message').textContent=t}
 function popup(t,m){el('modal-title').textContent=t;el('modal-text').textContent=m;el('modal').style.display='flex'}
 function closeModal(){el('modal').style.display='none'}
-function showRules(){popup('قوانين سَمْرَة','أربعة لاعبين بفريقين: أنت مع الشريك المقابل. لكل لاعب 13 ورقة، ويجب اتباع النوع إذا كان معك، وأعلى ورقة من نوع الدور تفوز بالجولة. النقاط سلبية على الفريق الذي يأخذ الجولة:  كل قلب يُحسب بقيمة الورقة من 2 إلى 14، بنت السبيت 13 نقطة، وعشرة الديمن 10 نقاط. من معه عشرة الديمن وأكة الديمن معاً يقدر يضغط دبل قبل أن يلعب أول ورقة ويكشفهما للجميع فتصير عشرة الديمن 20 نقطة. أول فريق يصل 100 نقطة يخسر.')}
+function showRules(){popup('قوانين سَمْرَة','أربعة لاعبين بفريقين: أنت مع الشريك المقابل. لكل لاعب 13 ورقة، ويجب اتباع النوع إذا كان معك، وأعلى ورقة من نوع الدور تفوز بالجولة. النقاط سلبية على الفريق الذي يأخذ الجولة:  كل قلب نقطة، بنت السبيت 13 نقطة، وعشرة الديمن 10 نقاط. من معه عشرة الديمن وأكة الديمن معاً يقدر يضغط دبل قبل أن يلعب أول ورقة ويكشفهما للجميع فتصير عشرة الديمن 20 نقطة. أول فريق يصل 100 نقطة يخسر.')}
 
 function beep(f,d,type,vol,delay){
     const sd=el('sound');if(sd&&!sd.checked)return;
