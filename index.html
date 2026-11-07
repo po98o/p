@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src 'self' https://0.peerjs.com wss://0.peerjs.com; img-src 'self' data:; media-src 'self' blob: mediastream:; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://0.peerjs.com wss://0.peerjs.com; img-src 'self' data:; media-src 'self' blob: mediastream:; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="no-referrer">
 <meta name="description" content="سَمْرَة - لعبة ورق جماعية أونلاين مع الأصدقاء ومحادثة صوتية">
 <meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes">
@@ -53,13 +53,37 @@ h1{background:linear-gradient(90deg,#f7d987,#e9bd61,#fff3c4,#e9bd61);background-
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 .card{position:relative}.card .symbol{position:absolute;left:50%;top:52%;transform:translate(-50%,-50%);margin:0!important;line-height:1;align-self:auto}
 .center{direction:ltr}#slot-top{grid-area:1/1}#slot-right{grid-area:1/2}#slot-left{grid-area:2/1}#slot-bottom{grid-area:2/2}
+input[type=range]{accent-color:#e9bd61;max-width:150px}
+.sh{color:var(--gold);margin:16px 0 6px;font-size:14px}
+body.tb-blue .table{background-image:repeating-linear-gradient(45deg,#ffffff05 0 2px,transparent 2px 6px),radial-gradient(ellipse at center,#2f6fa8 0,#1d4f7e 56%,#12385c 100%)}
+body.tb-wine .table{background-image:repeating-linear-gradient(45deg,#ffffff05 0 2px,transparent 2px 6px),radial-gradient(ellipse at center,#8a2f3d 0,#6a1f2d 56%,#481420 100%)}
+body.tb-night .table{background-image:repeating-linear-gradient(45deg,#ffffff05 0 2px,transparent 2px 6px),radial-gradient(ellipse at center,#2b3140 0,#1c212d 56%,#10131b 100%)}
+body.cb-blue .back{background:repeating-linear-gradient(45deg,#4f7fc4,#4f7fc4 3px,#2c4f86 3px,#2c4f86 6px)}
+body.cb-gold .back{background:repeating-linear-gradient(45deg,#d9b45a,#d9b45a 3px,#8a6a22 3px,#8a6a22 6px)}
+body.cs-s .hand .card{width:clamp(36px,6vw,54px);height:clamp(54px,8.6vw,78px)}
+body.cs-l .hand .card{width:clamp(50px,8.4vw,78px);height:clamp(74px,12vw,108px)}
+body.noanim *{animation:none!important;transition:none!important}
+.lb{margin:0 auto 18px;max-width:600px;text-align:right;padding:14px;background:#071a1455;border:1px solid #ffffff17;border-radius:16px}
+.lb-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;color:var(--gold);font-size:16px}
+.bar{height:8px;background:#071a14;border-radius:6px;overflow:hidden;margin:6px 0}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#e9bd61,#f7d987);transition:width .5s}
+#lb-list{max-height:230px;overflow:auto;margin-top:8px}
+.lb-row{display:grid;grid-template-columns:34px 1fr auto;gap:8px;padding:6px 4px;border-bottom:1px solid #ffffff12;font-size:13px;align-items:center}
+.lb-row.me{background:#e9bd6118;border-radius:8px}.lb-row b{color:var(--gold)}.lb-row .rp{color:var(--muted)}
 </style></head>
 <body>
 <header><div class="brand"><div class="brand-icon">♠</div><div><b>سَمْرَة</b><small>تحدّاك تجمع أقل نقاط</small></div></div>
-<div class="header-right"><span class="status" id="connection-status">● وضع فردي</span></div></header>
+<div class="header-right"><span class="status" id="connection-status">● وضع فردي</span><button class="btn secondary small" onclick="openSettings()" style="font-size:18px" aria-label="الإعدادات">⚙️</button></div></header>
 <main>
 
 <section id="menu" class="panel menu">
+ <div class="lb">
+  <div class="lb-head"><b>🏆 لوحة المتصدرين</b><button class="btn secondary small" onclick="loadBoard()" aria-label="تحديث">↻</button></div>
+  <div><span id="rank-badge" style="font-weight:800">🥉 برونز</span> · <span id="rank-rp">0</span> نقطة <span id="lb-pos" class="hint"></span></div>
+  <div class="bar"><i id="rank-bar"></i></div>
+  <div class="hint" id="rank-next" style="margin:0"></div>
+  <div id="lb-list"></div><p class="hint" id="lb-msg"></p>
+ </div>
  <div class="hero-icon">🂡</div><h1>مرحباً بك في سَمْرَة</h1><p class="sub">اكتب اسمك واختر طريقة اللعب</p>
  <div class="formrow"><input id="player-name" class="field name" placeholder="اسمك في اللعبة" maxlength="18" autocomplete="nickname"></div>
  <p class="hint" id="stats"></p>
@@ -67,12 +91,7 @@ h1{background:linear-gradient(90deg,#f7d987,#e9bd61,#fff3c4,#e9bd61);background-
   <button class="mode selected" id="mode-bots" onclick="selectMode('bots')"><span class="ico">🤖</span><b>ضد الكمبيوتر</b><small>العب ضد 3 خصوم بذكاء قابل للتعديل</small></button>
   <button class="mode" id="mode-online" onclick="selectMode('online')"><span class="ico">🌐</span><b>لعب أونلاين</b><small>أنشئ غرفة أو ادخل مع صديق برمز</small></button>
  </div>
- <div id="bot-settings" class="settings"><h3>⚙️ إعدادات المباراة</h3>
-  <div class="setting-row"><label for="difficulty">مستوى الكمبيوتر</label><select id="difficulty" class="field"><option value="easy">سهل</option><option value="normal" selected>متوسط</option><option value="hard">صعب</option></select></div>
-  <div class="setting-row"><label for="delay">سرعة تفكير الكمبيوتر</label><select id="delay" class="field"><option value="900">سريع</option><option value="1600" selected>طبيعي</option><option value="2600">متأني</option><option value="3500">بطيء</option></select></div>
-  <div class="setting-row"><label for="sound">المؤثرات الصوتية</label><input id="sound" class="toggle" type="checkbox" checked></div>
-  <div class="setting-row"><label for="hints">إظهار الأوراق الممكنة</label><input id="hints" class="toggle" type="checkbox" checked></div>
- </div>
+ <div id="bot-settings" class="settings"><h3>⚙️ إعدادات المباراة</h3><p class="hint" id="settings-summary" style="margin:0 0 10px"></p><button class="btn secondary" style="width:100%" onclick="openSettings()">⚙️ تعديل إعدادات اللعبة</button></div>
  <div id="online-settings" class="online-box hidden">
     <h3>🌐 إعداد الغرفة</h3>
     <div class="formrow" id="online-inputs">
@@ -102,7 +121,7 @@ h1{background:linear-gradient(90deg,#f7d987,#e9bd61,#fff3c4,#e9bd61);background-
     </div>
     <p class="hint">يدخل حتى 3 لاعبين، وأي مكان فارغ عند بدء اللعبة يلعب فيه الكمبيوتر.</p>
     <button class="btn hidden" id="start-online-btn" style="background:var(--green);color:#000;width:100%;margin-top:10px" onclick="startOnlineMatch()">بدء اللعبة الآن</button>
-    <button class="btn secondary mic-btn hidden" style="width:100%;margin-top:10px" onclick="toggleMic()">🎤 تشغيل المايك</button>
+    <div class="mic-group hidden" style="display:flex;gap:6px;margin-top:10px"><button class="btn secondary mic-btn" style="flex:1" onclick="toggleMic()">🎤 تشغيل المايك</button><button class="btn secondary" onclick="openVoice()" aria-label="إعدادات الصوت">▾</button></div>
     <button class="btn secondary" style="width:100%;margin-top:10px" onclick="backToMenu()">إلغاء والعودة</button>
 </section>
 
@@ -120,16 +139,60 @@ h1{background:linear-gradient(90deg,#f7d987,#e9bd61,#fff3c4,#e9bd61);background-
      <button class="btn secondary small" id="deal-btn" onclick="dealNew()">صكة جديدة</button>
      <button class="btn small hidden" id="dbl-btn" onclick="humanDouble()" style="background:#b3303a;color:#fff">🔟♦ دبل ×2 (10♦ + A♦)</button>
      <button class="btn secondary small" onclick="showRules()">القوانين</button>
-     <button class="btn secondary small mic-btn hidden" onclick="toggleMic()">🎤 تشغيل المايك</button>
+     <span class="mic-group hidden" style="display:inline-flex;gap:4px"><button class="btn secondary small mic-btn" onclick="toggleMic()">🎤 تشغيل المايك</button><button class="btn secondary small" onclick="openVoice()" aria-label="إعدادات الصوت">▾</button></span>
      <button class="btn secondary small" onclick="leaveGame()" style="color:var(--red);border-color:var(--red)">انسحاب 🚪</button>
  </div>
 </section>
 </main>
 
+<div class="modal-bg" id="settings-modal"><div class="modal" style="text-align:right;max-height:90vh;overflow:auto">
+ <h2>⚙️ إعدادات اللعبة</h2>
+ <h3 class="sh">🎮 اللعب</h3>
+ <div class="setting-row"><label for="difficulty">مستوى الكمبيوتر (الأونلاين دائماً صعب)</label><select id="difficulty" class="field" onchange="onPref()"><option value="easy">سهل</option><option value="normal" selected>متوسط</option><option value="hard">صعب</option></select></div>
+ <div class="setting-row"><label for="delay">سرعة تفكير الكمبيوتر</label><select id="delay" class="field" onchange="onPref()"><option value="900">سريع</option><option value="1600" selected>طبيعي</option><option value="2600">متأني</option><option value="3500">بطيء</option></select></div>
+ <div class="setting-row"><label for="tdelay">مدة بقاء الأوراق قبل جمعها</label><select id="tdelay" class="field" onchange="onPref()"><option value="1000">قصيرة</option><option value="1700" selected>عادية</option><option value="2600">طويلة</option><option value="3600">أطول</option></select></div>
+ <div class="setting-row"><label for="hints">إظهار الأوراق الممكنة</label><input id="hints" class="toggle" type="checkbox" checked onchange="onPref()"></div>
+ <div class="setting-row"><label for="autoplay">لعب تلقائي إذا بقيت ورقة واحدة ممكنة</label><input id="autoplay" class="toggle" type="checkbox" onchange="onPref()"></div>
+ <div class="setting-row"><label for="confirmrisk">تأكيد قبل لعب بنت السبيت أو عشرة الديمن</label><input id="confirmrisk" class="toggle" type="checkbox" onchange="onPref()"></div>
+ <div class="setting-row"><label for="confirmleave">تأكيد قبل الانسحاب</label><input id="confirmleave" class="toggle" type="checkbox" checked onchange="onPref()"></div>
+ <h3 class="sh">🎨 المظهر</h3>
+ <div class="setting-row"><label for="tbl">لون الطاولة</label><select id="tbl" class="field" onchange="onPref()"><option value="green" selected>أخضر</option><option value="blue">أزرق</option><option value="wine">عنابي</option><option value="night">ليلي</option></select></div>
+ <div class="setting-row"><label for="cback">ظهر الأوراق</label><select id="cback" class="field" onchange="onPref()"><option value="red" selected>أحمر</option><option value="blue">أزرق</option><option value="gold">ذهبي</option></select></div>
+ <div class="setting-row"><label for="csize">حجم أوراقك</label><select id="csize" class="field" onchange="onPref()"><option value="s">صغير</option><option value="m" selected>عادي</option><option value="l">كبير</option></select></div>
+ <div class="setting-row"><label for="noanim">تقليل الحركة والتأثيرات</label><input id="noanim" class="toggle" type="checkbox" onchange="onPref()"></div>
+ <div class="setting-row"><label for="keepon">إبقاء الشاشة شغالة أثناء اللعب</label><input id="keepon" class="toggle" type="checkbox" checked onchange="onPref()"></div>
+ <h3 class="sh">🔊 الصوت والتنبيهات</h3>
+ <div class="setting-row"><label for="sound">المؤثرات الصوتية</label><input id="sound" class="toggle" type="checkbox" checked onchange="onPref()"></div>
+ <div class="setting-row"><label for="sfxvol">مستوى المؤثرات</label><input id="sfxvol" type="range" min="0" max="100" value="100" oninput="onPref()"></div>
+ <div class="setting-row"><label for="turnsnd">نغمة «دورك»</label><input id="turnsnd" class="toggle" type="checkbox" checked onchange="onPref()"></div>
+ <div class="setting-row"><label for="toasts">الإشعارات المنبثقة (انسحاب، دبل...)</label><input id="toasts" class="toggle" type="checkbox" checked onchange="onPref()"></div>
+ <button class="btn secondary small" style="width:100%;margin-top:8px" onclick="openVoice()">🎧 إعدادات المحادثة الصوتية والمايك</button>
+ <h3 class="sh">🧰 البيانات</h3>
+ <div style="display:flex;gap:8px;flex-wrap:wrap">
+  <button class="btn secondary small" style="flex:1" onclick="resetStats()">تصفير الانتصارات</button>
+  <button class="btn secondary small" style="flex:1" onclick="resetPrefs()">استعادة الافتراضي</button>
+ </div>
+ <p class="hint">إعداداتك تُحفظ على جهازك تلقائياً. سَمْرَة · الإصدار 1.0</p>
+ <button class="btn" style="width:100%;margin-top:6px" onclick="closeSettings()">تمام</button>
+</div></div>
+<div class="modal-bg" id="voice-modal"><div class="modal" style="text-align:right;max-height:88vh;overflow:auto">
+ <h2>🎧 إعدادات الصوت</h2>
+ <div class="setting-row"><label for="deaf">🔇 كتم الجميع (ما أسمع أحد)</label><input id="deaf" type="checkbox" class="toggle" onchange="setDeaf(this.checked)"></div>
+ <div class="setting-row"><label for="mvol">مستوى صوت الجميع</label><input id="mvol" type="range" min="0" max="100" value="100" oninput="setMaster(this.value)"></div>
+ <h3 style="color:var(--gold);margin:14px 0 6px;font-size:14px">اللاعبون</h3>
+ <div id="voice-list"></div>
+ <h3 style="color:var(--gold);margin:14px 0 6px;font-size:14px">مايكك</h3>
+ <div class="setting-row"><label for="gate">عزل المايك</label><select id="gate" class="field" onchange="saveVoicePrefs()"><option value="light">خفيف</option><option value="mid" selected>متوسط</option><option value="strong">قوي</option></select></div>
+ <div class="setting-row"><label for="micdev">جهاز المايك</label><select id="micdev" class="field" onchange="changeMicDevice(this.value)"><option value="">الافتراضي</option></select></div>
+ <div class="setting-row"><label>مستوى صوتك</label><div style="flex:1;max-width:160px;height:8px;background:#071a14;border-radius:6px;overflow:hidden"><i id="meter" style="display:block;height:100%;width:0;background:var(--green)"></i></div></div>
+ <p class="hint">شغّل المايك لتشوف مستوى صوتك. إذا انقطع كلامك خفّف العزل، وإذا يلتقط ضوضاء قوّه. اختصار: اضغط حرف M لتشغيل/إطفاء المايك.</p>
+ <button class="btn" style="width:100%;margin-top:6px" onclick="closeVoice()">تمام</button>
+</div></div>
 <div class="toast" id="toast"></div>
 <div class="modal-bg" id="modal"><div class="modal"><h2 id="modal-title"></h2><p id="modal-text"></p><button class="btn" onclick="closeModal()">تمام</button></div></div>
 
 <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script>
 const SEATS=['bottom','right','top','left'],SUITS=['♠','♣','♥','♦'],RANK={'2':2,'3':3,'4':4,'5':5,'6':6,'7':7,'8':8,'9':9,'10':10,'J':11,'Q':12,'K':13,'A':14},FACE={J:'🧑',Q:'👩',K:'🧓',A:'⚡'};
 let mode='bots',state=null,player='لاعب',timer=null,tTimer=null,peer=null,conn=null,isHost=false,roomId='',difficulty='normal';
@@ -155,7 +218,12 @@ function getName(){
 }
 function initApp(){
     try{const n=localStorage.getItem('samra_name');if(n)el('player-name').value=cleanName(n)}catch(e){}
-    showStats();
+    capturePrefDefaults();loadPrefs();applyPrefs();showStats();loadVoicePrefs();
+    loadRank();renderRank();initBoard();
+    el('player-name').addEventListener('change',()=>{
+        getName();
+        if(sb&&sbUser)sb.from('leaderboard').update({name:curName()}).eq('id',sbUser.id).then(()=>loadBoard());
+    });
 }
 // ---------- منطق اللعبة ----------
 window.addEventListener('DOMContentLoaded',initApp);
@@ -212,6 +280,7 @@ function humanPlay(i){
     if(!state||state.turn!==localSeat||state.roundEnd||state.matchEnd)return;
     let c=state.hands[localSeat][i];if(!c)return;
     if(!canPlay(c,localSeat)){say('لازم تلعب من نفس النوع '+state.lead);return}
+    if(el('confirmrisk').checked&&((c.s==='♠'&&c.v==='Q')||(c.s==='♦'&&c.v==='10'))&&state.hands[localSeat].filter(x=>x&&canPlay(x,localSeat)).length>1&&!confirm('هذي ورقة خطرة، تبي تلعبها؟'))return;
     if(mode==='online'&&!isHost){if(conn&&conn.open)conn.send({type:'move',index:i});return}
     play(localSeat,i);
 }
@@ -257,7 +326,7 @@ function scoreTrick(){
     let team=['bottom','top'].includes(win)?0:1;
     state.pend=[team,points];state.winner=win;state.turn=win;
     state.msg=state.names[win]+' أخذ الجولة · '+points+' نقطة سلبية';render();
-    tTimer=setTimeout(afterTrick,1700);
+    tTimer=setTimeout(afterTrick,Number(el('tdelay').value)||1700);
 }
 function canDouble(seat){
     if(!state||state.dbl||state.roundEnd||state.matchEnd)return false;
@@ -297,7 +366,8 @@ function matchEndPopup(){
     const t=['bottom','top'].includes(localSeat)?0:1,won=state.scores[t]<state.scores[1-t];
     try{const st=loadStats();won?st.w++:st.l++;localStorage.setItem('samra_stats',JSON.stringify(st))}catch(e){}
     SFX.end();showStats();
-    popup(won?'🏆 فزتم!':'انتهت المباراة',state.scores[t]>=100?'فريقك وصل 100 نقطة وخسر!':'الخصم وصل 100 نقطة وخسر!');
+    const extra=mode==='bots'?' '+rankResult(won):'';
+    popup(won?'🏆 فزتم!':'انتهت المباراة',(state.scores[t]>=100?'فريقك وصل 100 نقطة وخسر!':'الخصم وصل 100 نقطة وخسر!')+extra);
 }
 // نسخة من الحالة لكل ضيف: أوراقه فقط، وبقية الأيدي أعداد فارغة (يمنع الغش)
 function stateFor(seat){
@@ -333,7 +403,7 @@ function render(){
     const mineTop=['bottom','top'].includes(localSeat),myTeam=mineTop?0:1;
     for(let actual of SEATS){
         let v=getVisualSeat(actual),n=state.names[actual],own=actual===localSeat&&currentUserRole==='admin';
-        el('name-'+v).textContent=n+(own?' 👑':'');
+        el('name-'+v).textContent=seatLabel(actual);
         el('name-'+v).style.color=own?'var(--gold)':'';
         const sm=document.querySelector('#seat-'+v+' small');
         if(sm)sm.textContent=actual===localSeat?'أنت':(['bottom','top'].includes(actual)===mineTop?'فريقك':'الخصم');
@@ -355,6 +425,11 @@ function render(){
     prevPlayed=np;prevRound=state.roundEnd;prevDbl=state.dbl;wasMine=mine;
     el('hand').parentElement.classList.toggle('my-turn',mine);
     el('message').textContent=state.msg||(state.matchEnd?'انتهت المباراة':mine?'دورك! اختر ورقة':'الدور على '+state.names[state.turn]);
+    clearTimeout(autoT);
+    if(mine&&el('autoplay').checked){
+        const legal=[];state.hands[localSeat].forEach((c,i)=>{if(c&&canPlay(c,localSeat))legal.push(i)});
+        if(legal.length===1){const idx=legal[0];autoT=setTimeout(()=>{if(state&&state.turn===localSeat&&!state.roundEnd&&!state.matchEnd)humanPlay(idx)},700)}
+    }
     if(!awake){awake=true;keepAwake()}
     el('score1').textContent=state.scores[myTeam];el('score2').textContent=state.scores[1-myTeam];
     el('turn-label').innerHTML='الدور: <strong>'+esc(state.names[state.turn])+'</strong>';
@@ -385,61 +460,354 @@ function showRules(){popup('قوانين سَمْرَة','أربعة لاعبي�
 
 function beep(f,d,type,vol,delay){
     const sd=el('sound');if(sd&&!sd.checked)return;
+    const sv=parseFloat(el('sfxvol').value),mul=isNaN(sv)?1:sv/100;if(mul<=0)return;
     try{
         AC=AC||new (window.AudioContext||window.webkitAudioContext)();
         const t=AC.currentTime+(delay||0),o=AC.createOscillator(),g=AC.createGain();
         o.type=type||'sine';o.frequency.setValueAtTime(f,t);
-        g.gain.setValueAtTime(vol||.06,t);g.gain.exponentialRampToValueAtTime(.0001,t+d);
+        g.gain.setValueAtTime(Math.max(.0002,(vol||.06)*mul),t);g.gain.exponentialRampToValueAtTime(.0001,t+d);
         o.connect(g);g.connect(AC.destination);o.start(t);o.stop(t+d);
     }catch(e){}
 }
 const SFX={
     play(){beep(520,.07,'triangle',.07)},
     trick(){beep(660,.1,'sine',.06);beep(880,.14,'sine',.06,.1)},
-    turn(){beep(740,.07,'sine',.05);beep(988,.09,'sine',.05,.08)},
+    turn(){const ts=el('turnsnd');if(ts&&!ts.checked)return;beep(740,.07,'sine',.05);beep(988,.09,'sine',.05,.08)},
     dbl(){beep(200,.25,'sawtooth',.05);beep(150,.3,'sawtooth',.05,.1)},
     end(){[523,659,784,1046].forEach((f,i)=>beep(f,.18,'sine',.06,i*.12))}
 };
 async function keepAwake(){
-    try{if('wakeLock' in navigator&&!wl){wl=await navigator.wakeLock.request('screen');wl.addEventListener('release',()=>{wl=null})}}catch(e){}
+    try{if(el('keepon').checked&&'wakeLock' in navigator&&!wl){wl=await navigator.wakeLock.request('screen');wl.addEventListener('release',()=>{wl=null})}}catch(e){}
 }
-document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&state)keepAwake()});
+document.addEventListener('visibilitychange',()=>{
+    if(document.visibilityState!=='visible')return;
+    if(state)keepAwake();
+    for(const k in audios)audios[k].play().catch(()=>{});
+    if(AC&&AC.state==='suspended')AC.resume();
+    keepAliveMic();
+});
 window.addEventListener('beforeunload',e=>{if(state&&mode==='online'){e.preventDefault();e.returnValue=''}});
 const ID_RE=/^[\w-]{1,64}$/;
 function notify(t){
+    const tg=el('toasts');if(tg&&!tg.checked)return;
     const x=el('toast');x.textContent=t;x.style.display='block';
     clearTimeout(toastT);toastT=setTimeout(()=>x.style.display='none',6500);
 }
-function showMic(v){document.querySelectorAll('.mic-btn').forEach(b=>b.classList.toggle('hidden',!v))}
+function showMic(v){document.querySelectorAll('.mic-group').forEach(b=>b.classList.toggle('hidden',!v))}
+let micBusy=false;
+const speaking=new Set(),analysers={};
 function updateMicBtn(){
-    const t=!localStream?'🎤 تشغيل المايك':micOn?'🎙️ المايك شغّال (اضغط للكتم)':'🔇 مكتوم (اضغط للتشغيل)';
+    const t=micOn?'🎙️ المايك شغّال (اضغط للإطفاء)':'🎤 تشغيل المايك';
     document.querySelectorAll('.mic-btn').forEach(b=>b.textContent=t);
 }
-function stopVoice(){
-    if(localStream)localStream.getTracks().forEach(t=>t.stop());
-    localStream=null;micOn=false;
+function seatLabel(a){
+    let n=state.names[a];
+    if(a===localSeat&&currentUserRole==='admin')n+=' 👑';
+    if(speaking.has(a))n+=' 🔊';
+    return n;
+}
+function updateSpeakUI(){
+    if(state&&el('game').style.display==='block'){for(const a of SEATS)el('name-'+getVisualSeat(a)).textContent=seatLabel(a)}
+    else if(!el('lobby').classList.contains('hidden'))updateLobbyUI();
+    updateVoiceNames();
+}
+function watchStream(key,stream){
+    unwatch(key);
+    try{
+        AC=AC||new (window.AudioContext||window.webkitAudioContext)();
+        if(AC.state==='suspended')AC.resume();
+        const src=AC.createMediaStreamSource(stream),an=AC.createAnalyser();an.fftSize=512;src.connect(an);
+        analysers[key]={src,an,buf:new Uint8Array(an.fftSize),last:0};
+    }catch(e){}
+}
+function unwatch(key){const a=analysers[key];if(a){try{a.src.disconnect()}catch(e){}delete analysers[key]}}
+function seatOfKey(key){return key==='me'?localSeat:SEATS.find(k=>peerIds[k]===key)}
+setInterval(()=>{
+    const now=Date.now();
+    for(const key in analysers){
+        const a=analysers[key];a.an.getByteTimeDomainData(a.buf);
+        let sum=0;for(let i=0;i<a.buf.length;i++){const v=(a.buf[i]-128)/128;sum+=v*v}
+        if(Math.sqrt(sum/a.buf.length)>0.03)a.last=now;
+    }
+    const next=new Set();
+    for(const key in analysers)if(now-analysers[key].last<400){const seat=seatOfKey(key);if(seat)next.add(seat)}
+    if(gate&&gate.open&&micOn&&document.hidden!==true)next.add(localSeat);
+    if(next.size!==speaking.size||[...next].some(x=>!speaking.has(x))){speaking.clear();next.forEach(x=>speaking.add(x));updateSpeakUI()}
+},150);
+
+let gate=null;
+const GATE={light:.012,mid:.022,strong:.04};
+function startGate(raw){
+    const src=AC.createMediaStreamSource(raw),hp=AC.createBiquadFilter();
+    hp.type='highpass';hp.frequency.value=140;
+    const an=AC.createAnalyser();an.fftSize=512;
+    const g=AC.createGain();g.gain.value=0;
+    const dest=AC.createMediaStreamDestination();
+    src.connect(hp);hp.connect(an);hp.connect(g);g.connect(dest);
+    const G={raw,src,hp,an,g,dest,buf:new Uint8Array(an.fftSize),hold:0,open:false,timer:null};
+    G.timer=setInterval(()=>{
+        an.getByteTimeDomainData(G.buf);
+        let sum=0;for(let i=0;i<G.buf.length;i++){const v=(G.buf[i]-128)/128;sum+=v*v}
+        const lvl=Math.sqrt(sum/G.buf.length),thr=GATE[el('gate').value]||GATE.mid,now=Date.now();
+        G.lvl=lvl;if(lvl>thr)G.hold=now+350;
+        const open=now<G.hold||document.hidden===true;
+        if(open!==G.open){G.open=open;g.gain.setTargetAtTime(open?1:0,AC.currentTime,open?.008:.06)}
+    },25);
+    gate=G;
+    return dest.stream;
+}
+function stopGate(){
+    if(!gate)return;
+    clearInterval(gate.timer);
+    try{gate.src.disconnect();gate.hp.disconnect();gate.g.disconnect()}catch(e){}
+    gate.raw.getTracks().forEach(t=>t.stop());gate=null;
+}
+async function getMic(){
+    const base={echoCancellation:true,noiseSuppression:true,autoGainControl:false};
+    let raw;
+    try{raw=await navigator.mediaDevices.getUserMedia({audio:micDevice?Object.assign({deviceId:{exact:micDevice}},base):base,video:false})}
+    catch(e){if(!micDevice)throw e;micDevice='';raw=await navigator.mediaDevices.getUserMedia({audio:base,video:false})}
+    raw.getAudioTracks().forEach(t=>t.addEventListener('ended',()=>{if(micOn)restartMic()}));
+    AC=AC||new (window.AudioContext||window.webkitAudioContext)();
+    try{await AC.resume()}catch(e){}
+    return startGate(raw);
+}
+async function startMic(){
+    if(micBusy)return;micBusy=true;
+    try{
+        localStream=await getMic();micOn=true;ensureCalls();
+    }catch(e){notify('تعذر تشغيل المايك. اسمح للمتصفح باستخدامه (يحتاج رابط HTTPS).')}
+    micBusy=false;
+}
+function stopMic(){
+    micOn=false;
     for(const id in calls){try{calls[id].close()}catch(e){}}calls={};
-    for(const id in audios){const a=audios[id];a.srcObject=null;a.remove()}audios={};
-    peerIds={};showMic(false);updateMicBtn();
+    if(localStream)localStream.getTracks().forEach(t=>t.stop());
+    localStream=null;stopGate();speaking.delete(localSeat);updateSpeakUI();
+}
+async function restartMic(){
+    if(micBusy||!micOn)return;micBusy=true;
+    try{
+        for(const id in calls){try{calls[id].close()}catch(e){}}calls={};
+        if(localStream)localStream.getTracks().forEach(t=>t.stop());
+        stopGate();localStream=await getMic();ensureCalls();
+    }catch(e){micOn=false;localStream=null;stopGate();updateMicBtn();notify('انقطع المايك. اضغط لتشغيله من جديد.')}
+    micBusy=false;
 }
 async function toggleMic(){
     if(!peer)return;
-    if(!localStream){
-        try{localStream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true},video:false})}
-        catch(e){notify('تعذر تشغيل المايك. اسمح للمتصفح باستخدامه (يحتاج رابط HTTPS).');return}
-        micOn=true;ensureCalls();
-    }else{micOn=!micOn;localStream.getAudioTracks().forEach(t=>t.enabled=micOn)}
+    if(micOn)stopMic();else await startMic();
     updateMicBtn();
 }
+function keepAliveMic(){
+    if(!micOn||!peer||micBusy)return;
+    const t=gate&&gate.raw.getAudioTracks()[0];
+    if(!t||t.readyState!=='live'){restartMic();return}
+    if(!t.enabled)t.enabled=true;
+    ensureCalls();
+}
+setInterval(keepAliveMic,4000);
+function stopVoice(){
+    stopMic();
+    for(const id in audios){const a=audios[id];a.srcObject=null;a.remove()}audios={};
+    for(const k in analysers)unwatch(k);speaking.clear();
+    peerIds={};showMic(false);updateMicBtn();
+}
 function ensureCalls(){
+    applyVolumes();
     if(!peer||!localStream)return;
-    for(const k in peerIds){
-        const id=peerIds[k];if(!id||id===peer.id||calls[id])continue;
-        const call=peer.call(id,localStream);if(!call)continue;
-        calls[id]=call;
-        call.on('close',()=>{delete calls[id]});call.on('error',()=>{delete calls[id]});
+    const ids=Object.values(peerIds);
+    for(const id of Object.keys(calls))if(!ids.includes(id)){try{calls[id].close()}catch(e){}delete calls[id]}
+    for(const id of ids){
+        if(!id||id===peer.id)continue;
+        const old=calls[id];
+        if(old&&(old.open||Date.now()-old._t<10000))continue;
+        if(old){try{old.close()}catch(e){}delete calls[id]}
+        let call;try{call=peer.call(id,localStream)}catch(e){continue}
+        if(!call)continue;
+        call._t=Date.now();calls[id]=call;
+        const gone=()=>{if(calls[id]===call)delete calls[id]};
+        call.on('close',gone);call.on('error',gone);
     }
 }
+const SB_URL='https://ecraurncstbgeowhtmvi.supabase.co',SB_KEY='sb_publishable_2Y9a1dlSHU1nszWMVD7RWg_fYsFNGAo';
+let sb=null,sbUser=null,rk={rp:0,w:0,l:0};
+const TIERS=[{n:'برونز',e:'🥉',m:0},{n:'فضي',e:'🥈',m:100},{n:'ذهبي',e:'🥇',m:250},{n:'بلاتيني',e:'💠',m:450},{n:'ماسي',e:'💎',m:700},{n:'أسطوري',e:'👑',m:1000}];
+const DELTA={easy:[12,-25],normal:[25,-20],hard:[35,-15]};
+const tierOf=rp=>TIERS.reduce((a,x)=>rp>=x.m?x:a,TIERS[0]);
+const curName=()=>cleanName(el('player-name').value)||'لاعب';
+function loadRank(){try{const o=JSON.parse(localStorage.getItem('samra_rank')||'{}');rk={rp:Math.max(0,o.rp|0),w:o.w|0,l:o.l|0}}catch(e){}}
+function saveRank(){try{localStorage.setItem('samra_rank',JSON.stringify(rk))}catch(e){}}
+function renderRank(){
+    const t=tierOf(rk.rp),nx=TIERS.find(x=>x.m>rk.rp);
+    el('rank-badge').textContent=t.e+' '+t.n;el('rank-rp').textContent=rk.rp;
+    el('rank-bar').style.width=(nx?Math.round((rk.rp-t.m)/(nx.m-t.m)*100):100)+'%';
+    el('rank-next').textContent=(nx?'باقي '+(nx.m-rk.rp)+' نقطة للوصول إلى '+nx.e+' '+nx.n:'وصلت لأعلى رانك!')+' · انتصارات: '+rk.w+' · خسائر: '+rk.l;
+}
+function rankedAbandon(){return !!state&&!state.matchEnd&&(state.scores[0]+state.scores[1])>0}
+function rankResult(won){
+    const d=(DELTA[difficulty]||DELTA.normal)[won?0:1],before=rk.rp;
+    rk.rp=Math.max(0,rk.rp+d);const real=rk.rp-before;
+    won?rk.w++:rk.l++;saveRank();renderRank();
+    if(sb&&sbUser)sb.from('leaderboard').update({rp:rk.rp,wins:rk.w,losses:rk.l}).eq('id',sbUser.id).then(r=>{if(r.error)syncRank().catch(()=>{});else loadBoard()});
+    const t=tierOf(rk.rp);
+    return 'الرانك: '+(real>=0?'+':'')+real+' نقطة ← '+t.e+' '+t.n+' ('+rk.rp+')';
+}
+function boardMsg(t){const m=el('lb-msg');if(m)m.textContent=t}
+async function syncRank(){
+    const {data,error}=await sb.from('leaderboard').select('name,rp,wins,losses').eq('id',sbUser.id).maybeSingle();
+    if(error)throw error;
+    if(!data){
+        const r=await sb.from('leaderboard').insert({id:sbUser.id,name:curName()});if(r.error)throw r.error;
+        rk={rp:0,w:0,l:0};
+    }else{
+        rk={rp:data.rp,w:data.wins,l:data.losses};
+        if(data.name!==curName())sb.from('leaderboard').update({name:curName()}).eq('id',sbUser.id).then(()=>{});
+    }
+    saveRank();renderRank();
+}
+async function initBoard(){
+    if(typeof supabase==='undefined'){boardMsg('اللوحة غير متصلة. رانكك محفوظ على جهازك.');return}
+    try{
+        sb=supabase.createClient(SB_URL,SB_KEY,{auth:{persistSession:true,autoRefreshToken:true}});
+        let {data:{session}}=await sb.auth.getSession();
+        if(!session){const r=await sb.auth.signInAnonymously();if(r.error)throw r.error;session=r.data.session}
+        sbUser=session.user;
+        await syncRank();await loadBoard();
+    }catch(e){sb=null;sbUser=null;boardMsg('اللوحة غير متصلة (تحتاج إعداد Supabase). رانكك محفوظ على جهازك.')}
+}
+async function loadBoard(){
+    if(!sb)return;
+    const box=el('lb-list');
+    const {data,error}=await sb.from('leaderboard').select('id,name,rp,wins,losses').order('rp',{ascending:false}).limit(10);
+    if(error||!data){boardMsg('تعذر تحميل اللوحة.');return}
+    boardMsg(data.length?'':'ما فيه أحد في اللوحة بعد. كن أول واحد!');
+    box.innerHTML='';
+    data.forEach((r,i)=>{
+        const row=document.createElement('div');row.className='lb-row'+(sbUser&&r.id===sbUser.id?' me':'');
+        const n=document.createElement('b');n.textContent=['🥇','🥈','🥉'][i]||('#'+(i+1));
+        const nm=document.createElement('span');nm.textContent=cleanName(r.name)||'لاعب';
+        const rp=document.createElement('span');rp.className='rp';const t=tierOf(r.rp);rp.textContent=t.e+' '+r.rp;
+        row.appendChild(n);row.appendChild(nm);row.appendChild(rp);box.appendChild(row);
+    });
+    try{
+        const c=await sb.from('leaderboard').select('id',{count:'exact',head:true}).gt('rp',rk.rp);
+        if(!c.error)el('lb-pos').textContent='· ترتيبك #'+((c.count||0)+1);
+    }catch(e){}
+}
+let micDevice='',meterT=null,autoT=null;
+const PREF_IDS=['difficulty','delay','tdelay','hints','autoplay','confirmrisk','confirmleave','tbl','cback','csize','noanim','keepon','sound','sfxvol','turnsnd','toasts'];
+const PREF_DEF={};
+function capturePrefDefaults(){for(const id of PREF_IDS){const e=el(id);PREF_DEF[id]=e.type==='checkbox'?e.checked:e.value}}
+function setPref(id,v){const e=el(id);if(e.type==='checkbox')e.checked=!!v;else e.value=v}
+function savePrefs(){
+    const o={};for(const id of PREF_IDS){const e=el(id);o[id]=e.type==='checkbox'?e.checked:e.value}
+    try{localStorage.setItem('samra_prefs',JSON.stringify(o))}catch(e){}
+}
+function loadPrefs(){
+    try{const o=JSON.parse(localStorage.getItem('samra_prefs')||'{}');for(const id of PREF_IDS)if(id in o)setPref(id,o[id])}catch(e){}
+}
+function applyPrefs(){
+    const b=document.body.classList;
+    ['blue','wine','night'].forEach(t=>b.toggle('tb-'+t,el('tbl').value===t));
+    ['blue','gold'].forEach(t=>b.toggle('cb-'+t,el('cback').value===t));
+    ['s','l'].forEach(t=>b.toggle('cs-'+t,el('csize').value===t));
+    b.toggle('noanim',el('noanim').checked);
+    difficulty=(mode==='online'&&started)?'hard':el('difficulty').value;
+    const d={easy:'سهل',normal:'متوسط',hard:'صعب'}[el('difficulty').value]||'',sp={900:'سريع',1600:'طبيعي',2600:'متأني',3500:'بطيء'}[el('delay').value]||'';
+    el('settings-summary').textContent='المستوى: '+d+' · السرعة: '+sp;
+}
+function onPref(){savePrefs();applyPrefs()}
+function resetPrefs(){
+    if(!confirm('استعادة كل الإعدادات للوضع الافتراضي؟'))return;
+    for(const id of PREF_IDS)if(id in PREF_DEF)setPref(id,PREF_DEF[id]);
+    onPref();
+}
+function resetStats(){
+    if(!confirm('تصفير الانتصارات والخسائر؟'))return;
+    try{localStorage.removeItem('samra_stats')}catch(e){}
+    showStats();
+}
+function openSettings(){el('settings-modal').style.display='flex'}
+function closeSettings(){el('settings-modal').style.display='none'}
+for(const id of ['settings-modal','voice-modal'])el(id).addEventListener('click',e=>{if(e.target===e.currentTarget){id==='voice-modal'?closeVoice():closeSettings()}});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeSettings();closeVoice()}});
+const vol={master:1,deaf:false,mute:{},pv:{}};
+function applyVolumes(){
+    for(const id in audios){
+        const seat=seatOfKey(id),a=audios[id];
+        a.muted=vol.deaf||!!vol.mute[seat];
+        try{a.volume=Math.max(0,Math.min(1,vol.master*(vol.pv[seat]==null?1:vol.pv[seat])))}catch(e){}
+    }
+}
+function loadVoicePrefs(){
+    try{
+        const p=JSON.parse(localStorage.getItem('samra_voice')||'{}');
+        if(p.gate)el('gate').value=p.gate;
+        if(typeof p.master==='number'){vol.master=Math.max(0,Math.min(1,p.master));el('mvol').value=Math.round(vol.master*100)}
+        vol.deaf=!!p.deaf;el('deaf').checked=vol.deaf;
+        micDevice=typeof p.mic==='string'?p.mic:'';
+    }catch(e){}
+}
+function saveVoicePrefs(){
+    try{localStorage.setItem('samra_voice',JSON.stringify({gate:el('gate').value,master:vol.master,deaf:vol.deaf,mic:micDevice}))}catch(e){}
+}
+function setDeaf(v){vol.deaf=!!v;applyVolumes();saveVoicePrefs()}
+function setMaster(v){vol.master=Number(v)/100;applyVolumes();saveVoicePrefs()}
+function voiceName(k){const n=(state&&state.names&&state.names[k])||lobbyNames[k]||'لاعب';return n+(speaking.has(k)?' 🔊':'')}
+function updateVoiceNames(){
+    if(el('voice-modal').style.display!=='flex')return;
+    for(const k of SEATS){const x=document.getElementById('vn-'+k);if(x)x.textContent=voiceName(k)}
+}
+function renderVoiceList(){
+    const box=el('voice-list');box.innerHTML='';
+    const seats=SEATS.filter(k=>k!==localSeat&&peerIds[k]);
+    if(!seats.length){const p=document.createElement('p');p.className='hint';p.textContent='ما فيه لاعبين متصلين بالصوت بعد.';box.appendChild(p);return}
+    for(const k of seats){
+        const row=document.createElement('div');row.className='setting-row';
+        const nm=document.createElement('span');nm.id='vn-'+k;nm.textContent=voiceName(k);
+        const btn=document.createElement('button');btn.className='btn secondary small';
+        const sync=()=>{btn.textContent=vol.mute[k]?'🔇 مكتوم':'🔊 أسمعه'};sync();
+        btn.addEventListener('click',()=>{vol.mute[k]=!vol.mute[k];applyVolumes();sync()});
+        const sl=document.createElement('input');sl.type='range';sl.min=0;sl.max=100;sl.value=Math.round((vol.pv[k]==null?1:vol.pv[k])*100);
+        sl.addEventListener('input',()=>{vol.pv[k]=Number(sl.value)/100;applyVolumes()});
+        row.appendChild(nm);row.appendChild(btn);row.appendChild(sl);box.appendChild(row);
+    }
+}
+async function populateDevices(){
+    try{
+        const ds=await navigator.mediaDevices.enumerateDevices(),sel=el('micdev');
+        sel.innerHTML='';
+        const d0=document.createElement('option');d0.value='';d0.textContent='الافتراضي';sel.appendChild(d0);
+        ds.filter(d=>d.kind==='audioinput'&&d.deviceId&&d.deviceId!=='default'&&d.deviceId!=='communications').forEach((d,i)=>{
+            const o=document.createElement('option');o.value=d.deviceId;o.textContent=d.label||('مايك '+(i+1));sel.appendChild(o);
+        });
+        sel.value=micDevice;
+    }catch(e){}
+}
+async function changeMicDevice(v){
+    micDevice=v;saveVoicePrefs();
+    if(micOn){await restartMic();updateMicBtn()}
+}
+function openVoice(){
+    el('deaf').checked=vol.deaf;el('mvol').value=Math.round(vol.master*100);
+    renderVoiceList();populateDevices();
+    el('voice-modal').style.display='flex';
+    clearInterval(meterT);
+    meterT=setInterval(()=>{
+        const m=el('meter');
+        if(!gate){m.style.width='0%';return}
+        m.style.width=Math.min(100,(gate.lvl||0)/.1*100)+'%';
+        m.style.background=gate.open?'var(--green)':'#6b7f75';
+    },100);
+}
+function closeVoice(){clearInterval(meterT);el('voice-modal').style.display='none'}
+document.addEventListener('keydown',e=>{
+    if(e.key!=='m'&&e.key!=='M')return;
+    const t=e.target&&e.target.tagName;
+    if(t==='INPUT'||t==='SELECT'||t==='TEXTAREA'||!peer)return;
+    toggleMic();
+});
 function acceptCall(call,tries){
     if(Object.values(peerIds).includes(call.peer)){call.answer();wireCall(call);return}
     if(tries<6)setTimeout(()=>acceptCall(call,tries+1),500);else try{call.close()}catch(e){}
@@ -448,12 +816,12 @@ function wireCall(call){
     call.on('stream',st=>{
         let a=audios[call.peer];
         if(!a){a=document.createElement('audio');a.autoplay=true;a.setAttribute('playsinline','');document.body.appendChild(a);audios[call.peer]=a}
-        a.srcObject=st;a.play().catch(()=>{});
+        a._call=call;a.srcObject=st;a.play().catch(()=>{});watchStream(call.peer,st);applyVolumes();
     });
-    const rm=()=>{const a=audios[call.peer];if(a){a.srcObject=null;a.remove();delete audios[call.peer]}};
+    const rm=()=>{const a=audios[call.peer];if(a&&a._call===call){a.srcObject=null;a.remove();delete audios[call.peer];unwatch(call.peer)}};
     call.on('close',rm);call.on('error',rm);
 }
-document.addEventListener('click',()=>{for(const k in audios)audios[k].play().catch(()=>{})});
+document.addEventListener('click',()=>{for(const k in audios)audios[k].play().catch(()=>{});if(AC&&AC.state==='suspended')AC.resume()});
 
 function backToMenu(){
     clearTimeout(timer);clearTimeout(tTimer);clearTimeout(migTimer);
@@ -470,7 +838,8 @@ function backToMenu(){
     el('start-online-btn').classList.add('hidden');el('online-hint').textContent=HINT;
 }
 function leaveGame(){
-    if(!confirm(mode==='online'?'هل أنت متأكد من الانسحاب؟ سيحل مكانك الكمبيوتر'+(isHost?'، وتنتقل الإدارة للاعب آخر.':'.'):'هل تريد مغادرة المباراة؟'))return;
+    if(el('confirmleave').checked&&!confirm(mode==='online'?'هل أنت متأكد من الانسحاب؟ سيحل مكانك الكمبيوتر'+(isHost?'، وتنتقل الإدارة للاعب آخر.':'.'):'هل تريد مغادرة المباراة؟'+(rankedAbandon()?' سيُحسب ذلك خسارة في الرانك.':'')))return;
+    if(mode==='bots'&&rankedAbandon())rankResult(false);
     if(mode==='online'){
         if(isHost){for(const k in conns){try{conns[k].open&&conns[k].send({type:'leave'})}catch(e){}}}
         else if(conn&&conn.open){try{conn.send({type:'leave'})}catch(e){}}
@@ -482,7 +851,7 @@ function updateLobbyUI(){
     el('l-room-code').textContent=roomId;
     for(const k of SEATS){
         const n=lobbyNames[k];
-        el('l-name-'+k).textContent=n||(k==='bottom'?'-':'🤖 كمبيوتر (مكان فارغ)');
+        el('l-name-'+k).textContent=(n||(k==='bottom'?'-':'🤖 كمبيوتر (مكان فارغ)'))+(n&&speaking.has(k)?' 🔊':'');
         el('l-seat-'+k).className='lobby-seat '+(k==='bottom'?'host':n?'guest':'bot');
     }
 }
@@ -677,7 +1046,7 @@ function becomeHost(){
     state.isBot[oldSeat]=true;state.names[oldSeat]='كمبيوتر (المضيف)';state.isBot[localSeat]=false;
     isHost=true;started=true;conns={};hostSeat=localSeat;succ=null;succSeat=null;
     delete peerIds[oldSeat];peerIds[localSeat]=peer.id;
-    difficulty=el('difficulty').value;
+    difficulty='hard';
     el('deal-btn').classList.remove('hidden');
     el('connection-status').textContent='● أنت المضيف الآن';
     notify('المضيف غادر وحلّ مكانه الكمبيوتر. أنت المضيف الآن 👑');
@@ -708,7 +1077,7 @@ function finishMigration(){
 }
 function startOnlineMatch(){
     if(!isHost||started||!peer)return;
-    difficulty=el('difficulty').value;
+    difficulty='hard';
     state=fresh();
     const def={top:'الكمبيوتر 3',right:'الكمبيوتر 1',left:'الكمبيوتر 2'};
     state.names.bottom=player;state.isBot={bottom:false,top:true,right:true,left:true};
