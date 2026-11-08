@@ -82,6 +82,26 @@ body.noanim *{animation:none!important;transition:none!important}
 .seat-right .dbl{right:0;bottom:calc(100% + 4px)}
 .mode-grid{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))!important}
 .lb-btn{z-index:2;touch-action:manipulation}
+body{background:var(--pbg,radial-gradient(ellipse at 50% -20%,#245342 0,#0b211a 48%,#06130f 100%))}
+body .table{background-image:var(--tpat,linear-gradient(transparent,transparent)),var(--tbg,radial-gradient(ellipse at center,#2a8058 0,#176044 56%,#0d402f 100%));border-color:var(--rim,#62452b);box-shadow:inset 0 0 0 3px var(--rim2,#c49a5b),inset 0 0 55px #00180e,0 16px 40px #0008}
+body .back{background:var(--cb,repeating-linear-gradient(45deg,#bc5155,#bc5155 3px,#792b35 3px,#792b35 6px))}
+body .card{background:var(--cf-bg,linear-gradient(145deg,#fffefa,#e9e4d9));color:var(--cf-ink,#18231f);border-color:var(--cf-bd,#d5d0c4);box-shadow:var(--cf-sh,0 5px 12px #00150e88)}
+body .card.red{color:var(--cf-red,#d83e4b)}
+.shop-btn{position:absolute;top:14px;left:14px;height:46px;padding:0 12px;border-radius:14px;border:1px solid #ffffff30;background:#ffffff10;color:var(--cream);font-size:15px;z-index:2;touch-action:manipulation}
+.shop-btn:hover{background:#e9bd6122;border-color:var(--gold)}
+.shop-tabs{display:flex;gap:6px;overflow-x:auto;padding:6px 0;margin-bottom:8px}
+.shop-tabs button{white-space:nowrap;flex:none}.shop-tabs button.on{background:var(--gold);color:#18251d;border-color:var(--gold)}
+.shop-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px}
+.item{background:#071a14;border:1px solid #ffffff1c;border-radius:14px;padding:10px 8px;text-align:center;display:flex;flex-direction:column;gap:6px;align-items:center}
+.item.eq{border-color:var(--gold);box-shadow:0 0 14px #e9bd6133}
+.item b{font-size:13px}.item small{font-size:10px}
+.pv{display:grid;place-items:center;min-height:72px;width:100%}
+.pv .card{width:40px!important;height:58px!important;margin:0 -4px;padding:3px!important;font-size:10px}
+.pv .card .corner{font-size:11px}.pv .card .symbol{font-size:17px!important}
+.rar-0{color:#a9c1b5}.rar-1{color:#6fc3ff}.rar-2{color:#c58bff}.rar-3{color:#ffb347}
+.fxwrap{position:fixed;inset:0;pointer-events:none;z-index:40;overflow:hidden}
+.fxwrap span{position:absolute;top:-50px;animation:fxfall linear forwards}
+@keyframes fxfall{to{transform:translateY(115vh) rotate(420deg)}}
 </style></head>
 <body>
 <header><div class="brand"><div class="brand-icon">♠</div><div><b>سَمْرَة</b><small>تحدّاك تجمع أقل نقاط</small></div></div>
@@ -90,6 +110,7 @@ body.noanim *{animation:none!important;transition:none!important}
 
 <section id="menu" class="panel menu">
  <button class="lb-btn" onclick="openBoard()" aria-label="لوحة المتصدرين">🏆</button>
+ <button class="shop-btn" onclick="openShop()" aria-label="المتجر">🛍️ <b id="coin-count">0</b> 🪙</button>
  <div class="hero-icon">🂡</div><h1>مرحباً بك في سَمْرَة</h1><p class="sub">اكتب اسمك واختر طريقة اللعب</p>
  <div class="formrow"><input id="player-name" class="field name" placeholder="اسمك في اللعبة" maxlength="18" autocomplete="nickname"></div>
  <p class="hint" id="stats"></p>
@@ -162,6 +183,14 @@ body.noanim *{animation:none!important;transition:none!important}
  <p class="hint">الرانك يُحسب من اللعب ضد الكمبيوتر فقط، واللوحة عامة يشوفها كل اللاعبين.</p>
  <div style="display:flex;gap:8px"><button class="btn secondary small" style="flex:1" onclick="loadBoard()">↻ تحديث</button><button class="btn small" style="flex:1" onclick="closeBoard()">تمام</button></div>
 </div></div>
+<div class="modal-bg" id="shop-modal"><div class="modal" style="text-align:right;max-height:92vh;overflow:auto;width:min(560px,100%)">
+ <button class="x-close" onclick="closeShop()" aria-label="إغلاق">✕</button>
+ <h2>🛍️ المتجر</h2>
+ <p class="hint" style="margin:0 0 6px">رصيدك: <b id="shop-coins" style="color:var(--gold);font-size:16px">0</b> 🪙 · تكسب عملات مع كل فوز، ولا تنقص إلا لما تشتري شيء.</p>
+ <div class="shop-tabs" id="shop-tabs"></div>
+ <div class="shop-grid" id="shop-grid"></div>
+ <button class="btn" style="width:100%;margin-top:12px" onclick="closeShop()">تمام</button>
+</div></div>
 <div class="modal-bg" id="settings-modal"><div class="modal" style="text-align:right;max-height:90vh;overflow:auto">
  <button class="x-close" onclick="closeSettings()" aria-label="إغلاق">✕</button>
  <h2>⚙️ إعدادات اللعبة</h2>
@@ -174,8 +203,7 @@ body.noanim *{animation:none!important;transition:none!important}
  <div class="setting-row"><label for="confirmrisk">تأكيد قبل لعب بنت السبيت أو عشرة الديمن</label><input id="confirmrisk" class="toggle" type="checkbox" onchange="onPref()"></div>
  <div class="setting-row"><label for="confirmleave">تأكيد قبل الانسحاب</label><input id="confirmleave" class="toggle" type="checkbox" checked onchange="onPref()"></div>
  <h3 class="sh">🎨 المظهر</h3>
- <div class="setting-row"><label for="tbl">لون الطاولة</label><select id="tbl" class="field" onchange="onPref()"><option value="green" selected>أخضر</option><option value="blue">أزرق</option><option value="wine">عنابي</option><option value="night">ليلي</option></select></div>
- <div class="setting-row"><label for="cback">ظهر الأوراق</label><select id="cback" class="field" onchange="onPref()"><option value="red" selected>أحمر</option><option value="blue">أزرق</option><option value="gold">ذهبي</option></select></div>
+ <button class="btn secondary small" style="width:100%;margin:6px 0" onclick="openShop()">🛍️ المتجر: الطاولات والظهور والأشكال</button>
  <div class="setting-row"><label for="csize">حجم أوراقك</label><select id="csize" class="field" onchange="onPref()"><option value="s">صغير</option><option value="m" selected>عادي</option><option value="l">كبير</option></select></div>
  <div class="setting-row"><label for="noanim">تقليل الحركة والتأثيرات</label><input id="noanim" class="toggle" type="checkbox" onchange="onPref()"></div>
  <div class="setting-row"><label for="keepon">إبقاء الشاشة شغالة أثناء اللعب</label><input id="keepon" class="toggle" type="checkbox" checked onchange="onPref()"></div>
@@ -233,11 +261,12 @@ const isBanned=p=>!!p.is_banned&&(!p.ban_until||new Date(p.ban_until)>new Date()
 function getName(){
     const n=cleanName(el('player-name').value)||'لاعب';
     try{localStorage.setItem('samra_name',n)}catch(e){}
-    return n;
+    return withBadge(n);
 }
 function initApp(){
     try{const n=localStorage.getItem('samra_name');if(n)el('player-name').value=cleanName(n)}catch(e){}
     capturePrefDefaults();loadPrefs();applyPrefs();showStats();loadVoicePrefs();
+    loadStore();applyStore();renderCoins();
     loadRank();renderRank();initBoard();
     el('player-name').addEventListener('change',()=>{
         getName();
@@ -263,7 +292,7 @@ function deck(){
     return d;
 }
 function fresh(){
-    return{scores:[0,0],hands:{bottom:[],right:[],top:[],left:[]},played:{bottom:null,right:null,top:null,left:null},turn:'bottom',lead:null,winner:null,roundEnd:false,matchEnd:false,dbl:null,msg:'',pend:null,
+    return{scores:[0,0],hands:{bottom:[],right:[],top:[],left:[]},played:{bottom:null,right:null,top:null,left:null},turn:'bottom',lead:null,winner:null,roundEnd:false,matchEnd:false,dbl:null,msg:'',pend:null,dealer:null,
     names:{bottom:'أنت',right:'الكمبيوتر 1',top:'الشريك',left:'الكمبيوتر 2'},isBot:{bottom:false,right:true,top:true,left:true}}
 }
 function startMatch(){
@@ -280,7 +309,10 @@ function dealCards(){
     state.hands={bottom:[],right:[],top:[],left:[]};state.played={bottom:null,right:null,top:null,left:null};
     for(let n=0;n<13;n++)for(let s of SEATS)state.hands[s].push(d.pop());
     for(const k of SEATS)state.hands[k].sort(cardCmp);
-    state.turn=state.winner||'bottom';state.lead=null;state.roundEnd=false;state.matchEnd=false;state.dbl=null;state.msg='';state.pend=null;
+    state.dealer=state.dealer?SEATS[(SEATS.indexOf(state.dealer)+1)%4]:SEATS[crypto.getRandomValues(new Uint32Array(1))[0]%4];
+    state.turn=SEATS[(SEATS.indexOf(state.dealer)+1)%4];
+    state.lead=null;state.roundEnd=false;state.matchEnd=false;state.dbl=null;state.pend=null;
+    state.msg='الموزّع: '+state.names[state.dealer]+' · يبدأ اللعب: '+state.names[state.turn];
     for(const k of SEATS){
         const h=state.hands[k];
         if(state.isBot[k]&&difficulty!=='easy'&&h.some(c=>c.s==='♦'&&c.v==='10')&&h.some(c=>c.s==='♦'&&c.v==='A')&&Math.random()<.6){
@@ -395,7 +427,8 @@ function matchEndPopup(ex){
     const t=['bottom','top'].includes(localSeat)?0:1,won=state.scores[t]<state.scores[1-t];
     try{const st=loadStats();won?st.w++:st.l++;localStorage.setItem('samra_stats',JSON.stringify(st))}catch(e){}
     SFX.end();showStats();
-    const extra=ex?' '+ex:'';
+    let extra=ex?' '+ex:'';
+    if(won){const r=awardCoins();extra+=' · 🪙 +'+r.amt+(r.bonus?' (+'+r.bonus+' مكافأة أول فوز اليوم)':'');celebrate()}
     popup(won?'🏆 فزتم!':'انتهت المباراة',(state.scores[t]>=100?'فريقك وصل 100 نقطة وخسر!':'الخصم وصل 100 نقطة وخسر!')+extra);
 }
 // نسخة من الحالة لكل ضيف: أوراقه فقط، وبقية الأيدي أعداد فارغة (يمنع الغش)
@@ -419,7 +452,7 @@ function cleanState(s){
     }
     if(!SEATS.includes(s.turn))return null;
     if(!(s.lead===null||SUITS.includes(s.lead)))return null;
-    return{scores:[s.scores[0],s.scores[1]],hands,played,turn:s.turn,lead:s.lead,msg:String(s.msg||'').replace(BAD,'').slice(0,90),pend:(Array.isArray(s.pend)&&s.pend.length===2&&s.pend.every(Number.isFinite))?[s.pend[0],s.pend[1]]:null,dbl:SEATS.includes(s.dbl)?s.dbl:null,winner:SEATS.includes(s.winner)?s.winner:null,roundEnd:!!s.roundEnd,matchEnd:!!s.matchEnd,names,isBot:{bottom:false,right:true,top:false,left:true}};
+    return{scores:[s.scores[0],s.scores[1]],hands,played,turn:s.turn,lead:s.lead,dealer:SEATS.includes(s.dealer)?s.dealer:null,msg:String(s.msg||'').replace(BAD,'').slice(0,90),pend:(Array.isArray(s.pend)&&s.pend.length===2&&s.pend.every(Number.isFinite))?[s.pend[0],s.pend[1]]:null,dbl:SEATS.includes(s.dbl)?s.dbl:null,winner:SEATS.includes(s.winner)?s.winner:null,roundEnd:!!s.roundEnd,matchEnd:!!s.matchEnd,names,isBot:{bottom:false,right:true,top:false,left:true}};
 }
 function cleanFull(s){
     const r=cleanState(s);if(!r)return null;
@@ -493,7 +526,7 @@ function beep(f,d,type,vol,delay){
     try{
         AC=AC||new (window.AudioContext||window.webkitAudioContext)();
         const t=AC.currentTime+(delay||0),o=AC.createOscillator(),g=AC.createGain();
-        o.type=type||'sine';o.frequency.setValueAtTime(f,t);
+        const pk=packOf();o.type=pk.t||type||'sine';o.frequency.setValueAtTime(f*pk.m,t);
         g.gain.setValueAtTime(Math.max(.0002,(vol||.06)*mul),t);g.gain.exponentialRampToValueAtTime(.0001,t+d);
         o.connect(g);g.connect(AC.destination);o.start(t);o.stop(t+d);
     }catch(e){}
@@ -532,6 +565,7 @@ function updateMicBtn(){
 function seatLabel(a){
     let n=state.names[a];
     if(a===localSeat&&currentUserRole==='admin')n+=' 👑';
+    if(state.dealer===a)n+=' 🃏';
     if(speaking.has(a))n+=' 🔊';
     return n;
 }
@@ -664,7 +698,7 @@ let sb=null,sbUser=null,rk={rp:0,w:0,l:0};
 const TIERS=[{n:'برونز',e:'🥉',m:0},{n:'فضي',e:'🥈',m:100},{n:'ذهبي',e:'🥇',m:250},{n:'بلاتيني',e:'💠',m:450},{n:'ماسي',e:'💎',m:700},{n:'أسطوري',e:'👑',m:1000}];
 const DELTA={easy:[12,-25],normal:[25,-20],hard:[35,-15]};
 const tierOf=rp=>TIERS.reduce((a,x)=>rp>=x.m?x:a,TIERS[0]);
-const curName=()=>cleanName(el('player-name').value)||'لاعب';
+const curName=()=>withBadge(cleanName(el('player-name').value)||'لاعب');
 function loadRank(){try{const o=JSON.parse(localStorage.getItem('samra_rank')||'{}');rk={rp:Math.max(0,o.rp|0),w:o.w|0,l:o.l|0}}catch(e){}}
 function saveRank(){try{localStorage.setItem('samra_rank',JSON.stringify(rk))}catch(e){}}
 function renderRank(){
@@ -806,8 +840,193 @@ async function loadBoard(){
         boardMsg(e&&e.name==='AbortError'?'الاتصال بطيء. اضغط ↻ لإعادة المحاولة.':'تعذر الاتصال باللوحة. تأكد من الإنترنت واضغط ↻.');
     }finally{lbBusy=false}
 }
+// ================== المتجر ==================
+const WOOD='#62452b',GOLDR='#c49a5b';
+const G=(a,b,c)=>'radial-gradient(ellipse at center,'+a+' 0,'+b+' 56%,'+c+' 100%)';
+const ITEMS=[
+ // ظهر الورق
+ {id:'b_red',cat:'back',name:'أحمر كلاسيك',price:0,bg:'repeating-linear-gradient(45deg,#bc5155,#bc5155 3px,#792b35 3px,#792b35 6px)'},
+ {id:'b_blue',cat:'back',name:'أزرق',price:0,bg:'repeating-linear-gradient(45deg,#4f7fc4,#4f7fc4 3px,#2c4f86 3px,#2c4f86 6px)'},
+ {id:'b_gold',cat:'back',name:'ذهبي',price:0,bg:'repeating-linear-gradient(45deg,#d9b45a,#d9b45a 3px,#8a6a22 3px,#8a6a22 6px)'},
+ {id:'b_stars',cat:'back',name:'نجوم الليل',price:80,bg:'radial-gradient(circle at 30% 30%,#fff 0 1px,transparent 2px),radial-gradient(circle at 70% 65%,#ffe 0 1px,transparent 2px),linear-gradient(135deg,#1b2a6b,#0a1038)'},
+ {id:'b_check',cat:'back',name:'شطرنج',price:90,bg:'conic-gradient(#222 25%,#e9bd61 0 50%,#222 0 75%,#e9bd61 0) 0 0/6px 6px'},
+ {id:'b_waves',cat:'back',name:'أمواج',price:120,bg:'repeating-radial-gradient(circle at 50% 120%,#1d7a8c 0 3px,#0f4c5c 3px 6px)'},
+ {id:'b_diamond',cat:'back',name:'معين ذهبي',price:150,bg:'linear-gradient(45deg,#7a5a14 25%,transparent 25%) -3px 0/6px 6px,linear-gradient(-45deg,#7a5a14 25%,transparent 25%) -3px 0/6px 6px,#e9bd61'},
+ {id:'b_rose',cat:'back',name:'ورد',price:200,bg:'radial-gradient(circle,#ffb3c7 0 2px,transparent 3px) 0 0/6px 6px,#8e2b4d'},
+ {id:'b_desert',cat:'back',name:'كثبان',price:220,bg:'repeating-linear-gradient(0deg,#d9b46a 0 2px,#c4964a 2px 5px)'},
+ {id:'b_royal',cat:'back',name:'ملكي',price:450,bg:'repeating-linear-gradient(45deg,#4b1d7a 0 3px,#e9bd61 3px 4px,#2a0e4d 4px 8px)'},
+ {id:'b_carbon',cat:'back',name:'كربون',price:600,bg:'linear-gradient(27deg,#151515 5px,transparent 5px) 0 5px/10px 10px,linear-gradient(207deg,#151515 5px,transparent 5px) 10px 0/10px 10px,#262626'},
+ {id:'b_aurora',cat:'back',name:'شفق',price:1200,bg:'linear-gradient(135deg,#00c9a7,#845ec2,#ff6f91,#ffc75f)'},
+ // شكل الورق
+ {id:'f_classic',cat:'face',name:'كلاسيك',price:0,bg:'linear-gradient(145deg,#fffefa,#e9e4d9)',ink:'#18231f',red:'#d83e4b',bd:'#d5d0c4',sh:'0 5px 12px #00150e88'},
+ {id:'f_ivory',cat:'face',name:'عاجي قديم',price:100,bg:'linear-gradient(145deg,#fbf3dc,#e8d8aa)',ink:'#3a2a14',red:'#a52a2a',bd:'#b79a5a',sh:'0 5px 12px #00150e88'},
+ {id:'f_ice',cat:'face',name:'جليدي',price:250,bg:'linear-gradient(145deg,#f3fbff,#cfe8f7)',ink:'#16314a',red:'#d6334a',bd:'#9ccbe6',sh:'0 5px 12px #00150e88'},
+ {id:'f_rose',cat:'face',name:'وردي',price:250,bg:'linear-gradient(145deg,#fff5f8,#f7d3de)',ink:'#4a1d2c',red:'#d6215a',bd:'#e8a9bd',sh:'0 5px 12px #00150e88'},
+ {id:'f_night',cat:'face',name:'أسود وذهبي',price:300,bg:'linear-gradient(145deg,#1d1d22,#0c0c10)',ink:'#e9bd61',red:'#ff7b7b',bd:'#e9bd61',sh:'0 5px 14px #000a'},
+ {id:'f_emerald',cat:'face',name:'زمردي',price:450,bg:'linear-gradient(145deg,#eafff3,#a9e2c1)',ink:'#0d3b26',red:'#c0392b',bd:'#4fae80',sh:'0 5px 12px #00150e88'},
+ {id:'f_royal',cat:'face',name:'ملكي',price:500,bg:'linear-gradient(145deg,#fffdf5,#f3e3b0)',ink:'#2b1a5a',red:'#b3141f',bd:'#d9a93b',sh:'0 0 10px #e9bd6188'},
+ {id:'f_neon',cat:'face',name:'نيون',price:900,bg:'linear-gradient(145deg,#12122a,#05051a)',ink:'#4df3ff',red:'#ff4d9d',bd:'#4df3ff',sh:'0 0 14px #4df3ff77'},
+ // الطاولات
+ {id:'t_green',cat:'table',name:'أخضر',price:0,bg:G('#2a8058','#176044','#0d402f'),rim:WOOD,rim2:GOLDR},
+ {id:'t_blue',cat:'table',name:'أزرق',price:0,bg:G('#2f6fa8','#1d4f7e','#12385c'),rim:WOOD,rim2:GOLDR},
+ {id:'t_wine',cat:'table',name:'عنابي',price:0,bg:G('#8a2f3d','#6a1f2d','#481420'),rim:WOOD,rim2:GOLDR},
+ {id:'t_night',cat:'table',name:'ليلي',price:0,bg:G('#2b3140','#1c212d','#10131b'),rim:'#3a3f4d',rim2:'#8a93a8'},
+ {id:'t_walnut',cat:'table',name:'خشب جوز',price:120,bg:G('#8a5a35','#6b4326','#47291a'),rim:'#2e1b10',rim2:'#b98a55'},
+ {id:'t_emerald',cat:'table',name:'زمردي فاخر',price:150,bg:G('#1fae7a','#0f7a55','#074a35'),rim:'#3b2a18',rim2:'#e9bd61'},
+ {id:'t_desert',cat:'table',name:'رمل الصحراء',price:180,bg:G('#d9b46a','#b88a42','#8a6325'),rim:'#5a3d1c',rim2:'#f0d89a'},
+ {id:'t_ocean',cat:'table',name:'بحر عميق',price:220,bg:G('#1b7aa6','#0f4f78','#08304d'),rim:'#1c2b3a',rim2:'#7fd1ff'},
+ {id:'t_royal',cat:'table',name:'بنفسجي ملكي',price:250,bg:G('#7a42b8','#512a85','#321a57'),rim:'#e9bd61',rim2:'#fff0b8'},
+ {id:'t_ice',cat:'table',name:'جليد',price:300,bg:G('#cfeaf7','#8cc4e0','#5a96b8'),rim:'#e8f6fc',rim2:'#ffffff'},
+ {id:'t_velvet',cat:'table',name:'مخمل أحمر',price:350,bg:G('#c0283c','#8c1628','#5a0c18'),rim:'#e9bd61',rim2:'#fff0b8'},
+ {id:'t_marble',cat:'table',name:'رخام',price:400,bg:'linear-gradient(135deg,#f4f4f4,#cfcfd4 40%,#ededf0 60%,#b9b9c0)',rim:'#2a2a2e',rim2:'#e9bd61'},
+ {id:'t_gold',cat:'table',name:'ذهبي',price:500,bg:G('#f3d27a','#c99a32','#8a6317'),rim:'#3a2a0c',rim2:'#fff0b8'},
+ {id:'t_carbon',cat:'table',name:'كربون أسود',price:650,bg:'linear-gradient(27deg,#151515 5px,transparent 5px) 0 5px/10px 10px,linear-gradient(207deg,#151515 5px,transparent 5px) 10px 0/10px 10px,#262626',rim:'#0a0a0a',rim2:'#e9bd61'},
+ {id:'t_sunset',cat:'table',name:'غروب',price:900,bg:'linear-gradient(160deg,#ff8a4c,#c2386b 50%,#4b2a7a)',rim:'#2a1530',rim2:'#ffd9a0'},
+ {id:'t_galaxy',cat:'table',name:'مجرة',price:1400,bg:'radial-gradient(circle at 20% 30%,#fff 0 1px,transparent 2px),radial-gradient(circle at 70% 70%,#fff 0 1px,transparent 2px),radial-gradient(ellipse at center,#3a2a7a 0,#1a1245 56%,#070522 100%)',rim:'#120a30',rim2:'#9a7bff'},
+ // نقوش الطاولة
+ {id:'p_none',cat:'pat',name:'بدون',price:0,bg:'linear-gradient(transparent,transparent)'},
+ {id:'p_lines',cat:'pat',name:'خطوط',price:0,bg:'repeating-linear-gradient(45deg,#ffffff05 0 2px,transparent 2px 6px)'},
+ {id:'p_dots',cat:'pat',name:'نقاط',price:70,bg:'radial-gradient(#ffffff14 1.5px,transparent 2px) 0 0/14px 14px'},
+ {id:'p_diamonds',cat:'pat',name:'معين',price:120,bg:'linear-gradient(45deg,#ffffff0d 25%,transparent 25%) 0 0/24px 24px,linear-gradient(-45deg,#ffffff0d 25%,transparent 25%) 0 0/24px 24px'},
+ {id:'p_grid',cat:'pat',name:'شبكة',price:150,bg:'linear-gradient(#ffffff10 1px,transparent 1px) 0 0/22px 22px,linear-gradient(90deg,#ffffff10 1px,transparent 1px) 0 0/22px 22px'},
+ {id:'p_arab',cat:'pat',name:'زخرفة عربية',price:350,bg:'radial-gradient(circle at 50% 50%,transparent 9px,#ffffff14 10px,transparent 11px) 0 0/26px 26px,radial-gradient(circle at 0 0,transparent 9px,#ffffff14 10px,transparent 11px) 0 0/26px 26px'},
+ {id:'p_stars',cat:'pat',name:'نجوم',price:500,bg:'radial-gradient(circle,#ffffff30 1px,transparent 2px) 0 0/40px 40px,radial-gradient(circle,#ffffff20 1px,transparent 2px) 20px 20px/40px 40px'},
+ // خلفية اللعبة
+ {id:'g_default',cat:'bg',name:'أخضر افتراضي',price:0,bg:'radial-gradient(ellipse at 50% -20%,#245342 0,#0b211a 48%,#06130f 100%)'},
+ {id:'g_midnight',cat:'bg',name:'منتصف الليل',price:100,bg:'radial-gradient(ellipse at 50% -20%,#2a3a7a 0,#0e1433 50%,#05060f 100%)'},
+ {id:'g_royal',cat:'bg',name:'بنفسجي',price:150,bg:'radial-gradient(ellipse at 50% -20%,#5a2a8a 0,#25103f 50%,#0d0518 100%)'},
+ {id:'g_ocean',cat:'bg',name:'أعماق البحر',price:200,bg:'radial-gradient(ellipse at 50% -20%,#14607f 0,#0a2c3f 50%,#04121c 100%)'},
+ {id:'g_desert',cat:'bg',name:'ليالي الصحراء',price:250,bg:'radial-gradient(ellipse at 50% -20%,#7a5522 0,#2a1b0a 50%,#120a03 100%)'},
+ {id:'g_sunset',cat:'bg',name:'الغروب',price:300,bg:'linear-gradient(180deg,#42275a,#734b6d 50%,#1b1020)'},
+ {id:'g_black',cat:'bg',name:'أسود فاخر',price:400,bg:'radial-gradient(ellipse at 50% -20%,#1c1c22 0,#0a0a0d 60%,#000 100%)'},
+ {id:'g_aurora',cat:'bg',name:'الشفق القطبي',price:800,bg:'linear-gradient(160deg,#032b2f,#0b3d5c 40%,#3b1f6b 70%,#08121f)'},
+ // رمز الاسم
+ {id:'n_none',cat:'badge',name:'بدون',price:0,em:''},
+ {id:'n_star',cat:'badge',name:'نجمة',price:60,em:'⭐'},
+ {id:'n_fire',cat:'badge',name:'نار',price:90,em:'🔥'},
+ {id:'n_moon',cat:'badge',name:'هلال',price:120,em:'🌙'},
+ {id:'n_falcon',cat:'badge',name:'صقر',price:150,em:'🦅'},
+ {id:'n_horse',cat:'badge',name:'خيّال',price:150,em:'🐎'},
+ {id:'n_lion',cat:'badge',name:'أسد',price:200,em:'🦁'},
+ {id:'n_sword',cat:'badge',name:'سيف',price:250,em:'🗡️'},
+ {id:'n_gem',cat:'badge',name:'ماسة',price:300,em:'💎'},
+ // أصوات
+ {id:'s_classic',cat:'sfx',name:'كلاسيك',price:0,m:1,t:''},
+ {id:'s_soft',cat:'sfx',name:'ناعم',price:80,m:.8,t:'sine'},
+ {id:'s_deep',cat:'sfx',name:'عميق',price:200,m:.6,t:'triangle'},
+ {id:'s_arcade',cat:'sfx',name:'أركيد',price:150,m:1.25,t:'square'},
+ {id:'s_crystal',cat:'sfx',name:'كريستال',price:250,m:1.6,t:'sine'},
+ // تأثير الفوز
+ {id:'x_none',cat:'fx',name:'بدون',price:0,em:''},
+ {id:'x_confetti',cat:'fx',name:'قصاصات',price:100,em:'🎉🎊✨'},
+ {id:'x_snow',cat:'fx',name:'ثلج',price:120,em:'❄️'},
+ {id:'x_stars',cat:'fx',name:'نجوم',price:150,em:'⭐🌟✨'},
+ {id:'x_coins',cat:'fx',name:'مطر الذهب',price:200,em:'🪙💰'},
+ {id:'x_fire',cat:'fx',name:'شرارات',price:300,em:'🔥✨'}
+];
+const CATS=[['back','🃏 ظهر الورق'],['face','🎴 شكل الورق'],['table','🟩 الطاولات'],['pat','✨ نقوش الطاولة'],['bg','🖼️ الخلفية'],['badge','🏷️ رمز الاسم'],['sfx','🔊 الأصوات'],['fx','🎆 تأثير الفوز']];
+const EQ_DEF={back:'b_red',face:'f_classic',table:'t_green',pat:'p_lines',bg:'g_default',badge:'n_none',sfx:'s_classic',fx:'x_none'};
+let ST={coins:0,owned:[],eq:Object.assign({},EQ_DEF),daily:'',total:0},shopCat='back';
+const itemOf=id=>ITEMS.find(x=>x.id===id);
+const isOwned=it=>it.price===0||ST.owned.includes(it.id);
+const rarOf=p=>p<100?0:p<300?1:p<700?2:3;
+const RAR=['عادي','نادر','ملحمي','أسطوري'];
+function loadStore(){
+    try{
+        const o=JSON.parse(localStorage.getItem('samra_store')||'{}');
+        ST.coins=Math.max(0,o.coins|0);ST.total=Math.max(0,o.total|0);ST.daily=typeof o.daily==='string'?o.daily:'';
+        ST.owned=Array.isArray(o.owned)?o.owned.filter(id=>itemOf(id)):[];
+        for(const k in EQ_DEF){const it=o.eq&&itemOf(o.eq[k]);ST.eq[k]=(it&&it.cat===k&&isOwned(it))?it.id:EQ_DEF[k]}
+    }catch(e){}
+}
+function saveStore(){try{localStorage.setItem('samra_store',JSON.stringify(ST))}catch(e){}}
+function renderCoins(){const a=document.getElementById('coin-count'),b=document.getElementById('shop-coins');if(a)a.textContent=ST.coins;if(b)b.textContent=ST.coins}
+function applyStore(){
+    const d=document.documentElement.style,e=k=>itemOf(ST.eq[k])||itemOf(EQ_DEF[k]);
+    d.setProperty('--cb',e('back').bg);
+    const f=e('face');d.setProperty('--cf-bg',f.bg);d.setProperty('--cf-ink',f.ink);d.setProperty('--cf-red',f.red);d.setProperty('--cf-bd',f.bd);d.setProperty('--cf-sh',f.sh);
+    const t=e('table');d.setProperty('--tbg',t.bg);d.setProperty('--rim',t.rim);d.setProperty('--rim2',t.rim2);
+    d.setProperty('--tpat',e('pat').bg);d.setProperty('--pbg',e('bg').bg);
+}
+const packOf=()=>{const it=itemOf(ST.eq.sfx);return {m:it&&it.m||1,t:it&&it.t||''}};
+const badgeOf=()=>{const it=itemOf(ST.eq.badge);return it&&it.em||''};
+function withBadge(n){const b=badgeOf();return b?Array.from(n).slice(0,15).join('')+' '+b:n}
+function awardCoins(){
+    const table=mode==='ranked'?{easy:15,normal:25,hard:40}:mode==='online'?{easy:20,normal:20,hard:20}:{easy:6,normal:10,hard:14};
+    const amt=table[difficulty]||table.normal,today=new Date().toISOString().slice(0,10);
+    let bonus=0;if(ST.daily!==today){bonus=25;ST.daily=today}
+    ST.coins+=amt+bonus;ST.total+=amt+bonus;saveStore();renderCoins();
+    return {amt,bonus};
+}
+function celebrate(){
+    const it=itemOf(ST.eq.fx),nm=document.getElementById('noanim');
+    if(!it||!it.em||(nm&&nm.checked))return;
+    const chars=Array.from(it.em).filter(c=>c.trim()),w=document.createElement('div');w.className='fxwrap';
+    for(let i=0;i<38;i++){
+        const sp=document.createElement('span');sp.textContent=chars[i%chars.length];
+        sp.style.left=(Math.random()*96)+'%';sp.style.fontSize=(18+Math.random()*18)+'px';
+        sp.style.animationDuration=(2.4+Math.random()*2.2)+'s';sp.style.animationDelay=(Math.random()*1.2)+'s';
+        w.appendChild(sp);
+    }
+    document.body.appendChild(w);setTimeout(()=>w.remove(),6200);
+}
+function previewOf(it){
+    const box=document.createElement('div');box.className='pv';
+    if(it.cat==='back'){const d=document.createElement('div');d.style.cssText='width:42px;height:60px;border-radius:8px;border:2px solid #f6d6b7;background:'+it.bg;box.appendChild(d)}
+    else if(it.cat==='face'){
+        [['A','♠',false],['K','♥',true]].forEach(([v,su,red])=>{
+            const c=document.createElement('div');c.className='card'+(red?' red':'');
+            c.style.cssText='background:'+it.bg+';color:'+(red?it.red:it.ink)+';border-color:'+it.bd+';box-shadow:'+it.sh;
+            c.innerHTML='<div class="corner">'+v+'<br>'+su+'</div><div class="symbol">'+su+'</div>';box.appendChild(c);
+        });
+    }
+    else if(it.cat==='table'||it.cat==='pat'||it.cat==='bg'){
+        const d=document.createElement('div');d.style.cssText='width:96px;height:58px;';
+        if(it.cat==='table')d.style.cssText+='border-radius:30px;border:5px solid '+it.rim+';box-shadow:inset 0 0 0 2px '+it.rim2+';background:'+it.bg;
+        else if(it.cat==='pat'){const tb=itemOf(ST.eq.table)||itemOf('t_green');d.style.cssText+='border-radius:30px;border:5px solid '+tb.rim+';background:'+it.bg+','+tb.bg}
+        else d.style.cssText+='border-radius:10px;border:1px solid #ffffff30;background:'+it.bg;
+        box.appendChild(d);
+    }
+    else if(it.cat==='badge'||it.cat==='fx'){const sp=document.createElement('span');sp.style.fontSize='28px';sp.textContent=Array.from(it.em||'—').slice(0,3).join('');box.appendChild(sp)}
+    else if(it.cat==='sfx'){const sp=document.createElement('span');sp.style.fontSize='26px';sp.textContent='🎵';box.appendChild(sp)}
+    return box;
+}
+function tryItem(it){
+    if(it.cat==='sfx'){const o=ST.eq.sfx;ST.eq.sfx=it.id;SFX.end();ST.eq.sfx=o}
+    else if(it.cat==='fx'){const o=ST.eq.fx;ST.eq.fx=it.id;celebrate();ST.eq.fx=o}
+}
+function renderShop(){
+    renderCoins();
+    const tabs=el('shop-tabs');tabs.innerHTML='';
+    CATS.forEach(([k,l])=>{const b=document.createElement('button');b.className='btn secondary small'+(k===shopCat?' on':'');b.textContent=l;b.onclick=()=>{shopCat=k;renderShop()};tabs.appendChild(b)});
+    const grid=el('shop-grid');grid.innerHTML='';
+    ITEMS.filter(it=>it.cat===shopCat).forEach(it=>{
+        const owned=isOwned(it),eq=ST.eq[it.cat]===it.id,card=document.createElement('div');card.className='item'+(eq?' eq':'');
+        card.appendChild(previewOf(it));
+        const nm=document.createElement('b');nm.textContent=it.name;card.appendChild(nm);
+        const r=document.createElement('small');r.className='rar-'+rarOf(it.price);r.textContent=RAR[rarOf(it.price)];card.appendChild(r);
+        if(it.cat==='sfx'||it.cat==='fx'){const t=document.createElement('button');t.className='btn secondary small';t.textContent='▶ تجربة';t.onclick=()=>tryItem(it);card.appendChild(t)}
+        const act=document.createElement('button');act.className='btn small';
+        if(eq){act.textContent='✓ مجهّز';act.disabled=true;act.classList.add('secondary')}
+        else if(owned){act.textContent='تجهيز';act.onclick=()=>{ST.eq[it.cat]=it.id;saveStore();applyStore();renderShop()}}
+        else{
+            act.textContent='شراء 🪙 '+it.price;
+            if(ST.coins<it.price){act.disabled=true;act.classList.add('secondary')}
+            else act.onclick=()=>buyItem(it);
+        }
+        card.appendChild(act);grid.appendChild(card);
+    });
+}
+function buyItem(it){
+    if(isOwned(it)||ST.coins<it.price)return;
+    if(!confirm('شراء «'+it.name+'» بـ '+it.price+' عملة؟'))return;
+    ST.coins-=it.price;ST.owned.push(it.id);ST.eq[it.cat]=it.id;
+    saveStore();applyStore();renderShop();notify('تم الشراء وتجهيز «'+it.name+'» ✅');
+}
+function openShop(){modalOpenedAt=Date.now();el('shop-modal').style.display='flex';renderShop()}
+function closeShop(){el('shop-modal').style.display='none'}
 let micDevice='',meterT=null,autoT=null;
-const PREF_IDS=['difficulty','delay','tdelay','hints','autoplay','confirmrisk','confirmleave','tbl','cback','csize','noanim','keepon','sound','sfxvol','turnsnd','toasts'];
+const PREF_IDS=['difficulty','delay','tdelay','hints','autoplay','confirmrisk','confirmleave','csize','noanim','keepon','sound','sfxvol','turnsnd','toasts'];
 const PREF_DEF={};
 function capturePrefDefaults(){for(const id of PREF_IDS){const e=el(id);PREF_DEF[id]=e.type==='checkbox'?e.checked:e.value}}
 function setPref(id,v){const e=el(id);if(e.type==='checkbox')e.checked=!!v;else e.value=v}
@@ -820,8 +1039,6 @@ function loadPrefs(){
 }
 function applyPrefs(){
     const b=document.body.classList;
-    ['blue','wine','night'].forEach(t=>b.toggle('tb-'+t,el('tbl').value===t));
-    ['blue','gold'].forEach(t=>b.toggle('cb-'+t,el('cback').value===t));
     ['s','l'].forEach(t=>b.toggle('cs-'+t,el('csize').value===t));
     b.toggle('noanim',el('noanim').checked);
     difficulty=(mode==='online'&&started)?'hard':el('difficulty').value;
@@ -841,8 +1058,8 @@ function resetStats(){
 }
 function openSettings(){modalOpenedAt=Date.now();el('settings-modal').style.display='flex'}
 function closeSettings(){el('settings-modal').style.display='none'}
-for(const id of ['settings-modal','voice-modal','lb-modal'])el(id).addEventListener('click',e=>{if(e.target===e.currentTarget&&Date.now()-modalOpenedAt>350){id==='voice-modal'?closeVoice():id==='lb-modal'?closeBoard():closeSettings()}});
-document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeSettings();closeVoice();closeBoard()}});
+for(const id of ['settings-modal','voice-modal','lb-modal','shop-modal'])el(id).addEventListener('click',e=>{if(e.target===e.currentTarget&&Date.now()-modalOpenedAt>350){id==='voice-modal'?closeVoice():id==='lb-modal'?closeBoard():id==='shop-modal'?closeShop():closeSettings()}});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeSettings();closeVoice();closeBoard();closeShop()}});
 const vol={master:1,deaf:false,mute:{},pv:{}};
 function applyVolumes(){
     for(const id in audios){
