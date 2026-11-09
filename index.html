@@ -853,10 +853,20 @@ async function ensureSession(){
         if(!r.data||!r.data.session)throw new Error('لم يرجع السيرفر جلسة');
         sbUser=r.data.session.user;sbDiag='';
         loadWallet();return true;
-    }catch(e){sbDiag='تسجيل الدخول المجهول فشل: '+errMsg(e);return false}
+    }catch(e){sbDiag='تسجيل الدخول المجهول فشل: '+errMsg(e);await diagSettings();return false}
+}
+async function diagSettings(){
+    const host=SB_URL.replace('https://','');
+    try{
+        const ctl=new AbortController(),t=setTimeout(()=>ctl.abort(),8000);
+        const r=await fetch(SB_URL+'/auth/v1/settings',{headers:{apikey:SB_KEY},signal:ctl.signal});clearTimeout(t);
+        const j=await r.json();
+        const an=j.external&&j.external.anonymous_users,ds=j.disable_signup;
+        sbDiag+=' | المشروع الذي تتصل به اللعبة: '+host+' · الدخول المجهول='+(an?'مفعّل':'مطفي')+' · قفل التسجيل='+(ds?'مفعّل (مقفول)':'مطفي');
+    }catch(e){sbDiag+=' | المشروع: '+host+' · تعذر قراءة إعداداته: '+errMsg(e)}
 }
 function sbHelp(){
-    return 'تعذر الاتصال بالسيرفر.\nالسبب: '+(sbDiag||'غير معروف')+'\n\nتأكد من: تفعيل Anonymous sign-ins، وإطفاء CAPTCHA، وتشغيل ملف setup.sql، وأن المشروع غير متوقف (Paused).';
+    return 'تعذر الاتصال بالسيرفر.\nالسبب: '+(sbDiag||'غير معروف').split(' | ').join('\n')+'\n\nتأكد من: تفعيل Anonymous sign-ins، وإطفاء CAPTCHA، وتشغيل ملف setup.sql، وأن المشروع غير متوقف (Paused).';
 }
 async function initBoard(){
     if(typeof supabase==='undefined'){sbDiag='مكتبة Supabase ما تحمّلت (تأكد من الإنترنت)';loadBoard();return}
@@ -872,7 +882,7 @@ async function initBoard(){
         }
         if(!session)throw new Error('لم يرجع السيرفر جلسة');
         sbUser=session.user;sbDiag='';
-    }catch(e){sbUser=null;sbDiag='تسجيل الدخول المجهول فشل: '+errMsg(e)}
+    }catch(e){sbUser=null;sbDiag='تسجيل الدخول المجهول فشل: '+errMsg(e);await diagSettings()}
     // أي فشل بعد تسجيل الدخول ما يلغي الجلسة (الرانك والمحفظة مستقلّان)
     if(sbUser){
         try{await withTimeout(syncRank(),12000)}catch(e){sbDiag='الرانك: '+errMsg(e)}
