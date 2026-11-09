@@ -767,9 +767,9 @@ function rankText(r){const t=tierOf(r.rp);let c='';if(r.coin&&(r.coin.paid+r.coi
 async function callRanked(body){
     try{
         const r=await sb.functions.invoke('ranked',{body:Object.assign({id:ranked&&ranked.id,name:curName()},body)});
-        if(r.error)return {error:'server'};
+        if(r.error){fnErr=errMsg(r.error);return {error:'server'}}
         return r.data||{error:'empty'};
-    }catch(e){return {error:'network'}}
+    }catch(e){fnErr=errMsg(e);return {error:'network'}}
 }
 async function rankedAct(body){
     if(rankedBusy||!ranked)return;
@@ -787,12 +787,12 @@ async function rankedAct(body){
     rankedBusy=false;
 }
 async function startRanked(){
-    if(!sb||!sbUser){alert('الرانك يحتاج الاتصال بـ Supabase وتفعيل Anonymous sign-ins ونشر دالة ranked.');return}
+    if(!(await ensureSession())){alert(sbHelp());return}
     if(rankedBusy)return;
     rankedBusy=true;ranked={id:null};
     let r=await callRanked({action:'resume'});
     if(r&&r.none)r=await callRanked({action:'start',difficulty:el('difficulty').value});
-    if(!r||r.error||!r.id){rankedBusy=false;ranked=null;alert('تعذر بدء مباراة الرانك. تأكد من نشر دالة ranked وتشغيل ملف SQL.');return}
+    if(!r||r.error||!r.id){rankedBusy=false;ranked=null;alert('تعذر بدء مباراة الرانك.\nالسبب: '+(fnErr||(r&&r.error)||'غير معروف')+'\n\nتأكد من نشر دالة ranked (وإطفاء Verify JWT لها) وتشغيل setup.sql.');return}
     ranked.id=r.id;mode='ranked';localSeat='bottom';player=curName();difficulty=r.difficulty||'normal';
     el('menu').classList.add('hidden');el('game').style.display='block';
     el('connection-status').textContent='● رانك';el('deal-btn').classList.remove('hidden');
@@ -842,19 +842,43 @@ async function syncRank(){
     saveRank();renderRank();
 }
 const withTimeout=(p,ms)=>Promise.race([p,new Promise((_,rej)=>setTimeout(()=>rej(new Error('timeout')),ms))]);
+let sbDiag='',fnErr='';
+const errMsg=e=>String((e&&(e.message||e.error_description||e.msg))||e||'خطأ غير معروف');
+async function ensureSession(){
+    if(sbUser)return true;
+    if(!sb)return false;
+    try{
+        const r=await withTimeout(sb.auth.signInAnonymously(),12000);
+        if(r.error)throw r.error;
+        if(!r.data||!r.data.session)throw new Error('لم يرجع السيرفر جلسة');
+        sbUser=r.data.session.user;sbDiag='';
+        loadWallet();return true;
+    }catch(e){sbDiag='تسجيل الدخول المجهول فشل: '+errMsg(e);return false}
+}
+function sbHelp(){
+    return 'تعذر الاتصال بالسيرفر.\nالسبب: '+(sbDiag||'غير معروف')+'\n\nتأكد من: تفعيل Anonymous sign-ins، وإطفاء CAPTCHA، وتشغيل ملف setup.sql، وأن المشروع غير متوقف (Paused).';
+}
 async function initBoard(){
-    if(typeof supabase==='undefined'){loadBoard();return}
+    if(typeof supabase==='undefined'){sbDiag='مكتبة Supabase ما تحمّلت (تأكد من الإنترنت)';loadBoard();return}
     try{sb=supabase.createClient(SB_URL,SB_KEY,{auth:{persistSession:true,autoRefreshToken:true}})}
-    catch(e){sb=null;loadBoard();return}
+    catch(e){sb=null;sbDiag='createClient: '+errMsg(e);loadBoard();return}
     try{
         const g=await withTimeout(sb.auth.getSession(),8000);
-        let session=g.data.session;
-        if(!session){const r=await withTimeout(sb.auth.signInAnonymously(),10000);if(r.error)throw r.error;session=r.data.session}
-        sbUser=session.user;
-        await withTimeout(syncRank(),10000);
-        await withTimeout(loadWallet(),10000);
+        let session=g.data&&g.data.session;
+        if(!session){
+            const r=await withTimeout(sb.auth.signInAnonymously(),12000);
+            if(r.error)throw r.error;
+            session=r.data&&r.data.session;
+        }
+        if(!session)throw new Error('لم يرجع السيرفر جلسة');
+        sbUser=session.user;sbDiag='';
+    }catch(e){sbUser=null;sbDiag='تسجيل الدخول المجهول فشل: '+errMsg(e)}
+    // أي فشل بعد تسجيل الدخول ما يلغي الجلسة (الرانك والمحفظة مستقلّان)
+    if(sbUser){
+        try{await withTimeout(syncRank(),12000)}catch(e){sbDiag='الرانك: '+errMsg(e)}
+        try{await withTimeout(loadWallet(),15000)}catch(e){}
         callRanked({action:'setname',name:curName()});
-    }catch(e){sbUser=null}
+    }
     loadBoard();
 }
 let lbBusy=false;
@@ -884,7 +908,7 @@ async function loadBoard(){
         const data=await r.json();
         drawBoard(data);
         try{localStorage.setItem('samra_lb',JSON.stringify(data))}catch(e){}
-        boardMsg(data.length?(sbUser?'':'عرض فقط: فعّل Anonymous sign-ins في Supabase لتسجيل رانكك.'):'ما فيه أحد في اللوحة بعد. العب مباراة رانك وكن أول واحد!');
+        boardMsg(data.length?(sbUser?'':'عرض فقط. '+(sbDiag||'فعّل Anonymous sign-ins في Supabase لتسجيل رانكك.')):'ما فيه أحد في اللوحة بعد. العب مباراة رانك وكن أول واحد!');
         if(sbUser){
             const c=await restGet('leaderboard?select=id&rp=gt.'+(rk.rp|0),{Prefer:'count=exact',Range:'0-0'});
             const m=/\/(\d+)$/.exec(c.headers.get('content-range')||'');
@@ -1307,7 +1331,7 @@ async function quickMatch(){
     el('search-sub').textContent='نجمع 4 لاعبين حقيقيين، وتبدأ المباراة أول ما يكتمل العدد.';
     try{await withTimeout(boardReady,10000)}catch(e){}
     if(!qSearch)return;
-    if(!sb||!sbUser){stopSearchUI();backToMenu();alert('اللعبة السريعة تحتاج اتصال Supabase وتفعيل Anonymous sign-ins وتشغيل ملف setup.sql.');return}
+    if(!(await ensureSession())){stopSearchUI();backToMenu();alert(sbHelp());return}
     qErr='';
     const rooms=await quickScan();
     if(!qSearch)return;
