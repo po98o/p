@@ -766,7 +766,7 @@ function applyResult(r){rk={rp:r.rp,w:r.wins,l:r.losses};if(r.wallet)setWallet(r
 function rankText(r){const t=tierOf(r.rp);let c='';if(r.coin&&(r.coin.paid+r.coin.bonus)>0)c=' · 🪙 +'+r.coin.paid+(r.coin.bonus?' (+'+r.coin.bonus+' مكافأة أول فوز اليوم)':'');return 'الرانك: '+(r.delta>=0?'+':'')+r.delta+' نقطة ← '+t.e+' '+t.n+' ('+r.rp+')'+c}
 async function callRanked(body){
     try{
-        const r=await sb.functions.invoke('ranked',{body:Object.assign({id:ranked&&ranked.id,name:curName()},body)});
+        const r=await sb.functions.invoke('quick-processor',{body:Object.assign({id:ranked&&ranked.id,name:curName()},body)});
         if(r.error){fnErr=errMsg(r.error);return {error:'server'}}
         return r.data||{error:'empty'};
     }catch(e){fnErr=errMsg(e);return {error:'network'}}
