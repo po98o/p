@@ -1913,7 +1913,7 @@ async function authSubmit(){
       if(!nm){aMsg('اكتب اسمك في اللعبة.');return}
       const c=await fbAuth.createUserWithEmailAndPassword(email,pass);
       await c.user.updateProfile({displayName:nm});
-      try{await fbAuth.currentUser.sendEmailVerification()}catch(e){}
+      try{await fbAuth.currentUser.sendEmailVerification()}catch(e){vMsg('تعذر إرسال الرسالة: '+aErr(e)+' اضغط «إعادة إرسال».')}
       applyAuthUser(fbAuth.currentUser);
     }else await fbAuth.signInWithEmailAndPassword(email,pass);
   }catch(e){aMsg(aErr(e))}
@@ -1945,7 +1945,6 @@ function showVerify(u){
   el('auth-screen').classList.add('show');
   el('auth-main').classList.add('hidden');el('auth-verify').classList.remove('hidden');
   el('verify-text').textContent='أرسلنا رسالة تأكيد إلى '+u.email+'. افتح الرسالة واضغط على الرابط، ثم ارجع هنا واضغط «أكّدت». إذا ما لقيتها شيّك على الرسائل المزعجة (Spam).';
-  vMsg('');
 }
 async function authVerifyCheck(){
   const u=fbAuth&&fbAuth.currentUser;if(!u)return;
