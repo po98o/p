@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://0.peerjs.com wss://0.peerjs.com; img-src 'self' data:; media-src 'self' blob: mediastream:; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://unpkg.com https://www.gstatic.com https://apis.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src 'self' https://*.googleapis.com https://*.firebaseapp.com https://*.supabase.co wss://*.supabase.co https://0.peerjs.com wss://0.peerjs.com; img-src 'self' data: https://*.googleusercontent.com; frame-src https://*.firebaseapp.com https://*.web.app https://accounts.google.com https://apis.google.com; media-src 'self' blob: mediastream:; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="no-referrer">
 <meta name="description" content="سَمْرَة - لعبة ورق جماعية أونلاين مع الأصدقاء ومحادثة صوتية">
 <meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes">
@@ -121,10 +121,39 @@ body.noanim .react.on{opacity:1;animation:none!important}
 .rt-emojis button:hover,.rt-phrases button:hover{background:#e9bd6126;border-color:var(--gold);transform:translateY(-2px)}
 .rt-phrases{display:flex;flex-wrap:wrap;gap:6px}
 .rt-phrases button{font-size:12.5px;padding:6px 11px;border-radius:14px;border:1px solid #ffffff2a;background:#ffffff0d;color:var(--cream);cursor:pointer;transition:.15s}
+
+#auth-screen{position:fixed;inset:0;z-index:60;display:none;align-items:center;justify-content:center;padding:18px;overflow:auto;background:radial-gradient(ellipse at 50% -20%,#245342 0,#0b211a 48%,#06130f 100%)}
+#auth-screen.show{display:flex}
+.auth-card{width:min(420px,100%);padding:26px 22px;text-align:center}
+.auth-card h1{font-size:30px;margin:2px 0}
+.auth-tabs{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:16px 0 12px;background:#071a14;border-radius:14px;padding:4px}
+.auth-tabs button{border:0;border-radius:11px;padding:10px;background:transparent;color:var(--muted);font-weight:800}
+.auth-tabs button.on{background:linear-gradient(135deg,#f7d987,#d39b42);color:#18251d}
+.auth-card .field{width:100%;margin:5px 0;text-align:right}
+.auth-card .field.ltr{direction:ltr;text-align:left}
+.auth-msg{min-height:20px;font-size:12.5px;margin:6px 0;color:var(--red);line-height:1.7}.auth-msg.ok{color:var(--green)}
+.auth-sep{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:12px;margin:12px 0}.auth-sep:before,.auth-sep:after{content:"";flex:1;height:1px;background:#ffffff1f}
+.g-btn{width:100%;display:flex;align-items:center;justify-content:center;gap:10px;background:#fff;color:#222;border:0;border-radius:12px;padding:11px 17px;font-weight:800}
+.g-btn svg{width:20px;height:20px}
+.auth-link{background:none;border:0;color:var(--gold);font-size:12.5px;margin-top:10px;text-decoration:underline}
+#user-chip{max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 </style></head>
 <body>
+<div id="auth-screen"><div class="panel auth-card">
+ <div class="hero-icon" style="font-size:44px">🂡</div><h1>سَمْرَة</h1><p class="sub" style="margin-bottom:6px">سجّل دخولك عشان تحفظ تقدّمك</p>
+ <div class="auth-tabs"><button id="tab-login" class="on" onclick="authTab('login')">دخول</button><button id="tab-signup" onclick="authTab('signup')">حساب جديد</button></div>
+ <input id="auth-name" class="field hidden" placeholder="اسمك في اللعبة" maxlength="18" autocomplete="nickname">
+ <input id="auth-email" class="field ltr" type="email" placeholder="البريد الإلكتروني" autocomplete="email">
+ <input id="auth-pass" class="field ltr" type="password" placeholder="كلمة المرور (6 أحرف على الأقل)" autocomplete="current-password">
+ <div class="auth-msg" id="auth-msg"></div>
+ <button class="btn" id="auth-submit" style="width:100%" onclick="authSubmit()">دخول</button>
+ <button class="auth-link" id="auth-forgot" onclick="authReset()">نسيت كلمة المرور؟</button>
+ <div class="auth-sep">أو</div>
+ <button class="g-btn" onclick="authGoogle()"><svg viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.6l6.8-6.8C35.8 2.4 30.3 0 24 0 14.6 0 6.5 5.4 2.6 13.2l7.9 6.1C12.4 13.6 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.7c-.6 3-2.3 5.5-4.8 7.2l7.5 5.8c4.4-4.1 7.1-10.1 7.1-17.5z"/><path fill="#FBBC05" d="M10.5 28.7c-.5-1.4-.8-3-.8-4.7s.3-3.2.8-4.7l-7.9-6.1C.9 16.4 0 20.100 0 24s.9 7.600 2.600 10.800l7.900-6.100z"/><path fill="#34A853" d="M24 48c6.5 0 11.900-2.100 15.900-5.800l-7.500-5.800c-2.100 1.400-4.800 2.300-8.400 2.300-6.300 0-11.600-4.100-13.500-9.800l-7.900 6.100C6.500 42.600 14.600 48 24 48z"/></svg>المتابعة باستخدام Google</button>
+ <button class="auth-link hidden" id="auth-skip" onclick="authSkip()">تخطي والعب كضيف</button>
+</div></div>
 <header><div class="brand"><div class="brand-icon">♠</div><div><b>سَمْرَة</b><small>تحدّاك تجمع أقل نقاط</small></div></div>
-<div class="header-right"><span class="status" id="connection-status">● وضع فردي</span><button class="btn secondary small" onclick="openSettings()" style="font-size:18px" aria-label="الإعدادات">⚙️</button></div></header>
+<div class="header-right"><span class="status hidden" id="user-chip"></span><button class="btn secondary small hidden" id="logout-btn" onclick="authLogout()">خروج</button><span class="status" id="connection-status">● وضع فردي</span><button class="btn secondary small" onclick="openSettings()" style="font-size:18px" aria-label="الإعدادات">⚙️</button></div></header>
 <main>
 
 <section id="menu" class="panel menu">
@@ -290,6 +319,8 @@ body.noanim .react.on{opacity:1;animation:none!important}
 
 <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script>
 const SEATS=['bottom','right','top','left'],SUITS=['♠','♣','♥','♦'],RANK={'2':2,'3':3,'4':4,'5':5,'6':6,'7':7,'8':8,'9':9,'10':10,'J':11,'Q':12,'K':13,'A':14},FACE={J:'🧑',Q:'👩',K:'🧓'};
 let mode='bots',state=null,player='لاعب',timer=null,tTimer=null,peer=null,conn=null,isHost=false,roomId='',difficulty='normal';
@@ -1818,4 +1849,125 @@ function copyRoom(){
         }).catch(()=>alert('الكود هو: '+v));
     }else alert('الكود هو: '+v);
 }
-</script></body></html>
+</script>
+<script>
+// ================== نظام الحسابات (Firebase Auth) ==================
+// الصق هنا إعدادات مشروعك: Firebase Console ← Project settings ← Your apps ← Config
+const FIREBASE_CONFIG={
+  apiKey:"AIzaSyAuZSocKyO_1pS1Kx0qIp4maRYbguG8eT4",
+  authDomain:"samrah-a58c7.firebaseapp.com",
+  projectId:"samrah-a58c7",
+  storageBucket:"samrah-a58c7.firebasestorage.app",
+  messagingSenderId:"489155024260",
+  appId:"1:489155024260:web:2dc87415b4f0869af879d1"
+};
+const REQUIRE_LOGIN=true; // false = يظهر زر «تخطي والعب كضيف»
+let fbAuth=null,authMode='login',authBusy=false;
+const AUTH_ERR={
+ 'auth/invalid-email':'البريد الإلكتروني غير صحيح.',
+ 'auth/missing-email':'اكتب بريدك الإلكتروني أول.',
+ 'auth/user-not-found':'ما فيه حساب بهذا البريد.',
+ 'auth/wrong-password':'كلمة المرور غلط.',
+ 'auth/invalid-credential':'البريد أو كلمة المرور غلط.',
+ 'auth/invalid-login-credentials':'البريد أو كلمة المرور غلط.',
+ 'auth/email-already-in-use':'هذا البريد مسجّل من قبل، جرّب تسجّل دخول.',
+ 'auth/weak-password':'كلمة المرور ضعيفة، لازم 6 أحرف على الأقل.',
+ 'auth/too-many-requests':'محاولات كثيرة، انتظر شوي وجرّب مرة ثانية.',
+ 'auth/network-request-failed':'تعذر الاتصال بالإنترنت.',
+ 'auth/operation-not-allowed':'هذي الطريقة غير مفعّلة في Firebase (Authentication ← Sign-in method).',
+ 'auth/unauthorized-domain':'نطاق موقعك غير مضاف في Firebase (Authentication ← Settings ← Authorized domains).',
+ 'auth/user-disabled':'هذا الحساب موقوف.',
+ 'auth/account-exists-with-different-credential':'هذا البريد مسجّل بطريقة ثانية، سجّل دخول بها.'
+};
+const aMsg=(m,ok)=>{const b=el('auth-msg');b.textContent=m||'';b.classList.toggle('ok',!!ok)};
+const aErr=e=>{const c=e&&e.code;if(c==='auth/popup-closed-by-user'||c==='auth/cancelled-popup-request')return '';return AUTH_ERR[c]||('صار خطأ: '+((e&&e.message)||c||'غير معروف'))};
+function authTab(m){
+  authMode=m;aMsg('');
+  el('tab-login').classList.toggle('on',m==='login');el('tab-signup').classList.toggle('on',m==='signup');
+  el('auth-name').classList.toggle('hidden',m!=='signup');
+  el('auth-forgot').classList.toggle('hidden',m==='signup');
+  el('auth-submit').textContent=m==='signup'?'إنشاء الحساب':'دخول';
+  el('auth-pass').autocomplete=m==='signup'?'new-password':'current-password';
+}
+function authBusySet(b){authBusy=b;el('auth-submit').disabled=b;el('auth-submit').style.opacity=b?.6:1}
+async function authSubmit(){
+  if(authBusy||!fbAuth)return;
+  const email=el('auth-email').value.trim(),pass=el('auth-pass').value;
+  if(!email||!pass){aMsg('اكتب البريد وكلمة المرور.');return}
+  authBusySet(true);aMsg('');
+  try{
+    if(authMode==='signup'){
+      const nm=cleanName(el('auth-name').value);
+      if(!nm){aMsg('اكتب اسمك في اللعبة.');return}
+      const c=await fbAuth.createUserWithEmailAndPassword(email,pass);
+      await c.user.updateProfile({displayName:nm});
+      applyAuthUser(fbAuth.currentUser);
+    }else await fbAuth.signInWithEmailAndPassword(email,pass);
+  }catch(e){aMsg(aErr(e))}
+  finally{authBusySet(false)}
+}
+async function authGoogle(){
+  if(!fbAuth||authBusy)return;
+  aMsg('');
+  const p=new firebase.auth.GoogleAuthProvider();p.setCustomParameters({prompt:'select_account'});
+  try{await fbAuth.signInWithPopup(p)}
+  catch(e){
+    if(e&&(e.code==='auth/popup-blocked'||e.code==='auth/operation-not-supported-in-this-environment')){
+      try{await fbAuth.signInWithRedirect(p);return}catch(e2){e=e2}
+    }
+    aMsg(aErr(e));
+  }
+}
+async function authReset(){
+  if(!fbAuth)return;
+  const email=el('auth-email').value.trim();
+  if(!email){aMsg('اكتب بريدك أول ثم اضغط «نسيت كلمة المرور».');return}
+  try{await fbAuth.sendPasswordResetEmail(email);aMsg('أرسلنا لك رابط إعادة تعيين كلمة المرور على بريدك.',true)}
+  catch(e){aMsg(aErr(e))}
+}
+function authSkip(){el('auth-screen').classList.remove('show')}
+async function authLogout(){
+  if(!fbAuth)return;
+  if(!confirm('تبي تسجّل خروج؟'))return;
+  try{await fbAuth.signOut()}catch(e){}
+  location.reload();
+}
+function applyAuthUser(u){
+  const chip=el('user-chip'),lo=el('logout-btn');
+  if(!u){chip.classList.add('hidden');lo.classList.add('hidden');el('auth-screen').classList.add('show');return}
+  const nm=cleanName(u.displayName||(u.email||'').split('@')[0])||'لاعب';
+  chip.textContent='👤 '+nm;chip.classList.remove('hidden');lo.classList.remove('hidden');
+  el('player-name').value=nm;el('invite-name').value=nm;
+  try{localStorage.setItem('samra_name',nm)}catch(e){}
+  el('auth-screen').classList.remove('show');
+  el('auth-pass').value='';aMsg('');
+}
+function initAuth(){
+  authTab('login');
+  if(!REQUIRE_LOGIN)el('auth-skip').classList.remove('hidden');
+  const cfgOk=typeof firebase!=='undefined'&&FIREBASE_CONFIG.apiKey&&!/^PASTE_/.test(FIREBASE_CONFIG.apiKey);
+  if(!cfgOk){
+    el('auth-screen').classList.add('show');
+    aMsg(typeof firebase==='undefined'?'مكتبة Firebase ما تحمّلت (تأكد من الإنترنت).':'لازم تلصق إعدادات Firebase في FIREBASE_CONFIG داخل الملف.');
+    return;
+  }
+  try{firebase.initializeApp(FIREBASE_CONFIG);fbAuth=firebase.auth();fbAuth.languageCode='ar'}
+  catch(e){el('auth-screen').classList.add('show');aMsg('Firebase: '+(e.message||e));return}
+  el('auth-screen').classList.add('show');
+  fbAuth.getRedirectResult().catch(e=>aMsg(aErr(e)));
+  fbAuth.onAuthStateChanged(u=>{
+    if(u)applyAuthUser(u);
+    else if(REQUIRE_LOGIN||!el('auth-screen').dataset.skipped)applyAuthUser(null);
+  });
+  // تغيير الاسم من القائمة يتحدّث في الحساب
+  el('player-name').addEventListener('change',()=>{
+    const nm=cleanName(el('player-name').value);
+    if(fbAuth.currentUser&&nm&&nm!==fbAuth.currentUser.displayName){
+      fbAuth.currentUser.updateProfile({displayName:nm}).then(()=>{el('user-chip').textContent='👤 '+nm}).catch(()=>{});
+    }
+  });
+  ['auth-email','auth-pass','auth-name'].forEach(id=>el(id).addEventListener('keydown',e=>{if(e.key==='Enter')authSubmit()}));
+}
+window.addEventListener('DOMContentLoaded',initAuth); // يُسجَّل بعد initApp فيشتغل بعده
+</script>
+</body></html>
