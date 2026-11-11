@@ -8,6 +8,7 @@
 <meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23e9bd61'/%3E%3Ctext x='32' y='47' font-size='40' text-anchor='middle'%3E%E2%99%A0%3C/text%3E%3C/svg%3E">
 <meta name="theme-color" content="#081914"><title>سَمْرَة | لعبة الورق</title>
+<style id="auth-gate">html{visibility:hidden}</style>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Changa:wght@400;500;600;700;800&display=swap');
 :root{--bg:#081914;--panel:#102b23;--panel2:#16392e;--gold:#e9bd61;--cream:#fff9ed;--muted:#a9c1b5;--green:#55c78d;--red:#e56c72}
@@ -122,75 +123,90 @@ body.noanim .react.on{opacity:1;animation:none!important}
 .rt-phrases{display:flex;flex-wrap:wrap;gap:6px}
 .rt-phrases button{font-size:12.5px;padding:6px 11px;border-radius:14px;border:1px solid #ffffff2a;background:#ffffff0d;color:var(--cream);cursor:pointer;transition:.15s}
 
-#auth-screen{position:fixed;inset:0;z-index:60;display:none;align-items:center;justify-content:center;padding:18px;overflow:auto;background:radial-gradient(ellipse at 50% -20%,#245342 0,#0b211a 48%,#06130f 100%)}
-#auth-screen.show{display:flex}
-.auth-card{width:min(420px,100%);padding:26px 22px;text-align:center}
-.auth-card h1{font-size:30px;margin:2px 0}
-.auth-tabs{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:16px 0 12px;background:#071a14;border-radius:14px;padding:4px}
-.auth-tabs button{border:0;border-radius:11px;padding:10px;background:transparent;color:var(--muted);font-weight:800}
-.auth-tabs button.on{background:linear-gradient(135deg,#f7d987,#d39b42);color:#18251d}
-.auth-card .field{width:100%;margin:5px 0;text-align:right}
-.auth-card .field.ltr{direction:ltr;text-align:left}
-.auth-msg{min-height:20px;font-size:12.5px;margin:6px 0;color:var(--red);line-height:1.7}.auth-msg.ok{color:var(--green)}
-.auth-sep{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:12px;margin:12px 0}.auth-sep:before,.auth-sep:after{content:"";flex:1;height:1px;background:#ffffff1f}
-.g-btn{width:100%;display:flex;align-items:center;justify-content:center;gap:10px;background:#fff;color:#222;border:0;border-radius:12px;padding:11px 17px;font-weight:800}
-.g-btn svg{width:20px;height:20px}
-.auth-link{background:none;border:0;color:var(--gold);font-size:12.5px;margin-top:10px;text-decoration:underline}
 #user-chip{max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* ===== v2: واجهة رئيسية + إعدادات بشكل تطبيق ===== */
+#menu{max-width:520px;margin:14px auto;padding:14px;display:flex;flex-direction:column;gap:12px;text-align:center}
+#menu .lb-btn,#menu .shop-btn{position:static}
+.m-top{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.m-top .shop-btn{height:44px;padding:0 14px;border-radius:30px;font-weight:800}
+.m-top .lb-btn{width:44px;height:44px;border-radius:50%;font-size:21px}
+.m-player{display:flex;align-items:center;gap:12px;width:100%;text-align:right;padding:12px 14px;border-radius:18px;border:1px solid #ffffff22;background:linear-gradient(135deg,#1b4a3c,#102b23);color:var(--cream)}
+.m-player:hover{border-color:var(--gold)}
+.m-player .av{width:48px;height:48px;border-radius:50%;display:grid;place-items:center;font-size:22px;font-weight:800;color:#18251d;background:linear-gradient(145deg,#ffe29a,#b98231);flex:none}
+.m-player .pi{flex:1;min-width:0}.m-player .pi b{display:block;font-size:17px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.m-player .pi small{display:block;color:var(--muted);font-size:11.5px}.m-player .chev{color:var(--muted);font-size:24px}
+#menu .mode-grid{grid-template-columns:repeat(3,1fr)!important;gap:8px;margin:0}
+#menu .mode{min-height:0;padding:12px 6px;text-align:center;border-radius:16px;display:flex;flex-direction:column;align-items:center;gap:2px}
+#menu .mode .ico{font-size:26px}#menu .mode b{font-size:14px}#menu .mode small{font-size:10px;line-height:1.4}
+#menu .mode.selected{border-color:var(--gold);background:#e9bd6120;box-shadow:0 0 0 1px var(--gold) inset}
+.m-card{display:flex;align-items:center;justify-content:space-between;gap:10px;text-align:right;padding:12px 14px;border-radius:16px;background:#071a1466;border:1px solid #ffffff17}
+.m-card.hidden{display:none}.m-card b{color:var(--gold);font-size:14px}.m-card .hint{margin:2px 0 0}
+#menu .online-box{margin:0;max-width:none;padding:12px}
+#online-inputs{flex-direction:column;align-items:stretch;margin:0;gap:8px}
+#online-inputs .btn{width:100%}
+.or{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:11px}.or:before,.or:after{content:"";flex:1;height:1px;background:#ffffff1a}
+.join-row{display:flex;gap:8px}.join-row .field{flex:1}.join-row .btn{width:auto!important}
+.online-actions:empty{display:none!important}
+#start-btn{width:100%;padding:15px;font-size:17px;border-radius:16px}
+.m-foot{margin:0!important}
+#settings-modal .sheet{width:min(480px,100%);height:min(640px,90vh);height:min(640px,90dvh);padding:0;display:flex;flex-direction:column;overflow:hidden;text-align:right}
+.sheet-head{display:flex;align-items:center;gap:10px;padding:14px 16px;border-bottom:1px solid #ffffff14}
+.sheet-head h2{margin:0;flex:1;font-size:19px}
+.sheet-head .x-close{position:static;float:none;margin:0}
+.sheet-tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;padding:8px 10px;background:#071a14}
+.sheet-tabs button{border:0;border-radius:11px;padding:8px 2px;background:transparent;color:var(--muted);font-size:12px;font-weight:700;display:flex;flex-direction:column;align-items:center;gap:1px}
+.sheet-tabs button i{font-style:normal;font-size:19px}
+.sheet-tabs button.on{background:#e9bd6122;color:var(--gold)}
+.sheet-body{flex:1;overflow:auto;padding:4px 16px 10px}
+.pane{display:none}.pane.on{display:block}
+.sheet-foot{display:flex;align-items:center;gap:10px;padding:12px 16px;padding-bottom:max(12px,env(safe-area-inset-bottom));border-top:1px solid #ffffff14}
+.sheet-foot small{flex:1;color:var(--muted);font-size:10.5px;line-height:1.5}.sheet-foot .btn{margin:0;min-width:96px}
+#settings-modal .setting-row{padding:13px 0}
+#settings-modal .setting-row label{flex:1;font-size:14px}
+#settings-modal .setting-row label small{display:block;color:var(--muted);font-size:11px;margin-top:2px}
+#settings-modal .setting-row select{max-width:130px}
+.toggle{-webkit-appearance:none;appearance:none;width:46px!important;height:26px!important;border-radius:20px;background:#ffffff26;position:relative;flex:none;transition:.2s;border:0;cursor:pointer;margin:0}
+.toggle:before{content:"";position:absolute;top:3px;right:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:.2s}
+.toggle:checked{background:var(--green)}.toggle:checked:before{transform:translateX(-20px)}
+@media(max-width:600px){#menu{margin:8px auto;padding:10px}#settings-modal{padding:0}#settings-modal .sheet{width:100%;height:100vh;height:100dvh;border-radius:0;border:0}}
 </style></head>
 <body>
-<div id="auth-screen"><div class="panel auth-card">
- <div class="hero-icon" style="font-size:44px">🂡</div><h1>سَمْرَة</h1><p class="sub" style="margin-bottom:6px">سجّل دخولك عشان تحفظ تقدّمك</p>
- <div id="auth-main">
- <div class="auth-tabs"><button id="tab-login" class="on" onclick="authTab('login')">دخول</button><button id="tab-signup" onclick="authTab('signup')">حساب جديد</button></div>
- <input id="auth-name" class="field hidden" placeholder="اسمك في اللعبة" maxlength="18" autocomplete="nickname">
- <input id="auth-email" class="field ltr" type="email" placeholder="البريد الإلكتروني" autocomplete="email">
- <input id="auth-pass" class="field ltr" type="password" placeholder="كلمة المرور (6 أحرف على الأقل)" autocomplete="current-password">
- <div class="auth-msg" id="auth-msg"></div>
- <button class="btn" id="auth-submit" style="width:100%" onclick="authSubmit()">دخول</button>
- <button class="auth-link" id="auth-forgot" onclick="authReset()">نسيت كلمة المرور؟</button>
- <div class="auth-sep">أو</div>
- <button class="g-btn" onclick="authGoogle()"><svg viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.6l6.8-6.8C35.8 2.4 30.3 0 24 0 14.6 0 6.5 5.4 2.6 13.2l7.9 6.1C12.4 13.6 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.7c-.6 3-2.3 5.5-4.8 7.2l7.5 5.8c4.4-4.1 7.1-10.1 7.1-17.5z"/><path fill="#FBBC05" d="M10.5 28.7c-.5-1.4-.8-3-.8-4.7s.3-3.2.8-4.7l-7.9-6.1C.9 16.4 0 20.100 0 24s.9 7.600 2.600 10.800l7.900-6.100z"/><path fill="#34A853" d="M24 48c6.5 0 11.900-2.100 15.900-5.800l-7.500-5.800c-2.100 1.400-4.800 2.300-8.400 2.300-6.300 0-11.600-4.100-13.500-9.800l-7.900 6.100C6.500 42.600 14.600 48 24 48z"/></svg>المتابعة باستخدام Google</button>
- <button class="auth-link hidden" id="auth-skip" onclick="authSkip()">تخطي والعب كضيف</button>
- </div>
- <div id="auth-verify" class="hidden">
-  <div style="font-size:42px;margin:8px 0">📧</div>
-  <h2 style="color:var(--gold);margin:0 0 8px">أكّد بريدك الإلكتروني</h2>
-  <p class="hint" id="verify-text" style="font-size:13px"></p>
-  <div class="auth-msg" id="verify-msg"></div>
-  <button class="btn" style="width:100%" onclick="authVerifyCheck()">✅ أكّدت، تحقّق الحين</button>
-  <button class="btn secondary" id="verify-resend" style="width:100%;margin-top:8px" onclick="authVerifyResend()">إعادة إرسال الرسالة</button>
-  <button class="auth-link" onclick="authSignOutNow()">استخدام حساب ثاني</button>
- </div>
-</div></div>
 <header><div class="brand"><div class="brand-icon">♠</div><div><b>سَمْرَة</b><small>تحدّاك تجمع أقل نقاط</small></div></div>
-<div class="header-right"><span class="status hidden" id="user-chip"></span><button class="btn secondary small hidden" id="logout-btn" onclick="authLogout()">خروج</button><span class="status" id="connection-status">● وضع فردي</span><button class="btn secondary small" onclick="openSettings()" style="font-size:18px" aria-label="الإعدادات">⚙️</button></div></header>
+<div class="header-right"><span class="status" id="connection-status">● وضع فردي</span><button class="btn secondary small" onclick="openSettings()" style="font-size:18px" aria-label="الإعدادات">⚙️</button></div></header>
 <main>
 
 <section id="menu" class="panel menu">
- <button class="lb-btn" onclick="openBoard()" aria-label="لوحة المتصدرين">🏆</button>
- <button class="shop-btn" onclick="openShop()" aria-label="المتجر">🛍️ <b id="coin-count">0</b> 🪙</button>
- <div class="hero-icon">🂡</div><h1>مرحباً بك في سَمْرَة</h1><p class="sub">اكتب اسمك واختر طريقة اللعب</p>
- <div class="formrow"><input id="player-name" class="field name" placeholder="اسمك في اللعبة" maxlength="18" autocomplete="nickname"></div>
- <p class="hint" id="stats"></p>
+ <div class="m-top">
+  <button class="shop-btn" onclick="openShop()" aria-label="المتجر">🛍️ <b id="coin-count">0</b> 🪙</button>
+  <button class="lb-btn" onclick="openBoard()" aria-label="لوحة المتصدرين">🏆</button>
+ </div>
+ <button class="m-player" onclick="openSettings();setTab('account')" aria-label="الحساب والإعدادات">
+  <span class="av" id="m-av">👤</span>
+  <span class="pi"><b id="m-name">لاعب</b><small id="stats"></small></span>
+  <span class="chev">‹</span>
+ </button>
  <div class="mode-grid">
-  <button class="mode selected" id="mode-bots" onclick="selectMode('bots')"><span class="ico">🤖</span><b>تدريب ضد الكمبيوتر</b><small>بدون رانك، للتجربة والتدريب</small></button>
-  <button class="mode" id="mode-ranked" onclick="selectMode('ranked')"><span class="ico">🏅</span><b>رانك ضد الكمبيوتر</b><small>نتائج موثّقة من السيرفر بدون غش</small></button>
-  <button class="mode" id="mode-online" onclick="selectMode('online')"><span class="ico">🌐</span><b>لعب أونلاين</b><small>أنشئ غرفة أو ادخل مع صديق برمز</small></button>
+  <button class="mode selected" id="mode-bots" onclick="selectMode('bots')"><span class="ico">🤖</span><b>تدريب</b><small>بدون رانك</small></button>
+  <button class="mode" id="mode-ranked" onclick="selectMode('ranked')"><span class="ico">🏅</span><b>رانك</b><small>ارفع مستواك</small></button>
+  <button class="mode" id="mode-online" onclick="selectMode('online')"><span class="ico">🌐</span><b>أونلاين</b><small>مع الأصدقاء</small></button>
  </div>
- <div id="bot-settings" class="settings"><h3>⚙️ إعدادات المباراة</h3><p class="hint" id="settings-summary" style="margin:0 0 10px"></p><button class="btn secondary" style="width:100%" onclick="openSettings()">⚙️ تعديل إعدادات اللعبة</button></div>
+ <div id="bot-settings" class="m-card">
+  <div><b>إعدادات المباراة</b><p class="hint" id="settings-summary"></p></div>
+  <button class="btn secondary small" onclick="openSettings();setTab('play')">⚙️ تعديل</button>
+ </div>
  <div id="online-settings" class="online-box hidden">
-    <h3>🌐 إعداد الغرفة</h3>
-    <div class="formrow" id="online-inputs">
-        <button class="btn" id="quick-btn" style="width:100%" onclick="quickMatch()">⚡ لعبة سريعة · ابحث عن لاعبين</button>
-        <button class="btn" onclick="createRoom()">إنشاء غرفة</button>
-        <input id="room-code" class="field" placeholder="رمز الغرفة (samra-xxxxxxxxxx)" maxlength="30" style="flex:1" autocomplete="off">
-    </div>
-    <div class="online-actions" id="online-actions-btns"><button class="btn secondary" onclick="joinRoom()">دخول الغرفة</button></div>
-    <p class="hint" id="online-hint">أنشئ غرفة وأرسل الكود لأصدقائك (حتى 3)، أو اضغط «لعبة سريعة» ونبحث لك عن لاعبين. الأماكن الفارغة يملؤها الكمبيوتر.</p>
+  <div class="formrow" id="online-inputs">
+   <button class="btn" id="quick-btn" onclick="quickMatch()">⚡ لعبة سريعة · ابحث عن لاعبين</button>
+   <div class="or">أو بغرفة خاصة</div>
+   <button class="btn secondary" onclick="createRoom()">➕ إنشاء غرفة</button>
+   <div class="join-row"><input id="room-code" class="field" placeholder="رمز الغرفة (samra-xxxxxxxxxx)" maxlength="30" autocomplete="off"><button class="btn secondary" onclick="joinRoom()">دخول</button></div>
+  </div>
+  <div class="online-actions" id="online-actions-btns"></div>
+  <p class="hint" id="online-hint">أنشئ غرفة وأرسل الكود لأصدقائك (حتى 3)، أو اضغط «لعبة سريعة» ونبحث لك عن لاعبين. الأماكن الفارغة يملؤها الكمبيوتر.</p>
  </div>
- <button class="btn" id="start-btn" style="min-width:210px;margin-top:8px" onclick="startMatch()">ابدأ المباراة ←</button>
- <p class="hint">52 ورقة · 4 لاعبين · 13 ورقة لكل لاعب · فريقان</p>
+ <button class="btn" id="start-btn" onclick="startMatch()">ابدأ المباراة ←</button>
+ <p class="hint m-foot">52 ورقة · 4 لاعبين · فريقان</p>
 </section>
 
 <section id="lobby" class="panel lobby hidden">
@@ -264,36 +280,53 @@ body.noanim .react.on{opacity:1;animation:none!important}
  <div class="shop-grid" id="shop-grid"></div>
  <button class="btn" style="width:100%;margin-top:12px" onclick="closeShop()">تمام</button>
 </div></div>
-<div class="modal-bg" id="settings-modal"><div class="modal" style="text-align:right;max-height:90vh;overflow:auto">
- <button class="x-close" onclick="closeSettings()" aria-label="إغلاق">✕</button>
- <h2>⚙️ إعدادات اللعبة</h2>
- <h3 class="sh">🎮 اللعب</h3>
- <div class="setting-row"><label for="difficulty">مستوى الكمبيوتر (الأونلاين دائماً صعب)</label><select id="difficulty" class="field" onchange="onPref()"><option value="easy">سهل</option><option value="normal" selected>متوسط</option><option value="hard">صعب</option></select></div>
- <div class="setting-row"><label for="delay">سرعة تفكير الكمبيوتر</label><select id="delay" class="field" onchange="onPref()"><option value="900">سريع</option><option value="1600" selected>طبيعي</option><option value="2600">متأني</option><option value="3500">بطيء</option></select></div>
- <div class="setting-row"><label for="tdelay">مدة بقاء الأوراق قبل جمعها</label><select id="tdelay" class="field" onchange="onPref()"><option value="1000">قصيرة</option><option value="1700" selected>عادية</option><option value="2600">طويلة</option><option value="3600">أطول</option></select></div>
- <div class="setting-row"><label for="hints">إظهار الأوراق الممكنة</label><input id="hints" class="toggle" type="checkbox" checked onchange="onPref()"></div>
- <div class="setting-row"><label for="autoplay">لعب تلقائي إذا بقيت ورقة واحدة ممكنة</label><input id="autoplay" class="toggle" type="checkbox" onchange="onPref()"></div>
- <div class="setting-row"><label for="confirmrisk">تأكيد قبل لعب بنت السبيت أو عشرة الديمن</label><input id="confirmrisk" class="toggle" type="checkbox" onchange="onPref()"></div>
- <div class="setting-row"><label for="confirmleave">تأكيد قبل الانسحاب</label><input id="confirmleave" class="toggle" type="checkbox" checked onchange="onPref()"></div>
- <h3 class="sh">🎨 المظهر</h3>
- <button class="btn secondary small" style="width:100%;margin:6px 0" onclick="openShop()">🛍️ المتجر: الطاولات والظهور والأشكال</button>
- <div class="setting-row"><label for="csize">حجم أوراقك</label><select id="csize" class="field" onchange="onPref()"><option value="s">صغير</option><option value="m" selected>عادي</option><option value="l">كبير</option></select></div>
- <div class="setting-row"><label for="noanim">تقليل الحركة والتأثيرات</label><input id="noanim" class="toggle" type="checkbox" onchange="onPref()"></div>
- <div class="setting-row"><label for="keepon">إبقاء الشاشة شغالة أثناء اللعب</label><input id="keepon" class="toggle" type="checkbox" checked onchange="onPref()"></div>
- <h3 class="sh">🔊 الصوت والتنبيهات</h3>
- <div class="setting-row"><label for="sound">المؤثرات الصوتية</label><input id="sound" class="toggle" type="checkbox" checked onchange="onPref()"></div>
- <div class="setting-row"><label for="sfxvol">مستوى المؤثرات</label><input id="sfxvol" type="range" min="0" max="100" value="100" oninput="onPref()"></div>
- <div class="setting-row"><label for="turnsnd">نغمة «دورك»</label><input id="turnsnd" class="toggle" type="checkbox" checked onchange="onPref()"></div>
- <div class="setting-row"><label for="reacts">إظهار ردود فعل اللاعبين</label><input id="reacts" class="toggle" type="checkbox" checked onchange="onPref()"></div>
- <div class="setting-row"><label for="toasts">الإشعارات المنبثقة (انسحاب، دبل...)</label><input id="toasts" class="toggle" type="checkbox" checked onchange="onPref()"></div>
- <button class="btn secondary small" style="width:100%;margin-top:8px" onclick="openVoice()">🎧 إعدادات المحادثة الصوتية والمايك</button>
- <h3 class="sh">🧰 البيانات</h3>
- <div style="display:flex;gap:8px;flex-wrap:wrap">
-  <button class="btn secondary small" style="flex:1" onclick="resetStats()">تصفير الانتصارات</button>
-  <button class="btn secondary small" style="flex:1" onclick="resetPrefs()">استعادة الافتراضي</button>
+<div class="modal-bg" id="settings-modal"><div class="modal sheet">
+ <div class="sheet-head"><h2>⚙️ الإعدادات</h2><button class="x-close" onclick="closeSettings()" aria-label="إغلاق">✕</button></div>
+ <div class="sheet-tabs" id="set-tabs">
+  <button class="on" data-t="account" onclick="setTab('account')"><i>👤</i>الحساب</button>
+  <button data-t="play" onclick="setTab('play')"><i>🎮</i>اللعب</button>
+  <button data-t="look" onclick="setTab('look')"><i>🎨</i>المظهر</button>
+  <button data-t="sound" onclick="setTab('sound')"><i>🔊</i>الصوت</button>
  </div>
- <p class="hint">إعداداتك تُحفظ على جهازك تلقائياً. سَمْرَة · الإصدار 1.0</p>
- <button class="btn" style="width:100%;margin-top:6px" onclick="closeSettings()">تمام</button>
+ <div class="sheet-body">
+  <div class="pane on" id="pane-account">
+   <h3 class="sh">اسمك في اللعبة</h3>
+   <input id="player-name" class="field name" placeholder="اسمك في اللعبة" maxlength="18" autocomplete="nickname" style="width:100%">
+   <p class="hint">يظهر للاعبين في الأونلاين ولوحة المتصدرين.</p>
+   <h3 class="sh">الحساب</h3>
+   <div class="setting-row"><label>البريد</label><span class="hint" id="acct-email" dir="ltr" style="margin:0">—</span></div>
+   <button class="btn secondary hidden" id="logout-btn" style="width:100%;margin:8px 0;color:var(--red);border-color:var(--red)" onclick="authLogout()">🚪 تسجيل الخروج</button>
+   <h3 class="sh">البيانات</h3>
+   <div style="display:flex;gap:8px;flex-wrap:wrap">
+    <button class="btn secondary small" style="flex:1" onclick="resetStats()">تصفير الانتصارات</button>
+    <button class="btn secondary small" style="flex:1" onclick="resetPrefs()">استعادة الافتراضي</button>
+   </div>
+  </div>
+  <div class="pane" id="pane-play">
+   <div class="setting-row"><label for="difficulty">مستوى الكمبيوتر<small>الأونلاين دائماً صعب</small></label><select id="difficulty" class="field" onchange="onPref()"><option value="easy">سهل</option><option value="normal" selected>متوسط</option><option value="hard">صعب</option></select></div>
+   <div class="setting-row"><label for="delay">سرعة تفكير الكمبيوتر</label><select id="delay" class="field" onchange="onPref()"><option value="900">سريع</option><option value="1600" selected>طبيعي</option><option value="2600">متأني</option><option value="3500">بطيء</option></select></div>
+   <div class="setting-row"><label for="tdelay">مدة بقاء الأوراق قبل جمعها</label><select id="tdelay" class="field" onchange="onPref()"><option value="1000">قصيرة</option><option value="1700" selected>عادية</option><option value="2600">طويلة</option><option value="3600">أطول</option></select></div>
+   <div class="setting-row"><label for="hints">إظهار الأوراق الممكنة</label><input id="hints" class="toggle" type="checkbox" checked onchange="onPref()"></div>
+   <div class="setting-row"><label for="autoplay">لعب تلقائي<small>إذا بقيت ورقة واحدة ممكنة</small></label><input id="autoplay" class="toggle" type="checkbox" onchange="onPref()"></div>
+   <div class="setting-row"><label for="confirmrisk">تأكيد قبل بنت السبيت أو عشرة الديمن</label><input id="confirmrisk" class="toggle" type="checkbox" onchange="onPref()"></div>
+   <div class="setting-row"><label for="confirmleave">تأكيد قبل الانسحاب</label><input id="confirmleave" class="toggle" type="checkbox" checked onchange="onPref()"></div>
+  </div>
+  <div class="pane" id="pane-look">
+   <button class="btn secondary" style="width:100%;margin:10px 0 4px" onclick="openShop()">🛍️ المتجر: الطاولات والظهور والأشكال</button>
+   <div class="setting-row"><label for="csize">حجم أوراقك</label><select id="csize" class="field" onchange="onPref()"><option value="s">صغير</option><option value="m" selected>عادي</option><option value="l">كبير</option></select></div>
+   <div class="setting-row"><label for="noanim">تقليل الحركة والتأثيرات</label><input id="noanim" class="toggle" type="checkbox" onchange="onPref()"></div>
+   <div class="setting-row"><label for="keepon">إبقاء الشاشة شغالة أثناء اللعب</label><input id="keepon" class="toggle" type="checkbox" checked onchange="onPref()"></div>
+  </div>
+  <div class="pane" id="pane-sound">
+   <div class="setting-row"><label for="sound">المؤثرات الصوتية</label><input id="sound" class="toggle" type="checkbox" checked onchange="onPref()"></div>
+   <div class="setting-row"><label for="sfxvol">مستوى المؤثرات</label><input id="sfxvol" type="range" min="0" max="100" value="100" oninput="onPref()"></div>
+   <div class="setting-row"><label for="turnsnd">نغمة «دورك»</label><input id="turnsnd" class="toggle" type="checkbox" checked onchange="onPref()"></div>
+   <div class="setting-row"><label for="reacts">ردود فعل اللاعبين</label><input id="reacts" class="toggle" type="checkbox" checked onchange="onPref()"></div>
+   <div class="setting-row"><label for="toasts">الإشعارات المنبثقة<small>انسحاب، دبل...</small></label><input id="toasts" class="toggle" type="checkbox" checked onchange="onPref()"></div>
+   <button class="btn secondary" style="width:100%;margin:10px 0 4px" onclick="openVoice()">🎧 المحادثة الصوتية والمايك</button>
+  </div>
+ </div>
+ <div class="sheet-foot"><small>سَمْرَة · الإصدار 1.0 · تُحفظ إعداداتك على جهازك</small><button class="btn" onclick="closeSettings()">تمام</button></div>
 </div></div>
 <div class="modal-bg" id="voice-modal"><div class="modal" style="text-align:right;max-height:88vh;overflow:auto">
  <button class="x-close" onclick="closeVoice()" aria-label="إغلاق">✕</button>
@@ -886,16 +919,29 @@ async function syncRank(){
 const withTimeout=(p,ms)=>Promise.race([p,new Promise((_,rej)=>setTimeout(()=>rej(new Error('timeout')),ms))]);
 let sbDiag='',fnErr='';
 const errMsg=e=>String((e&&(e.message||e.error_description||e.msg))||e||'خطأ غير معروف');
+// يربط حساب Firebase بجلسة Supabase (عن طريق الدالة firebase-login)
+async function bridgeSession(){
+    const fu=await withTimeout(fbUserReady,15000);
+    const g=await sb.auth.getSession();
+    const cur=g.data&&g.data.session;
+    if(cur&&cur.user&&cur.user.user_metadata&&cur.user.user_metadata.firebase_uid===fu.uid)return cur;
+    const idToken=await fu.getIdToken();
+    const r=await withTimeout(fetch(SB_URL+'/functions/v1/firebase-login',{method:'POST',headers:{'Content-Type':'application/json',apikey:SB_KEY},body:JSON.stringify({idToken})}),15000);
+    const j=await r.json().catch(()=>({}));
+    if(!j.token_hash)throw new Error(j.error==='email_not_verified'?'أكّد بريدك الإلكتروني أول':(j.error||('HTTP '+r.status))+(j.details?' · '+j.details:''));
+    const v=await sb.auth.verifyOtp({token_hash:j.token_hash,type:'magiclink'});
+    if(v.error)throw v.error;
+    if(!v.data||!v.data.session)throw new Error('لم يرجع السيرفر جلسة');
+    return v.data.session;
+}
 async function ensureSession(){
     if(sbUser)return true;
     if(!sb)return false;
     try{
-        const r=await withTimeout(sb.auth.signInAnonymously(),12000);
-        if(r.error)throw r.error;
-        if(!r.data||!r.data.session)throw new Error('لم يرجع السيرفر جلسة');
-        sbUser=r.data.session.user;sbDiag='';
+        const s=await withTimeout(bridgeSession(),25000);
+        sbUser=s.user;sbDiag='';
         loadWallet();return true;
-    }catch(e){sbDiag='تسجيل الدخول المجهول فشل: '+errMsg(e);await diagSettings();return false}
+    }catch(e){sbDiag='ربط الحساب بالسيرفر فشل: '+errMsg(e);return false}
 }
 async function diagSettings(){
     const host=SB_URL.replace('https://','');
@@ -908,23 +954,17 @@ async function diagSettings(){
     }catch(e){sbDiag+=' | المشروع: '+host+' · تعذر قراءة إعداداته: '+errMsg(e)}
 }
 function sbHelp(){
-    return 'تعذر الاتصال بالسيرفر.\nالسبب: '+(sbDiag||'غير معروف').split(' | ').join('\n')+'\n\nتأكد من: تفعيل Anonymous sign-ins، وإطفاء CAPTCHA، وتشغيل ملف setup.sql، وأن المشروع غير متوقف (Paused).';
+    return 'تعذر الاتصال بالسيرفر.\nالسبب: '+(sbDiag||'غير معروف').split(' | ').join('\n')+'\n\nتأكد من: نشر الدالة firebase-login وإطفاء Verify JWT لها، وأن المشروع غير متوقف (Paused).';
 }
 async function initBoard(){
     if(typeof supabase==='undefined'){sbDiag='مكتبة Supabase ما تحمّلت (تأكد من الإنترنت)';loadBoard();return}
     try{sb=supabase.createClient(SB_URL,SB_KEY,{auth:{persistSession:true,autoRefreshToken:true}})}
     catch(e){sb=null;sbDiag='createClient: '+errMsg(e);loadBoard();return}
     try{
-        const g=await withTimeout(sb.auth.getSession(),8000);
-        let session=g.data&&g.data.session;
-        if(!session){
-            const r=await withTimeout(sb.auth.signInAnonymously(),12000);
-            if(r.error)throw r.error;
-            session=r.data&&r.data.session;
-        }
+        const session=await withTimeout(bridgeSession(),25000);
         if(!session)throw new Error('لم يرجع السيرفر جلسة');
         sbUser=session.user;sbDiag='';
-    }catch(e){sbUser=null;sbDiag='تسجيل الدخول المجهول فشل: '+errMsg(e);await diagSettings()}
+    }catch(e){sbUser=null;sbDiag='ربط الحساب بالسيرفر فشل: '+errMsg(e)}
     // أي فشل بعد تسجيل الدخول ما يلغي الجلسة (الرانك والمحفظة مستقلّان)
     if(sbUser){
         try{await withTimeout(syncRank(),12000)}catch(e){sbDiag='الرانك: '+errMsg(e)}
@@ -960,7 +1000,7 @@ async function loadBoard(){
         const data=await r.json();
         drawBoard(data);
         try{localStorage.setItem('samra_lb',JSON.stringify(data))}catch(e){}
-        boardMsg(data.length?(sbUser?'':'عرض فقط. '+(sbDiag||'فعّل Anonymous sign-ins في Supabase لتسجيل رانكك.')):'ما فيه أحد في اللوحة بعد. العب مباراة رانك وكن أول واحد!');
+        boardMsg(data.length?(sbUser?'':'عرض فقط. '+(sbDiag||'تعذر ربط حسابك بالسيرفر.')):'ما فيه أحد في اللوحة بعد. العب مباراة رانك وكن أول واحد!');
         if(sbUser){
             const c=await restGet('leaderboard?select=id&rp=gt.'+(rk.rp|0),{Prefer:'count=exact',Range:'0-0'});
             const m=/\/(\d+)$/.exec(c.headers.get('content-range')||'');
@@ -1861,9 +1901,9 @@ function copyRoom(){
     }else alert('الكود هو: '+v);
 }
 </script>
+
 <script>
-// ================== نظام الحسابات (Firebase Auth) ==================
-// الصق هنا إعدادات مشروعك: Firebase Console ← Project settings ← Your apps ← Config
+// ===== بوابة الدخول: صفحة اللعبة تفتح بس للمسجّل. غير كذا يحوّلك لـ login.html =====
 const FIREBASE_CONFIG={
   apiKey:"AIzaSyAuZSocKyO_1pS1Kx0qIp4maRYbguG8eT4",
   authDomain:"samrah-a58c7.firebaseapp.com",
@@ -1872,142 +1912,48 @@ const FIREBASE_CONFIG={
   messagingSenderId:"489155024260",
   appId:"1:489155024260:web:2dc87415b4f0869af879d1"
 };
-const REQUIRE_LOGIN=true; // false = يظهر زر «تخطي والعب كضيف»
-let fbAuth=null,authMode='login',authBusy=false;
-const AUTH_ERR={
- 'auth/requires-recent-login':'سجّل دخول من جديد وجرّب.',
- 'auth/invalid-email':'البريد الإلكتروني غير صحيح.',
- 'auth/missing-email':'اكتب بريدك الإلكتروني أول.',
- 'auth/user-not-found':'ما فيه حساب بهذا البريد.',
- 'auth/wrong-password':'كلمة المرور غلط.',
- 'auth/invalid-credential':'البريد أو كلمة المرور غلط.',
- 'auth/invalid-login-credentials':'البريد أو كلمة المرور غلط.',
- 'auth/email-already-in-use':'هذا البريد مسجّل من قبل، جرّب تسجّل دخول.',
- 'auth/weak-password':'كلمة المرور ضعيفة، لازم 6 أحرف على الأقل.',
- 'auth/too-many-requests':'محاولات كثيرة، انتظر شوي وجرّب مرة ثانية.',
- 'auth/network-request-failed':'تعذر الاتصال بالإنترنت.',
- 'auth/operation-not-allowed':'هذي الطريقة غير مفعّلة في Firebase (Authentication ← Sign-in method).',
- 'auth/unauthorized-domain':'نطاق موقعك غير مضاف في Firebase (Authentication ← Settings ← Authorized domains).',
- 'auth/user-disabled':'هذا الحساب موقوف.',
- 'auth/account-exists-with-different-credential':'هذا البريد مسجّل بطريقة ثانية، سجّل دخول بها.'
-};
-const aMsg=(m,ok)=>{const b=el('auth-msg');b.textContent=m||'';b.classList.toggle('ok',!!ok)};
-const aErr=e=>{const c=e&&e.code;if(c==='auth/popup-closed-by-user'||c==='auth/cancelled-popup-request')return '';return AUTH_ERR[c]||('صار خطأ: '+((e&&e.message)||c||'غير معروف'))};
-function authTab(m){
-  authMode=m;aMsg('');
-  el('tab-login').classList.toggle('on',m==='login');el('tab-signup').classList.toggle('on',m==='signup');
-  el('auth-name').classList.toggle('hidden',m!=='signup');
-  el('auth-forgot').classList.toggle('hidden',m==='signup');
-  el('auth-submit').textContent=m==='signup'?'إنشاء الحساب':'دخول';
-  el('auth-pass').autocomplete=m==='signup'?'new-password':'current-password';
+let fbAuth=null,gateDone=false,_fbRes;
+const fbUserReady=new Promise(r=>{_fbRes=r});
+function setTab(t){
+  document.querySelectorAll('#set-tabs button').forEach(b=>b.classList.toggle('on',b.dataset.t===t));
+  document.querySelectorAll('#settings-modal .pane').forEach(p=>p.classList.toggle('on',p.id==='pane-'+t));
+  const b=document.querySelector('#settings-modal .sheet-body');if(b)b.scrollTop=0;
 }
-function authBusySet(b){authBusy=b;el('auth-submit').disabled=b;el('auth-submit').style.opacity=b?.6:1}
-async function authSubmit(){
-  if(authBusy||!fbAuth)return;
-  const email=el('auth-email').value.trim(),pass=el('auth-pass').value;
-  if(!email||!pass){aMsg('اكتب البريد وكلمة المرور.');return}
-  authBusySet(true);aMsg('');
-  try{
-    if(authMode==='signup'){
-      const nm=cleanName(el('auth-name').value);
-      if(!nm){aMsg('اكتب اسمك في اللعبة.');return}
-      const c=await fbAuth.createUserWithEmailAndPassword(email,pass);
-      await c.user.updateProfile({displayName:nm});
-      try{await fbAuth.currentUser.sendEmailVerification()}catch(e){vMsg('تعذر إرسال الرسالة: '+aErr(e)+' اضغط «إعادة إرسال».')}
-      applyAuthUser(fbAuth.currentUser);
-    }else await fbAuth.signInWithEmailAndPassword(email,pass);
-  }catch(e){aMsg(aErr(e))}
-  finally{authBusySet(false)}
+function syncMenuName(){
+  const n=cleanName(el('player-name').value)||'لاعب';
+  el('m-name').textContent=n;el('m-av').textContent=Array.from(n)[0]||'👤';
 }
-async function authGoogle(){
-  if(!fbAuth||authBusy)return;
-  aMsg('');
-  const p=new firebase.auth.GoogleAuthProvider();p.setCustomParameters({prompt:'select_account'});
-  try{await fbAuth.signInWithPopup(p)}
-  catch(e){
-    if(e&&(e.code==='auth/popup-blocked'||e.code==='auth/operation-not-supported-in-this-environment')){
-      try{await fbAuth.signInWithRedirect(p);return}catch(e2){e=e2}
-    }
-    aMsg(aErr(e));
-  }
-}
-async function authReset(){
-  if(!fbAuth)return;
-  const email=el('auth-email').value.trim();
-  if(!email){aMsg('اكتب بريدك أول ثم اضغط «نسيت كلمة المرور».');return}
-  try{await fbAuth.sendPasswordResetEmail(email);aMsg('أرسلنا لك رابط إعادة تعيين كلمة المرور على بريدك.',true)}
-  catch(e){aMsg(aErr(e))}
-}
-const vMsg=(m,ok)=>{const b=el('verify-msg');b.textContent=m||'';b.classList.toggle('ok',!!ok)};
-let vCd=0,vT=null;
-function needsVerify(u){return !!u&&!u.emailVerified&&u.providerData.some(p=>p.providerId==='password')}
-function showVerify(u){
-  el('auth-screen').classList.add('show');
-  el('auth-main').classList.add('hidden');el('auth-verify').classList.remove('hidden');
-  el('verify-text').textContent='أرسلنا رسالة تأكيد إلى '+u.email+'. افتح الرسالة واضغط على الرابط، ثم ارجع هنا واضغط «أكّدت». إذا ما لقيتها شيّك على الرسائل المزعجة (Spam).';
-}
-async function authVerifyCheck(){
-  const u=fbAuth&&fbAuth.currentUser;if(!u)return;
-  try{
-    await u.reload();
-    if(fbAuth.currentUser.emailVerified)applyAuthUser(fbAuth.currentUser);
-    else vMsg('لسا ما تأكّد البريد. اضغط على الرابط في الرسالة أول.');
-  }catch(e){vMsg(aErr(e))}
-}
-async function authVerifyResend(){
-  const u=fbAuth&&fbAuth.currentUser;if(!u||vCd>0)return;
-  try{
-    await u.sendEmailVerification();vMsg('تم إرسال الرسالة من جديد.',true);
-    vCd=60;const b=el('verify-resend');b.disabled=true;
-    clearInterval(vT);vT=setInterval(()=>{vCd--;b.textContent=vCd>0?'إعادة الإرسال بعد '+vCd+' ثانية':'إعادة إرسال الرسالة';if(vCd<=0){clearInterval(vT);b.disabled=false}},1000);
-  }catch(e){vMsg(aErr(e))}
-}
-async function authSignOutNow(){try{await fbAuth.signOut()}catch(e){}location.reload()}
-function authSkip(){el('auth-screen').classList.remove('show')}
-async function authLogout(){
-  if(!fbAuth)return;
-  if(!confirm('تبي تسجّل خروج؟'))return;
-  try{await fbAuth.signOut()}catch(e){}
-  location.reload();
-}
-function applyAuthUser(u){
-  const chip=el('user-chip'),lo=el('logout-btn');
-  if(!u){chip.classList.add('hidden');lo.classList.add('hidden');el('auth-main').classList.remove('hidden');el('auth-verify').classList.add('hidden');el('auth-screen').classList.add('show');return}
-  if(needsVerify(u)){showVerify(u);return}
-  el('auth-main').classList.remove('hidden');el('auth-verify').classList.add('hidden');
+const goLogin=()=>location.replace('login.html');
+const needsVerify=u=>!!u&&!u.emailVerified&&u.providerData.some(p=>p.providerId==='password');
+function gateOpen(u){
+  gateDone=true;_fbRes(u);
   const nm=cleanName(u.displayName||(u.email||'').split('@')[0])||'لاعب';
-  chip.textContent='👤 '+nm;chip.classList.remove('hidden');lo.classList.remove('hidden');
-  el('player-name').value=nm;el('invite-name').value=nm;
+  el('logout-btn').classList.remove('hidden');el('acct-email').textContent=u.email||'حساب Google';
+  el('player-name').value=nm;el('invite-name').value=nm;syncMenuName();
   try{localStorage.setItem('samra_name',nm)}catch(e){}
-  el('auth-screen').classList.remove('show');
-  el('auth-pass').value='';aMsg('');
+  const g=document.getElementById('auth-gate');if(g)g.remove();
 }
-function initAuth(){
-  authTab('login');
-  if(!REQUIRE_LOGIN)el('auth-skip').classList.remove('hidden');
-  const cfgOk=typeof firebase!=='undefined'&&FIREBASE_CONFIG.apiKey&&!/^PASTE_/.test(FIREBASE_CONFIG.apiKey);
-  if(!cfgOk){
-    el('auth-screen').classList.add('show');
-    aMsg(typeof firebase==='undefined'?'مكتبة Firebase ما تحمّلت (تأكد من الإنترنت).':'لازم تلصق إعدادات Firebase في FIREBASE_CONFIG داخل الملف.');
-    return;
-  }
-  try{firebase.initializeApp(FIREBASE_CONFIG);fbAuth=firebase.auth();fbAuth.languageCode='ar'}
-  catch(e){el('auth-screen').classList.add('show');aMsg('Firebase: '+(e.message||e));return}
-  el('auth-screen').classList.add('show');
-  fbAuth.getRedirectResult().catch(e=>aMsg(aErr(e)));
+async function authLogout(){
+  if(!fbAuth||!confirm('تبي تسجّل خروج؟'))return;
+  try{if(typeof sb!=='undefined'&&sb)await sb.auth.signOut()}catch(e){}
+  try{await fbAuth.signOut()}catch(e){}
+  goLogin();
+}
+window.addEventListener('DOMContentLoaded',()=>{
+  if(typeof firebase==='undefined'){goLogin();return}
+  try{firebase.initializeApp(FIREBASE_CONFIG);fbAuth=firebase.auth();fbAuth.languageCode='ar'}catch(e){goLogin();return}
+  setTimeout(()=>{if(!gateDone)goLogin()},10000);
   fbAuth.onAuthStateChanged(u=>{
-    if(u)applyAuthUser(u);
-    else if(REQUIRE_LOGIN||!el('auth-screen').dataset.skipped)applyAuthUser(null);
+    if(!u||needsVerify(u)){goLogin();return}
+    if(!gateDone)gateOpen(u);
   });
-  // تغيير الاسم من القائمة يتحدّث في الحساب
+  el('player-name').addEventListener('input',syncMenuName);syncMenuName();
   el('player-name').addEventListener('change',()=>{
-    const nm=cleanName(el('player-name').value);
+    const nm=cleanName(el('player-name').value);syncMenuName();
     if(fbAuth.currentUser&&nm&&nm!==fbAuth.currentUser.displayName){
-      fbAuth.currentUser.updateProfile({displayName:nm}).then(()=>{el('user-chip').textContent='👤 '+nm}).catch(()=>{});
+      fbAuth.currentUser.updateProfile({displayName:nm}).then(()=>{syncMenuName()}).catch(()=>{});
     }
   });
-  ['auth-email','auth-pass','auth-name'].forEach(id=>el(id).addEventListener('keydown',e=>{if(e.key==='Enter')authSubmit()}));
-}
-window.addEventListener('DOMContentLoaded',initAuth); // يُسجَّل بعد initApp فيشتغل بعده
+});
 </script>
 </body></html>

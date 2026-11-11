@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://apis.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src 'self' https://*.googleapis.com https://*.firebaseapp.com; img-src 'self' data: https://*.googleusercontent.com; frame-src https://*.firebaseapp.com https://*.web.app https://accounts.google.com https://apis.google.com; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="no-referrer">
+<meta name="theme-color" content="#081914"><title>سَمْرَة | تسجيل الدخول</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23e9bd61'/%3E%3Ctext x='32' y='47' font-size='40' text-anchor='middle'%3E%E2%99%A0%3C/text%3E%3C/svg%3E">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Changa:wght@400;500;600;700;800&display=swap');
+:root{--bg:#081914;--gold:#e9bd61;--cream:#fff9ed;--muted:#a9c1b5;--green:#55c78d;--red:#e56c72}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% -20%,#245342 0,#0b211a 48%,#06130f 100%);color:var(--cream);font-family:Changa,Tahoma,sans-serif;min-height:100vh}button,input{font:inherit}button{cursor:pointer}.hidden{display:none!important}
+.btn{border:0;border-radius:12px;padding:11px 17px;background:linear-gradient(135deg,#f7d987,#d39b42);color:#18251d;font-weight:800;box-shadow:0 5px 16px #0003;transition:.18s}.btn:hover{transform:translateY(-2px);filter:brightness(1.06)}.btn.secondary{background:#ffffff0d;color:var(--cream);border:1px solid #ffffff24;box-shadow:none}.btn:disabled{opacity:.6;cursor:default}
+.panel{background:linear-gradient(145deg,#15372d,#0d241d);border:1px solid #ffffff1c;border-radius:24px;box-shadow:0 22px 60px #0005}
+.hero-icon{font-size:58px;filter:drop-shadow(0 8px 15px #0006)}h1{font-size:clamp(27px,5vw,42px);margin:4px 0;color:var(--gold)}.sub{color:var(--muted);margin:0 0 24px}
+.field{background:#071a14;color:white;border:1px solid #ffffff28;border-radius:12px;padding:12px 14px;min-width:0;outline:none}.field:focus{border-color:var(--gold)}
+.hint{font-size:11px;color:var(--muted);line-height:1.8;margin:9px 0 0}
+#auth-screen{position:fixed;inset:0;z-index:60;display:none;align-items:center;justify-content:center;padding:18px;overflow:auto;background:radial-gradient(ellipse at 50% -20%,#245342 0,#0b211a 48%,#06130f 100%)}
+#auth-screen.show{display:flex}
+.auth-card{width:min(420px,100%);padding:26px 22px;text-align:center}
+.auth-card h1{font-size:30px;margin:2px 0}
+.auth-tabs{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:16px 0 12px;background:#071a14;border-radius:14px;padding:4px}
+.auth-tabs button{border:0;border-radius:11px;padding:10px;background:transparent;color:var(--muted);font-weight:800}
+.auth-tabs button.on{background:linear-gradient(135deg,#f7d987,#d39b42);color:#18251d}
+.auth-card .field{width:100%;margin:5px 0;text-align:right}
+.auth-card .field.ltr{direction:ltr;text-align:left}
+.auth-msg{min-height:20px;font-size:12.5px;margin:6px 0;color:var(--red);line-height:1.7}.auth-msg.ok{color:var(--green)}
+.auth-sep{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:12px;margin:12px 0}.auth-sep:before,.auth-sep:after{content:"";flex:1;height:1px;background:#ffffff1f}
+.g-btn{width:100%;display:flex;align-items:center;justify-content:center;gap:10px;background:#fff;color:#222;border:0;border-radius:12px;padding:11px 17px;font-weight:800}
+.g-btn svg{width:20px;height:20px}
+.auth-link{background:none;border:0;color:var(--gold);font-size:12.5px;margin-top:10px;text-decoration:underline}
+body{display:block}
+</style></head>
+<body>
+<div id="auth-screen"><div class="panel auth-card">
+ <div class="hero-icon" style="font-size:44px">🂡</div><h1>سَمْرَة</h1><p class="sub" style="margin-bottom:6px">سجّل دخولك عشان تحفظ تقدّمك</p>
+ <div id="auth-main">
+ <div class="auth-tabs"><button id="tab-login" class="on" onclick="authTab('login')">دخول</button><button id="tab-signup" onclick="authTab('signup')">حساب جديد</button></div>
+ <input id="auth-name" class="field hidden" placeholder="اسمك في اللعبة" maxlength="18" autocomplete="nickname">
+ <input id="auth-email" class="field ltr" type="email" placeholder="البريد الإلكتروني" autocomplete="email">
+ <input id="auth-pass" class="field ltr" type="password" placeholder="كلمة المرور (6 أحرف على الأقل)" autocomplete="current-password">
+ <div class="auth-msg" id="auth-msg"></div>
+ <button class="btn" id="auth-submit" style="width:100%" onclick="authSubmit()">دخول</button>
+ <button class="auth-link" id="auth-forgot" onclick="authReset()">نسيت كلمة المرور؟</button>
+ <div class="auth-sep">أو</div>
+ <button class="g-btn" onclick="authGoogle()"><svg viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.6l6.8-6.8C35.8 2.4 30.3 0 24 0 14.6 0 6.5 5.4 2.6 13.2l7.9 6.1C12.4 13.6 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.7c-.6 3-2.3 5.5-4.8 7.2l7.5 5.8c4.4-4.1 7.1-10.1 7.1-17.5z"/><path fill="#FBBC05" d="M10.5 28.7c-.5-1.4-.8-3-.8-4.7s.3-3.2.8-4.7l-7.9-6.1C.9 16.4 0 20.100 0 24s.9 7.600 2.600 10.800l7.900-6.100z"/><path fill="#34A853" d="M24 48c6.5 0 11.900-2.100 15.900-5.800l-7.500-5.800c-2.100 1.400-4.800 2.300-8.400 2.300-6.300 0-11.600-4.100-13.500-9.800l-7.900 6.100C6.500 42.600 14.600 48 24 48z"/></svg>المتابعة باستخدام Google</button>
+ </div>
+ <div id="auth-verify" class="hidden">
+  <div style="font-size:42px;margin:8px 0">📧</div>
+  <h2 style="color:var(--gold);margin:0 0 8px">أكّد بريدك الإلكتروني</h2>
+  <p class="hint" id="verify-text" style="font-size:13px"></p>
+  <div class="auth-msg" id="verify-msg"></div>
+  <button class="btn" style="width:100%" onclick="authVerifyCheck()">✅ أكّدت، تحقّق الحين</button>
+  <button class="btn secondary" id="verify-resend" style="width:100%;margin-top:8px" onclick="authVerifyResend()">إعادة إرسال الرسالة</button>
+  <button class="auth-link" onclick="authSignOutNow()">استخدام حساب ثاني</button>
+ </div>
+</div></div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script>
+const FIREBASE_CONFIG={
+  apiKey:"AIzaSyAuZSocKyO_1pS1Kx0qIp4maRYbguG8eT4",
+  authDomain:"samrah-a58c7.firebaseapp.com",
+  projectId:"samrah-a58c7",
+  storageBucket:"samrah-a58c7.firebasestorage.app",
+  messagingSenderId:"489155024260",
+  appId:"1:489155024260:web:2dc87415b4f0869af879d1"
+};
+const el=id=>document.getElementById(id);
+const BAD=/[<>&"'`\\\u{1F451}\u0000-\u001f\u200E\u200F\u202A-\u202E\u2066-\u2069]/gu;
+const cleanName=s=>Array.from(String(s??'').replace(BAD,'').replace(/\s+/g,' ').trim()).slice(0,18).join('');
+const AUTH_ERR={
+ 'auth/requires-recent-login':'سجّل دخول من جديد وجرّب.',
+ 'auth/invalid-email':'البريد الإلكتروني غير صحيح.',
+ 'auth/missing-email':'اكتب بريدك الإلكتروني أول.',
+ 'auth/user-not-found':'ما فيه حساب بهذا البريد.',
+ 'auth/wrong-password':'كلمة المرور غلط.',
+ 'auth/invalid-credential':'البريد أو كلمة المرور غلط.',
+ 'auth/invalid-login-credentials':'البريد أو كلمة المرور غلط.',
+ 'auth/email-already-in-use':'هذا البريد مسجّل من قبل، جرّب تسجّل دخول.',
+ 'auth/weak-password':'كلمة المرور ضعيفة، لازم 6 أحرف على الأقل.',
+ 'auth/too-many-requests':'محاولات كثيرة، انتظر شوي وجرّب مرة ثانية.',
+ 'auth/network-request-failed':'تعذر الاتصال بالإنترنت.',
+ 'auth/operation-not-allowed':'هذي الطريقة غير مفعّلة في Firebase (Authentication ← Sign-in method).',
+ 'auth/unauthorized-domain':'نطاق موقعك غير مضاف في Firebase (Authentication ← Settings ← Authorized domains).',
+ 'auth/user-disabled':'هذا الحساب موقوف.',
+ 'auth/account-exists-with-different-credential':'هذا البريد مسجّل بطريقة ثانية، سجّل دخول بها.'
+};
+let fbAuth=null,authMode='login',authBusy=false,vCd=0,vT=null;
+const aMsg=(m,ok)=>{const b=el('auth-msg');b.textContent=m||'';b.classList.toggle('ok',!!ok)};
+const vMsg=(m,ok)=>{const b=el('verify-msg');b.textContent=m||'';b.classList.toggle('ok',!!ok)};
+const aErr=e=>{const c=e&&e.code;if(c==='auth/popup-closed-by-user'||c==='auth/cancelled-popup-request')return '';return AUTH_ERR[c]||('صار خطأ: '+((e&&e.message)||c||'غير معروف'))};
+const needsVerify=u=>!!u&&!u.emailVerified&&u.providerData.some(p=>p.providerId==='password');
+const goGame=()=>location.replace('index.html');
+
+function showForm(){el('auth-main').classList.remove('hidden');el('auth-verify').classList.add('hidden');el('auth-screen').classList.add('show')}
+function showVerify(u){
+  el('auth-main').classList.add('hidden');el('auth-verify').classList.remove('hidden');el('auth-screen').classList.add('show');
+  el('verify-text').textContent='أرسلنا رسالة تأكيد إلى '+u.email+'. افتح الرسالة واضغط على الرابط، ثم ارجع هنا واضغط «أكّدت». إذا ما لقيتها شيّك على الرسائل المزعجة (Spam).';
+}
+function route(u){
+  if(!u){showForm();return}
+  if(needsVerify(u)){showVerify(u);return}
+  goGame();
+}
+function authTab(m){
+  authMode=m;aMsg('');
+  el('tab-login').classList.toggle('on',m==='login');el('tab-signup').classList.toggle('on',m==='signup');
+  el('auth-name').classList.toggle('hidden',m!=='signup');
+  el('auth-forgot').classList.toggle('hidden',m==='signup');
+  el('auth-submit').textContent=m==='signup'?'إنشاء الحساب':'دخول';
+  el('auth-pass').autocomplete=m==='signup'?'new-password':'current-password';
+}
+function busy(b){authBusy=b;el('auth-submit').disabled=b;el('auth-submit').style.opacity=b?.6:1}
+async function authSubmit(){
+  if(authBusy||!fbAuth)return;
+  const email=el('auth-email').value.trim(),pass=el('auth-pass').value;
+  if(!email||!pass){aMsg('اكتب البريد وكلمة المرور.');return}
+  busy(true);aMsg('');
+  try{
+    if(authMode==='signup'){
+      const nm=cleanName(el('auth-name').value);
+      if(!nm){aMsg('اكتب اسمك في اللعبة.');return}
+      const c=await fbAuth.createUserWithEmailAndPassword(email,pass);
+      await c.user.updateProfile({displayName:nm});
+      try{await fbAuth.currentUser.sendEmailVerification()}catch(e){vMsg('تعذر إرسال الرسالة: '+aErr(e)+' اضغط «إعادة إرسال».')}
+      route(fbAuth.currentUser);
+    }else await fbAuth.signInWithEmailAndPassword(email,pass);
+  }catch(e){aMsg(aErr(e))}
+  finally{busy(false)}
+}
+async function authGoogle(){
+  if(!fbAuth||authBusy)return;
+  aMsg('');
+  const p=new firebase.auth.GoogleAuthProvider();p.setCustomParameters({prompt:'select_account'});
+  try{await fbAuth.signInWithPopup(p)}
+  catch(e){
+    if(e&&(e.code==='auth/popup-blocked'||e.code==='auth/operation-not-supported-in-this-environment')){
+      try{await fbAuth.signInWithRedirect(p);return}catch(e2){e=e2}
+    }
+    aMsg(aErr(e));
+  }
+}
+async function authReset(){
+  if(!fbAuth)return;
+  const email=el('auth-email').value.trim();
+  if(!email){aMsg('اكتب بريدك أول ثم اضغط «نسيت كلمة المرور».');return}
+  try{await fbAuth.sendPasswordResetEmail(email);aMsg('أرسلنا لك رابط إعادة تعيين كلمة المرور على بريدك.',true)}
+  catch(e){aMsg(aErr(e))}
+}
+async function authVerifyCheck(){
+  const u=fbAuth&&fbAuth.currentUser;if(!u)return;
+  try{
+    await u.reload();
+    if(fbAuth.currentUser.emailVerified)goGame();
+    else vMsg('لسا ما تأكّد البريد. اضغط على الرابط في الرسالة أول.');
+  }catch(e){vMsg(aErr(e))}
+}
+async function authVerifyResend(){
+  const u=fbAuth&&fbAuth.currentUser;if(!u||vCd>0)return;
+  try{
+    await u.sendEmailVerification();vMsg('تم إرسال الرسالة من جديد.',true);
+    vCd=60;const b=el('verify-resend');b.disabled=true;
+    clearInterval(vT);vT=setInterval(()=>{vCd--;b.textContent=vCd>0?'إعادة الإرسال بعد '+vCd+' ثانية':'إعادة إرسال الرسالة';if(vCd<=0){clearInterval(vT);b.disabled=false}},1000);
+  }catch(e){vMsg(aErr(e))}
+}
+async function authSignOutNow(){try{await fbAuth.signOut()}catch(e){}location.reload()}
+
+window.addEventListener('DOMContentLoaded',()=>{
+  authTab('login');
+  if(typeof firebase==='undefined'){el('auth-screen').classList.add('show');aMsg('مكتبة Firebase ما تحمّلت (تأكد من الإنترنت).');return}
+  try{firebase.initializeApp(FIREBASE_CONFIG);fbAuth=firebase.auth();fbAuth.languageCode='ar'}
+  catch(e){el('auth-screen').classList.add('show');aMsg('Firebase: '+(e.message||e));return}
+  fbAuth.getRedirectResult().catch(e=>{el('auth-screen').classList.add('show');aMsg(aErr(e))});
+  fbAuth.onAuthStateChanged(route);
+  ['auth-email','auth-pass','auth-name'].forEach(id=>el(id).addEventListener('keydown',e=>{if(e.key==='Enter')authSubmit()}));
+});
+</script>
+</body></html>
