@@ -1,3 +1,4 @@
+
 <!doctype html>
 <html lang="ar" dir="rtl">
 <head>
@@ -919,14 +920,14 @@ async function syncRank(){
 const withTimeout=(p,ms)=>Promise.race([p,new Promise((_,rej)=>setTimeout(()=>rej(new Error('timeout')),ms))]);
 let sbDiag='',fnErr='';
 const errMsg=e=>String((e&&(e.message||e.error_description||e.msg))||e||'خطأ غير معروف');
-// يربط حساب Firebase بجلسة Supabase (عن طريق الدالة firebase-login)
+// يربط حساب Firebase بجلسة Supabase (عن طريق الدالة swift-service)
 async function bridgeSession(){
     const fu=await withTimeout(fbUserReady,15000);
     const g=await sb.auth.getSession();
     const cur=g.data&&g.data.session;
     if(cur&&cur.user&&cur.user.user_metadata&&cur.user.user_metadata.firebase_uid===fu.uid)return cur;
     const idToken=await fu.getIdToken();
-    const r=await withTimeout(fetch(SB_URL+'/functions/v1/firebase-login',{method:'POST',headers:{'Content-Type':'application/json',apikey:SB_KEY},body:JSON.stringify({idToken})}),15000);
+    const r=await withTimeout(fetch(SB_URL+'/functions/v1/swift-service',{method:'POST',headers:{'Content-Type':'application/json',apikey:SB_KEY},body:JSON.stringify({idToken})}),15000);
     const j=await r.json().catch(()=>({}));
     if(!j.token_hash)throw new Error(j.error==='email_not_verified'?'أكّد بريدك الإلكتروني أول':(j.error||('HTTP '+r.status))+(j.details?' · '+j.details:''));
     const v=await sb.auth.verifyOtp({token_hash:j.token_hash,type:'magiclink'});
@@ -954,7 +955,7 @@ async function diagSettings(){
     }catch(e){sbDiag+=' | المشروع: '+host+' · تعذر قراءة إعداداته: '+errMsg(e)}
 }
 function sbHelp(){
-    return 'تعذر الاتصال بالسيرفر.\nالسبب: '+(sbDiag||'غير معروف').split(' | ').join('\n')+'\n\nتأكد من: نشر الدالة firebase-login وإطفاء Verify JWT لها، وأن المشروع غير متوقف (Paused).';
+    return 'تعذر الاتصال بالسيرفر.\nالسبب: '+(sbDiag||'غير معروف').split(' | ').join('\n')+'\n\nتأكد من: نشر الدالة swift-service وإطفاء Verify JWT لها، وأن المشروع غير متوقف (Paused).';
 }
 async function initBoard(){
     if(typeof supabase==='undefined'){sbDiag='مكتبة Supabase ما تحمّلت (تأكد من الإنترنت)';loadBoard();return}
